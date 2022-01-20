@@ -59,7 +59,7 @@ class Telegram::IncomingMessageService
   end
 
   def set_conversation
-    @conversation = @contact_inbox.conversations.first
+    @conversation = @contact_inbox.conversations.where(status: [:open, :pending, :snoozed]).first
     return if @conversation
 
     @conversation = ::Conversation.create!(conversation_params)

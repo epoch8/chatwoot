@@ -107,6 +107,7 @@ export default {
         if (!chat) {
           return;
         }
+        this.$store.dispatch('getConversation', this.conversationId);
         this.$store.dispatch('setActiveChat', chat).then(() => {
           bus.$emit('scrollToMessage');
         });
