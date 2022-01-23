@@ -34,6 +34,10 @@
           "PLACEHOLDER": "Enter custom attribute key",
           "ERROR": "Key is required",
           "IN_VALID": "Invalid key"
+        },
+        "SELECT": {
+          "LABEL": "Select values",
+          "PLACEHOLDER": "Enter select values one per line"
         }
       },
       "API": {

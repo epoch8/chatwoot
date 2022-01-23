@@ -5,5 +5,6 @@ json.attribute_description resource.attribute_description
 json.attribute_key resource.attribute_key
 json.attribute_model resource.attribute_model
 json.default_value resource.default_value
+json.meta resource.meta
 json.created_at resource.created_at
 json.updated_at resource.updated_at
