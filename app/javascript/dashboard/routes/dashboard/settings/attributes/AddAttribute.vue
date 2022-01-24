@@ -63,6 +63,15 @@
             :placeholder="$t('ATTRIBUTES_MGMT.ADD.FORM.KEY.PLACEHOLDER')"
             @blur="$v.attributeKey.$touch"
           />
+          <label>
+            {{ $t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.LABEL') }}
+            <textarea
+              v-model.trim="selectValues"
+              rows="5"
+              type="text"
+              :placeholder="$t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.PLACEHOLDER')"
+            />
+          </label>
           <div class="modal-footer">
             <woot-submit-button
               :disabled="isButtonDisabled"
@@ -101,6 +110,7 @@ export default {
       attributeModel: 0,
       attributeType: 0,
       attributeKey: '',
+      selectValues: '',
       models: ATTRIBUTE_MODELS,
       types: ATTRIBUTE_TYPES,
       show: true,
@@ -164,6 +174,11 @@ export default {
           attribute_model: this.attributeModel,
           attribute_display_type: this.attributeType,
           attribute_key: this.attributeKey,
+          meta: {
+            select_values: this.selectValues
+              ? this.selectValues.split('\n')
+              : null,
+          },
         });
         this.alertMessage = this.$t('ATTRIBUTES_MGMT.ADD.API.SUCCESS_MESSAGE');
         this.onClose();

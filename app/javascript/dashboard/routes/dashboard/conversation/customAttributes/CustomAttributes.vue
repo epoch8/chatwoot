@@ -7,6 +7,7 @@
       :attribute-type="attribute.attribute_display_type"
       :label="attribute.attribute_display_name"
       :icon="attribute.icon"
+      :select-values="attribute.selectValues"
       emoji=""
       :value="attribute.value"
       :show-actions="true"

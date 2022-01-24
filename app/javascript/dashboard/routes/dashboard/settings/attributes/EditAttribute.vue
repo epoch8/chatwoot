@@ -50,6 +50,15 @@
           readonly
           @blur="$v.attributeKey.$touch"
         />
+        <label>
+          {{ $t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.LABEL') }}
+          <textarea
+            v-model.trim="selectValues"
+            rows="5"
+            type="text"
+            :placeholder="$t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.PLACEHOLDER')"
+          />
+        </label>
       </div>
       <div class="modal-footer">
         <woot-button
@@ -92,6 +101,7 @@ export default {
       types: ATTRIBUTE_TYPES,
       show: true,
       attributeKey: '',
+      selectValues: '',
     };
   },
   validations: {
@@ -128,6 +138,15 @@ export default {
           this.selectedAttribute.attribute_display_type
       ).id;
     },
+    selectedAttributeSelectValues() {
+      if (
+        !this.selectedAttribute.meta ||
+        !this.selectedAttribute.meta.select_values
+      ) {
+        return '';
+      }
+      return this.selectedAttribute.meta.select_values.join('\n');
+    },
     keyErrorMessage() {
       if (!this.$v.attributeKey.isKey) {
         return this.$t('ATTRIBUTES_MGMT.ADD.FORM.KEY.IN_VALID');
@@ -147,6 +166,7 @@ export default {
       this.description = this.selectedAttribute.attribute_description;
       this.attributeType = this.selectedAttributeType;
       this.attributeKey = this.selectedAttribute.attribute_key;
+      this.selectValues = this.selectedAttributeSelectValues;
     },
     async editAttributes() {
       this.$v.$touch();
@@ -158,6 +178,11 @@ export default {
           id: this.selectedAttribute.id,
           attribute_description: this.description,
           attribute_display_name: this.displayName,
+          meta: {
+            select_values: this.selectValues
+              ? this.selectValues.split('\n')
+              : null,
+          },
         });
 
         this.alertMessage = this.$t('ATTRIBUTES_MGMT.EDIT.API.SUCCESS_MESSAGE');
