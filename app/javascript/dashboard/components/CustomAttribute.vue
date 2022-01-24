@@ -8,24 +8,51 @@
       </h4>
     </div>
     <div v-show="isEditing">
-      <div class="input-group small">
-        <input
-          ref="inputfield"
-          v-model="editedValue"
-          :type="inputType"
-          class="input-group-field"
-          autofocus="true"
-          :class="{ error: $v.editedValue.$error }"
-          @blur="$v.editedValue.$touch"
-          @keyup.enter="onUpdate"
-        />
-        <div class="input-group-button">
-          <woot-button size="small" icon="ion-checkmark" @click="onUpdate" />
+      <div v-show="!selectValues">
+        <div class="input-group small">
+          <input
+            ref="inputfield"
+            v-model="editedValue"
+            :type="inputType"
+            class="input-group-field"
+            autofocus="true"
+            :class="{ error: $v.editedValue.$error }"
+            @blur="$v.editedValue.$touch"
+            @keyup.enter="onUpdate"
+          />
+          <div class="input-group-button">
+            <woot-button size="small" icon="ion-checkmark" @click="onUpdate" />
+          </div>
+        </div>
+        <span v-if="shouldShowErrorMessage" class="error-message">
+          {{ errorMessage }}
+        </span>
+      </div>
+      <div v-show="selectValues" class="dropdown-search-wrap">
+        <div class="search-wrap">
+          <input
+            ref="searchbar"
+            v-model="search"
+            type="text"
+            class="search-input"
+            autofocus="true"
+            :placeholder="
+              $t('CUSTOM_ATTRIBUTES.FORM.ATTRIBUTE_VALUE_SELECT.PLACEHOLDER')
+            "
+          />
+        </div>
+        <div class="list-wrap">
+          <div class="list">
+            <woot-dropdown-menu>
+              <div v-for="val in filteredValues" :key="val">
+                <woot-button variant="clear" @click="onSelectValue(val)">
+                  <span class="label-text" :title="val">{{ val }}</span>
+                </woot-button>
+              </div>
+            </woot-dropdown-menu>
+          </div>
         </div>
       </div>
-      <span v-if="shouldShowErrorMessage" class="error-message">
-        {{ errorMessage }}
-      </span>
     </div>
     <div
       v-show="!isEditing"
@@ -92,6 +119,7 @@ export default {
     showActions: { type: Boolean, default: false },
     attributeType: { type: String, default: 'text' },
     attributeKey: { type: String, required: true },
+    selectValues: { type: Array, default: null },
     contactId: { type: Number, default: null },
   },
   data() {
@@ -101,6 +129,7 @@ export default {
         this.attributeType === 'date'
           ? format(new Date(this.value || new Date()), DATE_FORMAT)
           : this.value,
+      search: '',
     };
   },
   validations() {
@@ -135,6 +164,11 @@ export default {
         return format(new Date(this.editedValue), 'dd-MM-yyyy');
       }
       return this.editedValue;
+    },
+    filteredValues() {
+      return this.selectValues.filter(value => {
+        return value.toLowerCase().includes(this.search.toLowerCase());
+      });
     },
   },
   mounted() {
@@ -175,6 +209,10 @@ export default {
     },
     onCopy() {
       this.$emit('copy', this.value);
+    },
+    onSelectValue(val) {
+      this.editedValue = val;
+      this.onUpdate();
     },
   },
 };
@@ -234,5 +272,55 @@ export default {
   margin-bottom: 1rem;
   margin-top: -1.6rem;
   width: 100%;
+}
+.dropdown-search-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 20rem;
+
+  .search-wrap {
+    margin-bottom: var(--space-small);
+    flex: 0 0 auto;
+    max-height: var(--space-large);
+
+    .search-input {
+      margin: 0;
+      width: 100%;
+      border: 1px solid transparent;
+      height: var(--space-large);
+      font-size: var(--font-size-small);
+      padding: var(--space-small);
+      background-color: var(--color-background);
+    }
+
+    input:focus {
+      border: 1px solid var(--w-500);
+    }
+  }
+
+  .list-wrap {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex: 1 1 auto;
+    overflow: auto;
+
+    .list {
+      width: 100%;
+      .add {
+        float: right;
+      }
+    }
+
+    .no-result {
+      display: flex;
+      justify-content: center;
+      color: var(--s-700);
+      padding: var(--space-smaller) var(--space-one);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-small);
+    }
+  }
 }
 </style>

@@ -39,6 +39,7 @@ export default {
           return {
             ...item,
             value: this.customAttributes[key],
+            selectValues: this.attributeSelectValues(item),
           };
         }
 
@@ -52,6 +53,7 @@ export default {
           ),
           attribute_key: key,
           attribute_model: this.attributeType,
+          selectValues: null,
           id: Math.random(),
         };
       });
@@ -76,6 +78,12 @@ export default {
         return 'link';
       }
       return 'text';
+    },
+    attributeSelectValues(attribute) {
+      if (attribute.meta && attribute.meta.select_values) {
+        return attribute.meta.select_values;
+      }
+      return null;
     },
   },
 };

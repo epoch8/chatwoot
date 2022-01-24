@@ -51,12 +51,12 @@
           @blur="$v.attributeKey.$touch"
         />
         <label>
-          {{ $t('ATTRIBUTES_MGMT.ADD.FORM.SELECT.LABEL') }}
+          {{ $t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.LABEL') }}
           <textarea
             v-model.trim="selectValues"
             rows="5"
             type="text"
-            :placeholder="$t('ATTRIBUTES_MGMT.ADD.FORM.SELECT.PLACEHOLDER')"
+            :placeholder="$t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.PLACEHOLDER')"
           />
         </label>
       </div>
