@@ -166,6 +166,7 @@ export default {
       return this.editedValue;
     },
     filteredValues() {
+      if (!this.selectValues) return [];
       return this.selectValues.filter(value => {
         return value.toLowerCase().includes(this.search.toLowerCase());
       });
