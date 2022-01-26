@@ -21,8 +21,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (contact_id => contacts.id)
-#  fk_rails_...  (inbox_id => inboxes.id)
+#  fk_rails_...  (contact_id => contacts.id) ON DELETE => cascade
+#  fk_rails_...  (inbox_id => inboxes.id) ON DELETE => cascade
 #
 
 class ContactInbox < ApplicationRecord
@@ -35,7 +35,7 @@ class ContactInbox < ApplicationRecord
   belongs_to :contact
   belongs_to :inbox
 
-  has_many :conversations, dependent: :destroy
+  has_many :conversations, dependent: :destroy_async
 
   def webhook_data
     {
