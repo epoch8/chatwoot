@@ -88,7 +88,6 @@ class Channel::Telegram < ApplicationRecord
     telegram_attachments = []
     files = {}
     message.attachments.each do |attachment|
-      puts "file_type: #{attachment[:file_type]}"
       telegram_attachment = {}
 
       case attachment[:file_type]
@@ -101,7 +100,6 @@ class Channel::Telegram < ApplicationRecord
         attachment.file_url
       )
       filename = attachment_file.original_filename
-      puts "filename: #{filename}"
       telegram_attachment[:media] = "attach://#{filename}"
       telegram_attachments << telegram_attachment
       files[filename] = attachment_file
