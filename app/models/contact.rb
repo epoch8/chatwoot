@@ -38,14 +38,14 @@ class Contact < ApplicationRecord
             format: { with: /\+[1-9]\d{1,14}\z/, message: 'should be in e164 format' }
 
   belongs_to :account
-  has_many :conversations, dependent: :destroy
-  has_many :contact_inboxes, dependent: :destroy
-  has_many :csat_survey_responses, dependent: :destroy
+  has_many :conversations, dependent: :destroy_async
+  has_many :contact_inboxes, dependent: :destroy_async
+  has_many :csat_survey_responses, dependent: :destroy_async
   has_many :inboxes, through: :contact_inboxes
-  has_many :messages, as: :sender, dependent: :destroy
-  has_many :notes, dependent: :destroy
+  has_many :messages, as: :sender, dependent: :destroy_async
+  has_many :notes, dependent: :destroy_async
 
-  before_validation :prepare_email_attribute
+  before_validation :prepare_contact_attributes
   after_create_commit :dispatch_create_event, :ip_lookup
   after_update_commit :dispatch_update_event
   after_destroy_commit :dispatch_destroy_event
@@ -146,10 +146,19 @@ class Contact < ApplicationRecord
     ContactIpLookupJob.perform_later(self)
   end
 
+  def prepare_contact_attributes
+    prepare_email_attribute
+    prepare_jsonb_attributes
+  end
+
   def prepare_email_attribute
     # So that the db unique constraint won't throw error when email is ''
-    self.email = nil if email.blank?
-    email.downcase! if email.present?
+    self.email = email.present? ? email.downcase : nil
+  end
+
+  def prepare_jsonb_attributes
+    self.additional_attributes = {} if additional_attributes.blank?
+    self.custom_attributes = {} if custom_attributes.blank?
   end
 
   def dispatch_create_event
