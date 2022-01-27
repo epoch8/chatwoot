@@ -86,7 +86,9 @@ class Channel::Telegram < ApplicationRecord
     send_message(message) unless message.content.nil?
 
     telegram_attachments = []
+    files = {}
     message.attachments.each do |attachment|
+      puts "file_type: #{attachment[:file_type]}"
       telegram_attachment = {}
 
       case attachment[:file_type]
@@ -95,20 +97,32 @@ class Channel::Telegram < ApplicationRecord
       when 'file'
         telegram_attachment[:type] = 'document'
       end
-      telegram_attachment[:media] = attachment.file_url
+      attachment_file = Down.download(
+        attachment.file_url
+      )
+      filename = attachment_file.original_filename
+      puts "filename: #{filename}"
+      telegram_attachment[:media] = "attach://#{filename}"
       telegram_attachments << telegram_attachment
+      files[filename] = attachment_file
     end
 
-    response = attachments_request(message.conversation[:additional_attributes]['chat_id'], telegram_attachments)
+    response = attachments_request(
+      message.conversation[:additional_attributes]['chat_id'],
+      telegram_attachments,
+      files
+    )
+    puts "Response: #{response.parsed_response}"
     response.parsed_response['result'].first['message_id'] if response.success?
   end
 
-  def attachments_request(chat_id, attachments)
-    HTTParty.post("#{telegram_api_url}/sendMediaGroup",
-                  body: {
-                    chat_id: chat_id,
-                    media: attachments.to_json
-                  })
+  def attachments_request(chat_id, attachments, files)
+    body = files.merge({
+      chat_id: chat_id,
+      media: attachments.to_json
+    })
+    puts "body: #{body}"
+    HTTParty.post("#{telegram_api_url}/sendMediaGroup", body: body)
   end
 
   def message_request(chat_id, text)
