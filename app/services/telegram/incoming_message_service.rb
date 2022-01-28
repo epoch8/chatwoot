@@ -105,7 +105,7 @@ class Telegram::IncomingMessageService
       file_type: file_content_type,
       file: {
         io: attachment_file,
-        filename: attachment_file,
+        filename: file[:file_name],
         content_type: attachment_file.content_type
       }
     )
