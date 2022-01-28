@@ -78,7 +78,8 @@ class Channel::Telegram < ApplicationRecord
   end
 
   def send_message(message)
-    response = message_request(message.conversation[:additional_attributes]['chat_id'], message.content)
+    buttons = message.content_attributes[:items] if message.content_type == 'input_select'
+    response = message_request(message.conversation[:additional_attributes]['chat_id'], message.content, buttons)
     response.parsed_response['result']['message_id'] if response.success?
   end
 
@@ -123,11 +124,22 @@ class Channel::Telegram < ApplicationRecord
     HTTParty.post("#{telegram_api_url}/sendMediaGroup", body: body)
   end
 
-  def message_request(chat_id, text)
-    HTTParty.post("#{telegram_api_url}/sendMessage",
-                  body: {
-                    chat_id: chat_id,
-                    text: text
-                  })
+  def message_request(chat_id, text, buttons=nil)
+    body = {
+      chat_id: chat_id,
+      text: text
+    }
+    if buttons
+      inline_keyboard = []
+      for button in buttons
+        inline_keyboard << {
+          text: button[:title],
+          callback_data: button[:value]
+        }
+      end
+      body[:reply_markup] = {inline_keyboard: [inline_keyboard]}.to_json
+    end
+    puts "body: #{body}"
+    HTTParty.post("#{telegram_api_url}/sendMessage", body: body)
   end
 end

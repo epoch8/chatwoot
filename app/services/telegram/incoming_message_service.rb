@@ -13,12 +13,12 @@ class Telegram::IncomingMessageService
     update_contact_avatar
     set_conversation
     @message = @conversation.messages.create(
-      content: params[:message][:text].presence || params[:message][:caption],
+      content: params[:message] ? (params[:message][:text].presence || params[:message][:caption]) : params[:callback_query][:data],
       account_id: @inbox.account_id,
       inbox_id: @inbox.id,
       message_type: :incoming,
       sender: @contact,
-      source_id: (params[:message][:message_id]).to_s
+      source_id: (params[:message] ? params[:message][:message_id] : params[:callback_query][:id]).to_s
     )
     attach_files
     @message.save!
@@ -27,12 +27,13 @@ class Telegram::IncomingMessageService
   private
 
   def private_message?
-    params.dig(:message, :chat, :type) == 'private'
+    (params.dig(:message, :chat, :type) == 'private' ||
+     params.dig(:callback_query, :message, :chat, :type) == 'private')
   end
 
   def set_contact
     contact_inbox = ::ContactBuilder.new(
-      source_id: params[:message][:from][:id],
+      source_id: params[:message] ? params[:message][:from][:id] : params[:callback_query][:from][:id],
       inbox: inbox,
       contact_attributes: contact_attributes
     ).perform
@@ -43,6 +44,7 @@ class Telegram::IncomingMessageService
 
   def update_contact_avatar
     return if @contact.avatar.attached?
+    return if !params[:message]
 
     avatar_url = inbox.channel.get_telegram_profile_image(params[:message][:from][:id])
     ::ContactAvatarJob.perform_later(@contact, avatar_url) if avatar_url
@@ -66,22 +68,24 @@ class Telegram::IncomingMessageService
   end
 
   def contact_attributes
+    message = params[:message] || params[:callback_query]
     {
-      name: "#{params[:message][:from][:first_name]} #{params[:message][:from][:last_name]}",
+      name: "#{message[:from][:first_name]} #{message[:from][:last_name]}",
       additional_attributes: additional_attributes
     }
   end
 
   def additional_attributes
+    message = params[:message] || params[:callback_query]
     {
-      username: params[:message][:from][:username],
-      language_code: params[:message][:from][:language_code]
+      username: message[:from][:username],
+      language_code: message[:from][:language_code]
     }
   end
 
   def conversation_additional_attributes
     {
-      chat_id: params[:message][:chat][:id]
+      chat_id: params[:message] ? params[:message][:chat][:id] : params[:callback_query][:message][:chat][:id]
     }
   end
 
@@ -112,6 +116,7 @@ class Telegram::IncomingMessageService
   end
 
   def file
+    return if !params[:message]
     @file ||= visual_media_params || params[:message][:voice].presence || params[:message][:audio].presence || params[:message][:document].presence
   end
 
