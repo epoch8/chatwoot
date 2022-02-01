@@ -2,4 +2,5 @@
 
 VERSION=$(cat version)
 
-docker build -t cr.yandex/crpdedtb1ltgorpuc08s/chatwoot:$VERSION -f docker/Dockerfile .
+# docker build -t cr.yandex/crpdedtb1ltgorpuc08s/chatwoot:$VERSION -f docker/Dockerfile .
+docker build -t ghcr.io/epoch8/chatwoot/chatwoot:$VERSION -f docker/Dockerfile .

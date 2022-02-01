@@ -1,7 +1,7 @@
 class InitSchema < ActiveRecord::Migration[6.0]
   def up
     # These are extensions that must be enabled in order to support this database
-    enable_extension 'plpgsql'
+    enable_extension 'plpgsql' unless extension_enabled?('plpgsql')
     create_table 'account_users' do |t|
       t.bigint 'account_id'
       t.bigint 'user_id'
