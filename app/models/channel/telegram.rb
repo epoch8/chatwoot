@@ -111,17 +111,18 @@ class Channel::Telegram < ApplicationRecord
       telegram_attachments,
       files
     )
-    puts "Response: #{response.parsed_response}"
-    response.parsed_response['result'].first['message_id'] if response.success?
+    puts "Telegram response: #{response.body}"
+    JSON.parse(response.body)['result'].first['message_id'] if response.code == 200
   end
 
   def attachments_request(chat_id, attachments, files)
     body = files.merge({
       chat_id: chat_id,
-      media: attachments.to_json
+      media: attachments.to_json,
+      multipart: true
     })
-    puts "body: #{body}"
-    HTTParty.post("#{telegram_api_url}/sendMediaGroup", body: body)
+    puts "Sending to telegram: #{body}"
+    RestClient.post("#{telegram_api_url}/sendMediaGroup", body)
   end
 
   def message_request(chat_id, text, buttons=nil)
@@ -139,7 +140,7 @@ class Channel::Telegram < ApplicationRecord
       end
       body[:reply_markup] = {inline_keyboard: [inline_keyboard]}.to_json
     end
-    puts "body: #{body}"
+    puts "Sending to telegram: #{body}"
     HTTParty.post("#{telegram_api_url}/sendMessage", body: body)
   end
 end
