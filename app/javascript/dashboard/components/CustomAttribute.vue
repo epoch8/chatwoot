@@ -241,6 +241,11 @@ export default {
       });
     },
   },
+  watch: {
+    value() {
+      this.editedValue = this.formattedValue;
+    },
+  },
   mounted() {
     this.editedValue = this.formattedValue;
     bus.$on(BUS_EVENTS.FOCUS_CUSTOM_ATTRIBUTE, focusAttributeKey => {
