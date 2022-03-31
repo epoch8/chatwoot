@@ -3,7 +3,10 @@ class ContactBuilder
 
   def perform
     contact_inbox = inbox.contact_inboxes.find_by(source_id: source_id)
-    return contact_inbox if contact_inbox
+    if contact_inbox
+      update_inbox_contact(contact_inbox)
+      return contact_inbox
+    end
 
     build_contact_inbox
   end
@@ -25,6 +28,13 @@ class ContactBuilder
 
   def update_contact_avatar(contact)
     ::ContactAvatarJob.perform_later(contact, contact_attributes[:avatar_url]) if contact_attributes[:avatar_url]
+  end
+
+  def update_inbox_contact(inbox)
+    inbox.contact.update!(
+      additional_attributes: contact_attributes[:additional_attributes]
+    )
+    inbox.contact.save! if inbox.contact.changed?
   end
 
   def create_contact

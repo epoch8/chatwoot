@@ -88,6 +88,7 @@ const actions = {
 
     if (data.dataFetched === undefined) {
       try {
+        await dispatch('getConversation', data.id);
         await dispatch('fetchPreviousMessages', {
           conversationId: data.id,
           before: data.messages[0].id,
