@@ -40,7 +40,7 @@ class Api::V1::Accounts::CustomAttributeDefinitionsController < Api::V1::Account
       :attribute_key,
       :attribute_model,
       :default_value,
-      :meta => [:select_values => []],
+      :meta => [:required, :select_values => []],
       attribute_values: []
     )
   end

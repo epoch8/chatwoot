@@ -31,7 +31,16 @@ export default {
     },
 
     filteredAttributes() {
-      return Object.keys(this.customAttributes).map(key => {
+      const attribute_names = [
+        ...new Set([
+          ...Object.keys(this.customAttributes),
+          ...this.attributes
+            .filter(attribute => attribute.meta && attribute.meta.required)
+            .map(attribute => attribute.attribute_key),
+        ]),
+      ];
+
+      return attribute_names.map(key => {
         const item = this.attributes.find(
           attribute => attribute.attribute_key === key
         );

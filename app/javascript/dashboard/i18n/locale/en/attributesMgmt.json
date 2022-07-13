@@ -43,6 +43,9 @@
         "VALUES": {
           "LABEL": "Values",
           "PLACEHOLDER": "Enter values one per line"
+        },
+        "REQUIRED": {
+          "LABEL": "Required"
         }
       },
       "API": {

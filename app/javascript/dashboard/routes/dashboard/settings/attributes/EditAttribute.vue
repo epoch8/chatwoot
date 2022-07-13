@@ -89,6 +89,10 @@
             {{ $t('ATTRIBUTES_MGMT.ADD.FORM.TYPE.LIST.ERROR') }}
           </label>
         </div>
+        <label>
+          <input v-model="attributeRequired" type="checkbox" name="required" />
+          {{ $t('ATTRIBUTES_MGMT.ADD.FORM.REQUIRED.LABEL') }}
+        </label>
       </div>
       <div class="modal-footer">
         <woot-button :is-loading="isUpdating" :disabled="isButtonDisabled">
@@ -125,6 +129,7 @@ export default {
       displayName: '',
       description: '',
       attributeType: 0,
+      attributeRequired: true,
       types: ATTRIBUTE_TYPES,
       show: true,
       attributeKey: '',
@@ -193,6 +198,10 @@ export default {
       }
       return this.selectedAttribute.meta.select_values.join('\n');
     },
+    selectedAttributeRequired() {
+      if (!this.selectedAttribute.meta) return false;
+      return this.selectedAttribute.meta.required;
+    },
     keyErrorMessage() {
       if (!this.$v.attributeKey.isKey) {
         return this.$t('ATTRIBUTES_MGMT.ADD.FORM.KEY.IN_VALID');
@@ -224,6 +233,7 @@ export default {
       this.attributeKey = this.selectedAttribute.attribute_key;
       this.selectValues = this.selectedAttributeSelectValues;
       this.values = this.setAttributeListValue;
+      this.attributeRequired = this.selectedAttributeRequired;
     },
     async editAttributes() {
       this.$v.$touch();
@@ -239,6 +249,7 @@ export default {
             select_values: this.selectValues
               ? this.selectValues.split('\n')
               : null,
+            required: this.attributeRequired,
           },
           attribute_values: this.updatedAttributeListValues,
         });

@@ -63,15 +63,6 @@
               {{ $t('ATTRIBUTES_MGMT.ADD.FORM.TYPE.ERROR') }}
             </span>
           </label>
-          <woot-input
-            v-model="attributeKey"
-            :label="$t('ATTRIBUTES_MGMT.ADD.FORM.KEY.LABEL')"
-            type="text"
-            :class="{ error: $v.attributeKey.$error }"
-            :error="$v.attributeKey.$error ? keyErrorMessage : ''"
-            :placeholder="$t('ATTRIBUTES_MGMT.ADD.FORM.KEY.PLACEHOLDER')"
-            @blur="$v.attributeKey.$touch"
-          />
           <label>
             {{ $t('ATTRIBUTES_MGMT.ADD.FORM.VALUES.LABEL') }}
             <textarea
@@ -104,6 +95,14 @@
               {{ $t('ATTRIBUTES_MGMT.ADD.FORM.TYPE.LIST.ERROR') }}
             </label>
           </div>
+          <label>
+            <input
+              v-model="attributeRequired"
+              type="checkbox"
+              name="required"
+            />
+            {{ $t('ATTRIBUTES_MGMT.ADD.FORM.REQUIRED.LABEL') }}
+          </label>
           <div class="modal-footer">
             <woot-submit-button
               :disabled="isButtonDisabled"
@@ -143,6 +142,7 @@ export default {
       attributeType: 0,
       attributeKey: '',
       selectValues: '',
+      attributeRequired: true,
       models: ATTRIBUTE_MODELS,
       types: ATTRIBUTE_TYPES,
       values: [],
@@ -236,6 +236,7 @@ export default {
             select_values: this.selectValues
               ? this.selectValues.split('\n')
               : null,
+            required: this.attributeRequired,
           },
           attribute_values: this.attributeListValues,
         });
