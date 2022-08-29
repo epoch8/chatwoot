@@ -111,7 +111,7 @@ class Attachment < ApplicationRecord
   end
 
   def validate_file_size(byte_size)
-    errors.add(:file, 'size is too big') if byte_size > 40.megabytes
+    errors.add(:file, 'size is too big') if byte_size > 50.megabytes
   end
 
   def media_file?(file_content_type)
