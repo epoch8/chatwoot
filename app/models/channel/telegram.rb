@@ -142,6 +142,8 @@ class Channel::Telegram < ApplicationRecord
       body[:reply_markup] = {inline_keyboard: inline_keyboard_rows}.to_json
     end
     puts "Sending to telegram: #{body}"
-    HTTParty.post("#{telegram_api_url}/sendMessage", body: body)
+    resp = HTTParty.post("#{telegram_api_url}/sendMessage", body: body)
+    puts "Telegram response: #{resp}"
+    resp
   end
 end
