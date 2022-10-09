@@ -138,7 +138,8 @@ class Channel::Telegram < ApplicationRecord
           callback_data: button[:value]
         }
       end
-      body[:reply_markup] = {inline_keyboard: [inline_keyboard]}.to_json
+      inline_keyboard_rows = inline_keyboard.size > 8 ? inline_keyboard.each_slice(1).to_a : [inline_keyboard]
+      body[:reply_markup] = {inline_keyboard: inline_keyboard_rows}.to_json
     end
     puts "Sending to telegram: #{body}"
     HTTParty.post("#{telegram_api_url}/sendMessage", body: body)
