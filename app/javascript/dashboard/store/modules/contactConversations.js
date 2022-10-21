@@ -53,11 +53,14 @@ export const actions = {
     });
     try {
       const response = await ContactAPI.getConversations(contactId);
+      const sortedConversations = response.data.payload.sort(
+        (conv_a, conv_b) => conv_b.timestamp - conv_a.timestamp
+      );
       commit(types.default.SET_CONTACT_CONVERSATIONS, {
         id: contactId,
-        data: response.data.payload,
+        data: sortedConversations,
       });
-      commit(types.default.SET_ALL_CONVERSATION, response.data.payload, {
+      commit(types.default.SET_ALL_CONVERSATION, sortedConversations, {
         root: true,
       });
       commit(types.default.SET_CONTACT_CONVERSATIONS_UI_FLAG, {
