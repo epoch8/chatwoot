@@ -3,9 +3,11 @@
     "NOT_AVAILABLE": "NIe je k dispozícii",
     "EMAIL_ADDRESS": "E-mailová adresa",
     "PHONE_NUMBER": "Telefónne číslo",
+    "IDENTIFIER": "Identifier",
     "COPY_SUCCESSFUL": "Úspešne nakopírované",
     "COMPANY": "Spoločnosť",
     "LOCATION": "Lokácia",
+    "BROWSER_LANGUAGE": "Browser Language",
     "CONVERSATION_TITLE": "Detaily konverzácie",
     "VIEW_PROFILE": "Ukáž profil",
     "BROWSER": "Prehliadač",
@@ -13,6 +15,7 @@
     "INITIATED_FROM": "Iniciované z",
     "INITIATED_AT": "Iniciované o",
     "IP_ADDRESS": "IP adresa",
+    "CREATED_AT_LABEL": "Created",
     "NEW_MESSAGE": "Nová správa",
     "CONVERSATIONS": {
       "NO_RECORDS_FOUND": "K tomuto kontaktu nie sú priradené žiadne predchádzajúce konverzácie.",
@@ -70,6 +73,14 @@
     "SUCCESS_MESSAGE": "Kontakty boli úspešne uložené",
     "ERROR_MESSAGE": "Vyskytla sa chyba, skúste to prosím znova"
   },
+  "DELETE_NOTE": {
+    "CONFIRM": {
+      "TITLE": "Potvrdiť vymazanie",
+      "MESSAGE": "Are you want sure to delete this note?",
+      "YES": "Yes, Delete it",
+      "NO": "No, Keep it"
+    }
+  },
   "DELETE_CONTACT": {
     "BUTTON_LABEL": "Vymazať kontakt",
     "TITLE": "Vymazať kontakt",
@@ -77,9 +88,8 @@
     "CONFIRM": {
       "TITLE": "Potvrdiť vymazanie",
       "MESSAGE": "Určite chcete vymazať ",
-      "PLACE_HOLDER": "Prosím, zadajte {contactName} pre potvrdenie",
-      "YES": "Áno, vymazať ",
-      "NO": "Nie, ponechať "
+      "YES": "Áno, vymazať",
+      "NO": "Nie, ponechať"
     },
     "API": {
       "SUCCESS_MESSAGE": "Kontakt úspešne odstránený",
@@ -104,7 +114,8 @@
       "EMAIL_ADDRESS": {
         "PLACEHOLDER": "Zadajte e-mailovú adresu kontaktu",
         "LABEL": "E-mailová adresa",
-        "DUPLICATE": "Táto e-mailová adresa sa používa pre iný kontakt."
+        "DUPLICATE": "Táto e-mailová adresa sa používa pre iný kontakt.",
+        "ERROR": "Prosím zadajte platnú e-mailovú adresu."
       },
       "PHONE_NUMBER": {
         "PLACEHOLDER": "Zadajte telefónne číslo kontaktu",
@@ -140,6 +151,12 @@
         }
       }
     },
+    "DELETE_AVATAR": {
+      "API": {
+        "SUCCESS_MESSAGE": "Contact avatar deleted successfully",
+        "ERROR_MESSAGE": "Could not delete the contact avatar. Please try again later."
+      }
+    },
     "SUCCESS_MESSAGE": "Kontakt bol úspešne uložený",
     "ERROR_MESSAGE": "Vyskytla sa chyba, skúste to prosím znova"
   },
@@ -169,6 +186,7 @@
       "SUBMIT": "Poslať správu",
       "CANCEL": "Zrušiť",
       "SUCCESS_MESSAGE": "Správa poslaná!",
+      "GO_TO_CONVERSATION": "Zobraziť",
       "ERROR_MESSAGE": "Nepodarilo sa odoslať! Skúste to znova"
     }
   },
@@ -178,6 +196,8 @@
     "SEARCH_BUTTON": "Hľadať",
     "SEARCH_INPUT_PLACEHOLDER": "Hľadať kontakty",
     "FILTER_CONTACTS": "Filter",
+    "FILTER_CONTACTS_SAVE": "Save filter",
+    "FILTER_CONTACTS_DELETE": "Delete filter",
     "LIST": {
       "LOADING_MESSAGE": "Kontakty sa hľadajú...",
       "404": "Žiadny kontakt nezodpovedá vášmu vyhľadávaniu 🔍",
@@ -187,6 +207,7 @@
         "PHONE_NUMBER": "Telefónne číslo",
         "CONVERSATIONS": "Konverzácia",
         "LAST_ACTIVITY": "Posledná aktivita",
+        "CREATED_AT": "Created At",
         "COUNTRY": "Krajina",
         "CITY": "Mesto",
         "SOCIAL_PROFILES": "Sociálne profily",

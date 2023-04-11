@@ -1,5 +1,6 @@
 <template>
   <div v-if="hasSecondaryMenu" class="main-nav secondary-menu">
+    <account-context @toggle-accounts="toggleAccountModal" />
     <transition-group name="menu-list" tag="ul" class="menu vertical">
       <secondary-nav-item
         v-for="menuItem in accessibleMenuItems"
@@ -18,9 +19,13 @@
 <script>
 import { frontendURL } from '../../../helper/URLHelper';
 import SecondaryNavItem from './SecondaryNavItem.vue';
+import AccountContext from './AccountContext.vue';
+import { mapGetters } from 'vuex';
+import { FEATURE_FLAGS } from '../../../featureFlags';
 
 export default {
   components: {
+    AccountContext,
     SecondaryNavItem,
   },
   props: {
@@ -40,6 +45,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    customViews: {
+      type: Array,
+      default: () => [],
+    },
     menuConfig: {
       type: Object,
       default: () => {},
@@ -48,41 +57,64 @@ export default {
       type: String,
       default: '',
     },
+    isOnChatwootCloud: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
+    ...mapGetters({
+      isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
+    }),
     hasSecondaryMenu() {
       return this.menuConfig.menuItems && this.menuConfig.menuItems.length;
+    },
+    contactCustomViews() {
+      return this.customViews.filter(view => view.filter_type === 'contact');
     },
     accessibleMenuItems() {
       if (!this.currentRole) {
         return [];
       }
-      return this.menuConfig.menuItems.filter(
+      const menuItemsFilteredByRole = this.menuConfig.menuItems.filter(
         menuItem =>
           window.roleWiseRoutes[this.currentRole].indexOf(
             menuItem.toStateName
           ) > -1
       );
+      return menuItemsFilteredByRole.filter(item => {
+        if (item.showOnlyOnCloud) {
+          return this.isOnChatwootCloud;
+        }
+        return true;
+      });
     },
     inboxSection() {
       return {
         icon: 'folder',
         label: 'INBOXES',
         hasSubMenu: true,
-        newLink: true,
+        newLink: this.showNewLink(FEATURE_FLAGS.INBOX_MANAGEMENT),
         newLinkTag: 'NEW_INBOX',
         key: 'inbox',
         toState: frontendURL(`accounts/${this.accountId}/settings/inboxes/new`),
         toStateName: 'settings_inbox_new',
         newLinkRouteName: 'settings_inbox_new',
-        children: this.inboxes.map(inbox => ({
-          id: inbox.id,
-          label: inbox.name,
-          truncateLabel: true,
-          toState: frontendURL(`accounts/${this.accountId}/inbox/${inbox.id}`),
-          type: inbox.channel_type,
-          phoneNumber: inbox.phone_number,
-        })),
+        children: this.inboxes
+          .map(inbox => ({
+            id: inbox.id,
+            label: inbox.name,
+            truncateLabel: true,
+            toState: frontendURL(
+              `accounts/${this.accountId}/inbox/${inbox.id}`
+            ),
+            type: inbox.channel_type,
+            phoneNumber: inbox.phone_number,
+            reauthorizationRequired: inbox.reauthorization_required,
+          }))
+          .sort((a, b) =>
+            a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1
+          ),
       };
     },
     labelSection() {
@@ -90,7 +122,7 @@ export default {
         icon: 'number-symbol',
         label: 'LABELS',
         hasSubMenu: true,
-        newLink: true,
+        newLink: this.showNewLink(FEATURE_FLAGS.TEAM_MANAGEMENT),
         newLinkTag: 'NEW_LABEL',
         key: 'label',
         toState: frontendURL(`accounts/${this.accountId}/settings/labels`),
@@ -114,7 +146,7 @@ export default {
         label: 'TAGGED_WITH',
         hasSubMenu: true,
         key: 'label',
-        newLink: true,
+        newLink: this.showNewLink(FEATURE_FLAGS.TEAM_MANAGEMENT),
         newLinkTag: 'NEW_LABEL',
         toState: frontendURL(`accounts/${this.accountId}/settings/labels`),
         toStateName: 'labels_list',
@@ -136,7 +168,7 @@ export default {
         icon: 'people-team',
         label: 'TEAMS',
         hasSubMenu: true,
-        newLink: true,
+        newLink: this.showNewLink(FEATURE_FLAGS.TEAM_MANAGEMENT),
         newLinkTag: 'NEW_TEAM',
         key: 'team',
         toState: frontendURL(`accounts/${this.accountId}/settings/teams/new`),
@@ -150,14 +182,57 @@ export default {
         })),
       };
     },
+    foldersSection() {
+      return {
+        icon: 'folder',
+        label: 'CUSTOM_VIEWS_FOLDER',
+        hasSubMenu: true,
+        key: 'custom_view',
+        children: this.customViews
+          .filter(view => view.filter_type === 'conversation')
+          .map(view => ({
+            id: view.id,
+            label: view.name,
+            truncateLabel: true,
+            toState: frontendURL(
+              `accounts/${this.accountId}/custom_view/${view.id}`
+            ),
+          })),
+      };
+    },
+    contactSegmentsSection() {
+      return {
+        icon: 'folder',
+        label: 'CUSTOM_VIEWS_SEGMENTS',
+        hasSubMenu: true,
+        key: 'custom_view',
+        children: this.customViews
+          .filter(view => view.filter_type === 'contact')
+          .map(view => ({
+            id: view.id,
+            label: view.name,
+            truncateLabel: true,
+            toState: frontendURL(
+              `accounts/${this.accountId}/contacts/custom_view/${view.id}`
+            ),
+          })),
+      };
+    },
     additionalSecondaryMenuItems() {
       let conversationMenuItems = [this.inboxSection, this.labelSection];
+      let contactMenuItems = [this.contactLabelSection];
       if (this.teams.length) {
         conversationMenuItems = [this.teamSection, ...conversationMenuItems];
       }
+      if (this.customViews.length) {
+        conversationMenuItems = [this.foldersSection, ...conversationMenuItems];
+      }
+      if (this.contactCustomViews.length) {
+        contactMenuItems = [this.contactSegmentsSection, ...contactMenuItems];
+      }
       return {
         conversations: conversationMenuItems,
-        contacts: [this.contactLabelSection],
+        contacts: contactMenuItems,
       };
     },
   },
@@ -165,21 +240,36 @@ export default {
     showAddLabelPopup() {
       this.$emit('add-label');
     },
+    toggleAccountModal() {
+      this.$emit('toggle-accounts');
+    },
+    showNewLink(featureFlag) {
+      return this.isFeatureEnabledonAccount(this.accountId, featureFlag);
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
+@import '~dashboard/assets/scss/woot';
+
 .secondary-menu {
+  display: flex;
+  flex-direction: column;
   background: var(--white);
   border-right: 1px solid var(--s-50);
-  height: 100vh;
-  width: 19rem;
+  height: 100%;
+  width: 20rem;
   flex-shrink: 0;
-  overflow: hidden;
-  padding: var(--space-small);
+  overflow-y: hidden;
+  position: unset;
 
   &:hover {
-    overflow: auto;
+    overflow-y: hidden;
+  }
+
+  .menu {
+    padding: var(--space-small);
+    overflow-y: auto;
   }
 }
 </style>

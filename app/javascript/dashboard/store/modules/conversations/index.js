@@ -4,6 +4,7 @@ import getters, { getSelectedChatConversation } from './getters';
 import actions from './actions';
 import { findPendingMessageIndex } from './helpers';
 import wootConstants from '../../../constants';
+import { BUS_EVENTS } from '../../../../shared/constants/busEvents';
 
 const state = {
   allConversations: [],
@@ -12,6 +13,8 @@ const state = {
   currentInbox: null,
   selectedChatId: null,
   appliedFilters: [],
+  conversationParticipants: [],
+  conversationLastSeen: null,
 };
 
 // mutations
@@ -63,8 +66,8 @@ export const mutations = {
     Vue.set(chat.meta, 'assignee', assignee);
   },
 
-  [types.ASSIGN_TEAM](_state, team) {
-    const [chat] = getSelectedChatConversation(_state);
+  [types.ASSIGN_TEAM](_state, { team, conversationId }) {
+    const [chat] = _state.allConversations.filter(c => c.id === conversationId);
     Vue.set(chat.meta, 'team', team);
   },
 
@@ -107,8 +110,10 @@ export const mutations = {
     } else {
       chat.messages.push(message);
       chat.timestamp = message.created_at;
+      const { conversation: { unread_count: unreadCount = 0 } = {} } = message;
+      chat.unread_count = unreadCount;
       if (selectedChatId === conversationId) {
-        window.bus.$emit('scrollToMessage');
+        window.bus.$emit(BUS_EVENTS.SCROLL_TO_MESSAGE);
       }
     }
   },
@@ -130,7 +135,7 @@ export const mutations = {
       };
       Vue.set(allConversations, currentConversationIndex, currentConversation);
       if (_state.selectedChatId === conversation.id) {
-        window.bus.$emit('scrollToMessage');
+        window.bus.$emit(BUS_EVENTS.SCROLL_TO_MESSAGE);
       }
     } else {
       _state.allConversations.push(conversation);
@@ -145,13 +150,16 @@ export const mutations = {
     _state.listLoadingStatus = false;
   },
 
-  [types.MARK_MESSAGE_READ](_state, { id, lastSeen }) {
+  [types.UPDATE_MESSAGE_UNREAD_COUNT](
+    _state,
+    { id, lastSeen, unreadCount = 0 }
+  ) {
     const [chat] = _state.allConversations.filter(c => c.id === id);
     if (chat) {
-      chat.agent_last_seen_at = lastSeen;
+      Vue.set(chat, 'agent_last_seen_at', lastSeen);
+      Vue.set(chat, 'unread_count', unreadCount);
     }
   },
-
   [types.CHANGE_CHAT_STATUS_FILTER](_state, data) {
     _state.chatStatusFilter = data;
   },

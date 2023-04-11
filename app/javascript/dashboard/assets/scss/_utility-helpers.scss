@@ -1,5 +1,5 @@
-.margin-right-small {
-  margin-right: var(--space-small);
+.margin-bottom-small {
+  margin-bottom: var(--space-small);
 }
 
 .margin-right-smaller {
@@ -8,6 +8,10 @@
 
 .margin-left-minus-slab {
   margin-left: var(--space-minus-slab);
+}
+
+.margin-right-minus-slab {
+  margin-right: var(--space-minus-slab);
 }
 
 .fs-small {
@@ -38,7 +42,6 @@
   overflow: hidden;
 }
 
-
 .border-right {
   border-right: 1px solid var(--color-border);
 }
@@ -51,6 +54,30 @@
   background-color: var(--white);
 }
 
-.text-y-800 {
-  color: var(--y-800);
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flex-between {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: end;
+}
+
+.flex-align-center {
+  align-items: center;
+  display: flex;
+}
+
+.button--fixed-top {
+  position: fixed;
+  right: var(--space-small);
+  top: var(--space-small);
 }

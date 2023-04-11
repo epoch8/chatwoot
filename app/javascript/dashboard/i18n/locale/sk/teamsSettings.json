@@ -2,7 +2,7 @@
   "TEAMS_SETTINGS": {
     "NEW_TEAM": "Create new team",
     "HEADER": "Teams",
-    "SIDEBAR_TXT": "<p><b>Teams</b></p> <p>Teams let you organize your agents into groups based on their responsibilities. <br /> A user can be part of multiple teams. You can assign conversations to a team when you are working collaboratively. </p>",
+    "SIDEBAR_TXT": "<p><b>Teams</b></p> <p>Teams let you organize your agents into groups based on their responsibilities. <br /> An agent can be part of multiple teams. You can assign conversations to a team when you are working collaboratively. </p>",
     "LIST": {
       "404": "There are no teams created on this account.",
       "EDIT_TEAM": "Edit team"
@@ -83,7 +83,7 @@
       "SELECT_ALL": "vybrať všetkých agentov",
       "SELECTED_COUNT": "%{selected} z %{total} vybraných agentov.",
       "BUTTON_TEXT": "Pridať agentov",
-      "AGENT_VALIDATION_ERROR": "Vyberte aspoň jedného agenta."
+      "AGENT_VALIDATION_ERROR": "Select at least one agent."
     },
     "FINISH": {
       "TITLE": "Váš tím je pripravený!",

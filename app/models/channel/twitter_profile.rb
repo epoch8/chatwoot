@@ -32,16 +32,11 @@ class Channel::TwitterProfile < ApplicationRecord
   end
 
   def create_contact_inbox(profile_id, name, additional_attributes)
-    ActiveRecord::Base.transaction do
-      contact = inbox.account.contacts.create!(additional_attributes: additional_attributes, name: name)
-      ::ContactInbox.create!(
-        contact_id: contact.id,
-        inbox_id: inbox.id,
-        source_id: profile_id
-      )
-    rescue StandardError => e
-      Rails.logger.info e
-    end
+    ::ContactInboxWithContactBuilder.new({
+                                           source_id: profile_id,
+                                           inbox: inbox,
+                                           contact_attributes: { name: name, additional_attributes: additional_attributes }
+                                         }).perform
   end
 
   def twitter_client
@@ -62,6 +57,6 @@ class Channel::TwitterProfile < ApplicationRecord
     unsubscribe_response = twitter_client.remove_subscription(user_id: profile_id)
     Rails.logger.info "TWITTER_UNSUBSCRIBE: #{unsubscribe_response.body}"
   rescue StandardError => e
-    Rails.logger.info e
+    Rails.logger.error e
   end
 end

@@ -2,6 +2,7 @@
   <div class="bottom-box" :class="wrapClass">
     <div class="left-wrap">
       <woot-button
+        v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_EMOJI_ICON')"
         :title="$t('CONVERSATION.REPLYBOX.TIP_EMOJI_ICON')"
         icon="emoji"
         emoji="😊"
@@ -10,14 +11,18 @@
         size="small"
         @click="toggleEmojiPicker"
       />
-
-      <!-- ensure the same validations for attachment types are implemented in  backend models as well -->
       <file-upload
         ref="upload"
+        v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_ATTACH_ICON')"
         :size="4096 * 4096"
         :accept="allowedFileTypes"
+        :multiple="enableMultipleFileUpload"
         :drop="true"
         :drop-directory="false"
+        :data="{
+          direct_upload_url: '/rails/active_storage/direct_uploads',
+          direct_upload: true,
+        }"
         @input-file="onFileUpload"
       >
         <woot-button
@@ -32,14 +37,59 @@
         />
       </file-upload>
       <woot-button
-        v-if="enableRichEditor && !isOnPrivateNote"
+        v-if="showAudioRecorderButton"
+        :icon="!isRecordingAudio ? 'microphone' : 'microphone-off'"
+        emoji="🎤"
+        :color-scheme="!isRecordingAudio ? 'secondary' : 'alert'"
+        variant="smooth"
+        size="small"
+        :title="$t('CONVERSATION.REPLYBOX.TIP_AUDIORECORDER_ICON')"
+        @click="toggleAudioRecorder"
+      />
+      <woot-button
+        v-if="showEditorToggle"
+        v-tooltip.top-end="$t('CONVERSATION.REPLYBOX.TIP_FORMAT_ICON')"
         icon="quote"
         emoji="🖊️"
         color-scheme="secondary"
         variant="smooth"
         size="small"
-        :title="$t('CONVERSATION.REPLYBOX.TIP_FORMAT_ICON')"
-        @click="toggleFormatMode"
+        @click="$emit('toggle-editor')"
+      />
+      <woot-button
+        v-if="showAudioPlayStopButton"
+        :icon="audioRecorderPlayStopIcon"
+        emoji="🎤"
+        color-scheme="secondary"
+        variant="smooth"
+        size="small"
+        @click="toggleAudioRecorderPlayPause"
+      >
+        <span>{{ recordingAudioDurationText }}</span>
+      </woot-button>
+      <woot-button
+        v-if="showMessageSignatureButton"
+        v-tooltip.top-end="signatureToggleTooltip"
+        icon="signature"
+        color-scheme="secondary"
+        variant="smooth"
+        size="small"
+        :title="signatureToggleTooltip"
+        @click="toggleMessageSignature"
+      />
+      <woot-button
+        v-if="hasWhatsappTemplates"
+        v-tooltip.top-end="'Whatsapp Templates'"
+        icon="whatsapp"
+        color-scheme="secondary"
+        variant="smooth"
+        size="small"
+        :title="'Whatsapp Templates'"
+        @click="$emit('selectWhatsappTemplate')"
+      />
+      <video-call-button
+        v-if="(isAWebWidgetInbox || isAPIInbox) && !isOnPrivateNote"
+        :conversation-id="conversationId"
       />
       <transition name="modal-fade">
         <div
@@ -54,17 +104,6 @@
       </transition>
     </div>
     <div class="right-wrap">
-      <div v-if="isFormatMode" class="enter-to-send--checkbox">
-        <input
-          :checked="enterToSendEnabled"
-          type="checkbox"
-          value="enterToSend"
-          @input="toggleEnterToSend"
-        />
-        <label for="enterToSend">
-          {{ $t('CONVERSATION.REPLYBOX.ENTER_TO_SEND') }}
-        </label>
-      </div>
       <woot-button
         size="small"
         :class-names="buttonClass"
@@ -79,18 +118,24 @@
 
 <script>
 import FileUpload from 'vue-upload-component';
-import {
-  hasPressedAltAndWKey,
-  hasPressedAltAndAKey,
-} from 'shared/helpers/KeyboardHelpers';
+import * as ActiveStorage from 'activestorage';
+import { hasPressedAltAndAKey } from 'shared/helpers/KeyboardHelpers';
 import eventListenerMixins from 'shared/mixins/eventListenerMixins';
-import { ALLOWED_FILE_TYPES } from 'shared/constants/messages';
-
+import uiSettingsMixin from 'dashboard/mixins/uiSettings';
+import inboxMixin from 'shared/mixins/inboxMixin';
+import { FEATURE_FLAGS } from 'dashboard/featureFlags';
+import {
+  ALLOWED_FILE_TYPES,
+  ALLOWED_FILE_TYPES_FOR_TWILIO_WHATSAPP,
+} from 'shared/constants/messages';
+import VideoCallButton from '../VideoCallButton';
 import { REPLY_EDITOR_MODES } from './constants';
+import { mapGetters } from 'vuex';
+
 export default {
-  name: 'ReplyTopPanel',
-  components: { FileUpload },
-  mixins: [eventListenerMixins],
+  name: 'ReplyBottomPanel',
+  components: { FileUpload, VideoCallButton },
+  mixins: [eventListenerMixins, uiSettingsMixin, inboxMixin],
   props: {
     mode: {
       type: String,
@@ -104,7 +149,19 @@ export default {
       type: String,
       default: '',
     },
+    recordingAudioDurationText: {
+      type: String,
+      default: '',
+    },
+    inbox: {
+      type: Object,
+      default: () => ({}),
+    },
     showFileUpload: {
+      type: Boolean,
+      default: false,
+    },
+    showAudioRecorder: {
       type: Boolean,
       default: false,
     },
@@ -120,15 +177,27 @@ export default {
       type: Function,
       default: () => {},
     },
+    toggleAudioRecorder: {
+      type: Function,
+      default: () => {},
+    },
+    toggleAudioRecorderPlayPause: {
+      type: Function,
+      default: () => {},
+    },
+    isRecordingAudio: {
+      type: Boolean,
+      default: false,
+    },
+    recordingAudioState: {
+      type: String,
+      default: '',
+    },
     isSendDisabled: {
       type: Boolean,
       default: false,
     },
-    setFormatMode: {
-      type: Function,
-      default: () => {},
-    },
-    isFormatMode: {
+    showEditorToggle: {
       type: Boolean,
       default: false,
     },
@@ -136,16 +205,24 @@ export default {
       type: Boolean,
       default: false,
     },
-    enableRichEditor: {
-      type: Boolean,
-      default: false,
-    },
-    enterToSendEnabled: {
+    enableMultipleFileUpload: {
       type: Boolean,
       default: true,
     },
+    hasWhatsappTemplates: {
+      type: Boolean,
+      default: false,
+    },
+    conversationId: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
+    ...mapGetters({
+      accountId: 'getCurrentAccountId',
+      isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
+    }),
     isNote() {
       return this.mode === REPLY_EDITOR_MODES.NOTE;
     },
@@ -162,24 +239,69 @@ export default {
     showAttachButton() {
       return this.showFileUpload || this.isNote;
     },
+    showAudioRecorderButton() {
+      // Disable audio recorder for safari browser as recording is not supported
+      const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(
+        navigator.userAgent
+      );
+
+      return (
+        this.isFeatureEnabledonAccount(
+          this.accountId,
+          FEATURE_FLAGS.VOICE_RECORDER
+        ) &&
+        this.showAudioRecorder &&
+        !isSafari
+      );
+    },
+    showAudioPlayStopButton() {
+      return this.showAudioRecorder && this.isRecordingAudio;
+    },
     allowedFileTypes() {
+      if (this.isATwilioWhatsAppChannel) {
+        return ALLOWED_FILE_TYPES_FOR_TWILIO_WHATSAPP;
+      }
       return ALLOWED_FILE_TYPES;
     },
+    audioRecorderPlayStopIcon() {
+      switch (this.recordingAudioState) {
+        // playing paused recording stopped inactive destroyed
+        case 'playing':
+          return 'microphone-pause';
+        case 'paused':
+          return 'microphone-play';
+        case 'stopped':
+          return 'microphone-play';
+        default:
+          return 'microphone-stop';
+      }
+    },
+    showMessageSignatureButton() {
+      return !this.isOnPrivateNote && this.isAnEmailChannel;
+    },
+    sendWithSignature() {
+      const { send_with_signature: isEnabled } = this.uiSettings;
+      return isEnabled;
+    },
+    signatureToggleTooltip() {
+      return this.sendWithSignature
+        ? this.$t('CONVERSATION.FOOTER.DISABLE_SIGN_TOOLTIP')
+        : this.$t('CONVERSATION.FOOTER.ENABLE_SIGN_TOOLTIP');
+    },
+  },
+  mounted() {
+    ActiveStorage.start();
   },
   methods: {
     handleKeyEvents(e) {
-      if (hasPressedAltAndWKey(e)) {
-        this.toggleFormatMode();
-      }
       if (hasPressedAltAndAKey(e)) {
         this.$refs.upload.$children[1].$el.click();
       }
     },
-    toggleFormatMode() {
-      this.setFormatMode(!this.isFormatMode);
-    },
-    toggleEnterToSend() {
-      this.$emit('toggleEnterToSend', !this.enterToSendEnabled);
+    toggleMessageSignature() {
+      this.updateUISettings({
+        send_with_signature: !this.sendWithSignature,
+      });
     },
   },
 };
@@ -207,20 +329,6 @@ export default {
 
 .right-wrap {
   display: flex;
-
-  .enter-to-send--checkbox {
-    align-items: center;
-    display: flex;
-
-    input {
-      margin: 0;
-    }
-
-    label {
-      color: var(--s-500);
-      font-size: var(--font-size-mini);
-    }
-  }
 }
 
 ::v-deep .file-uploads {

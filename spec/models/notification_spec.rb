@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Notification do
+  include ActiveJob::TestHelper
+
   context 'with associations' do
     it { is_expected.to belong_to(:account) }
     it { is_expected.to belong_to(:user) }
@@ -47,6 +49,14 @@ RSpec.describe Notification do
       notification = create(:notification, notification_type: 'assigned_conversation_new_message', primary_actor: message)
 
       expect(notification.push_message_title).to eq "[New message] - ##{notification.conversation.display_id} "
+    end
+
+    it 'returns appropriate title suited for the notification type participating_conversation_new_message' do
+      message = create(:message, sender: create(:user), content: Faker::Lorem.paragraphs(number: 2))
+      notification = create(:notification, notification_type: 'participating_conversation_new_message', primary_actor: message)
+
+      expect(notification.push_message_title).to eq "[New message] - ##{notification.conversation.display_id} \
+#{message.content.truncate_words(10)}"
     end
 
     it 'returns appropriate title suited for the notification type conversation_mention' do
@@ -95,6 +105,19 @@ RSpec.describe Notification do
                                                                  'id' => notification.primary_actor.id,
                                                                  'conversation_id' => notification.primary_actor.conversation.display_id
                                                                })
+    end
+  end
+
+  context 'when primary actory is deleted' do
+    let!(:conversation) { create(:conversation) }
+
+    it 'clears notifications' do
+      notification = create(:notification, notification_type: 'conversation_creation', primary_actor: conversation)
+      perform_enqueued_jobs do
+        conversation.inbox.destroy!
+      end
+
+      expect { notification.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

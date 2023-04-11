@@ -16,7 +16,8 @@
           :title="label.title"
           :description="label.description"
           :show-close="true"
-          :bg-color="label.color"
+          :color="label.color"
+          variant="smooth"
           @click="removeLabelFromConversation"
         />
 
@@ -36,7 +37,7 @@
         </div>
       </div>
     </div>
-    <spinner v-else></spinner>
+    <spinner v-else />
   </div>
 </template>
 
@@ -89,7 +90,7 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-labels-wrap {
-  margin-bottom: var(--space-normal);
+  margin-bottom: 0;
 }
 .contact-conversation--list {
   width: 100%;

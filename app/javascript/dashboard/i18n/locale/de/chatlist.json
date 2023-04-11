@@ -4,44 +4,23 @@
     "LOAD_MORE_CONVERSATIONS": "Laden Sie weitere Gespräche",
     "EOF": "Alle Gespräche geladen 🎉",
     "LIST": {
-      "404": "In dieser Gruppe gibt es keine aktiven Gespräche."
+      "404": "In dieser Gruppe existieren keine aktiven Gespräche."
     },
     "TAB_HEADING": "Gespräche",
     "MENTION_HEADING": "Erwähnungen",
+    "UNATTENDED_HEADING": "Unbeaufsichtigt",
     "SEARCH": {
       "INPUT": "Suche nach Personen, Chats, gespeicherten Antworten .."
     },
     "FILTER_ALL": "Alle",
-    "STATUS_TABS": [
-      {
-        "NAME": "Offen",
-        "KEY": "openCount"
-      },
-      {
-        "NAME": "Gelöst",
-        "KEY": "allConvCount"
-      }
-    ],
-    "ASSIGNEE_TYPE_TABS": [
-      {
-        "NAME": "Meine",
-        "KEY": "me",
-        "COUNT_KEY": "mineCount"
-      },
-      {
-        "NAME": "Nicht zugewiesen",
-        "KEY": "unassigned",
-        "COUNT_KEY": "unAssignedCount"
-      },
-      {
-        "NAME": "Alle",
-        "KEY": "all",
-        "COUNT_KEY": "allCount"
-      }
-    ],
+    "ASSIGNEE_TYPE_TABS": {
+      "me": "Meine",
+      "unassigned": "Nicht zugewiesen",
+      "all": "Alle"
+    },
     "CHAT_STATUS_FILTER_ITEMS": {
       "open": {
-        "TEXT": "Offen"
+        "TEXT": "Öffnen"
       },
       "resolved": {
         "TEXT": "Gelöst"
@@ -51,6 +30,9 @@
       },
       "snoozed": {
         "TEXT": "Erinnern"
+      },
+      "all": {
+        "TEXT": "Alle"
       }
     },
     "ATTACHMENTS": {
@@ -76,10 +58,14 @@
     "RECEIVED_VIA_EMAIL": "Per E-Mail empfangen",
     "VIEW_TWEET_IN_TWITTER": "Tweet auf Twitter anzeigen",
     "REPLY_TO_TWEET": "Auf diesen Tweet antworten",
+    "LINK_TO_STORY": "Zur Instagram-Geschichte",
     "SENT": "Erfolgreich gesendet",
+    "READ": "Erfolgreich gelesen",
+    "DELIVERED": "Erfolgreich versendet",
     "NO_MESSAGES": "Keine Nachrichten",
     "NO_CONTENT": "Kein Inhalt verfügbar",
     "HIDE_QUOTED_TEXT": "Zitierten Text ausblenden",
-    "SHOW_QUOTED_TEXT": "Zitierten Text anzeigen"
+    "SHOW_QUOTED_TEXT": "Zitierten Text anzeigen",
+    "MESSAGE_READ": "Lesen"
   }
 }

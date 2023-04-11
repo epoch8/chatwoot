@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-ruby '3.0.2'
+ruby '3.1.3'
 
 ##-- base gems for rails --##
 gem 'rack-cors', require: 'rack/cors'
-gem 'rails'
+gem 'rails', '~> 6.1', '>= 6.1.7.3'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
@@ -37,12 +37,18 @@ gem 'json_schemer'
 gem 'rack-attack'
 # a utility tool for streaming, flexible and safe downloading of remote files
 gem 'down', '~> 5.0'
+# authentication type to fetch and send mail over oauth2.0
+gem 'gmail_xoauth'
+# Prevent CSV injection
+gem 'csv-safe'
+# Support message translation
+gem 'google-cloud-translate'
 
 ##-- for active storage --##
 gem 'aws-sdk-s3', require: false
 gem 'azure-storage-blob', require: false
 gem 'google-cloud-storage', require: false
-gem 'image_processing'
+gem 'image_processing', '~> 1.12.2'
 
 ##-- gems for database --#
 gem 'groupdate'
@@ -56,7 +62,7 @@ gem 'activerecord-import'
 gem 'dotenv-rails'
 gem 'foreman'
 gem 'puma'
-gem 'webpacker', '~> 5.x'
+gem 'webpacker', '~> 5.4', '>= 5.4.3'
 # metrics on heroku
 gem 'barnes'
 
@@ -78,7 +84,7 @@ gem 'wisper', '2.0.0'
 # TODO: bump up gem to 2.0
 gem 'facebook-messenger'
 gem 'line-bot-api'
-gem 'twilio-ruby', '~> 5.32.0'
+gem 'twilio-ruby', '~> 5.66'
 # twitty will handle subscription of twitter account events
 # gem 'twitty', git: 'https://github.com/chatwoot/twitty'
 gem 'twitty'
@@ -89,26 +95,26 @@ gem 'slack-ruby-client'
 # for dialogflow integrations
 gem 'google-cloud-dialogflow'
 
-##--- gems for debugging and error reporting ---##
-# static analysis
-gem 'brakeman'
-
 ##-- apm and error monitoring ---#
-gem 'ddtrace'
-gem 'newrelic_rpm'
-gem 'scout_apm'
-gem 'sentry-rails'
-gem 'sentry-ruby'
-gem 'sentry-sidekiq'
+# loaded only when environment variables are set.
+# ref application.rb
+gem 'ddtrace', require: false
+gem 'elastic-apm', require: false
+gem 'newrelic_rpm', require: false
+gem 'newrelic-sidekiq-metrics', require: false
+gem 'scout_apm', require: false
+gem 'sentry-rails', require: false
+gem 'sentry-ruby', require: false
+gem 'sentry-sidekiq', require: false
 
 ##-- background job processing --##
-gem 'sidekiq'
+gem 'sidekiq', '~> 6.4.2'
 # We want cron jobs
-gem 'sidekiq-cron'
+gem 'sidekiq-cron', '~> 1.6', '>= 1.6.0'
 
 ##-- Push notification service --##
 gem 'fcm'
-gem 'webpush'
+gem 'web-push'
 
 ##-- geocoding / parse location from ip --##
 # http://www.rubygeocoder.com/
@@ -124,6 +130,24 @@ gem 'procore-sift'
 # parse email
 gem 'email_reply_trimmer'
 gem 'html2text'
+
+# to calculate working hours
+gem 'working_hours'
+
+# full text search for articles
+gem 'pg_search'
+
+# Subscriptions, Billing
+gem 'stripe'
+
+## - helper gems --##
+## to populate db with sample data
+gem 'faker'
+
+# Can remove this in rails 7
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
 
 group :production, :staging do
   # we dont want request timing out in development while using byebug
@@ -145,29 +169,29 @@ end
 
 group :test do
   # Cypress in rails.
-  gem 'cypress-on-rails', '~> 1.0'
+  gem 'cypress-on-rails', '~> 1.13', '>= 1.13.1'
   # fast cleaning of database
   gem 'database_cleaner'
   # mock http calls
   gem 'webmock'
+  # test profiling
+  gem 'test-prof'
 end
 
 group :development, :test do
-  # TODO: is this needed ?
-  # errors thrown by devise password gem
-  gem 'flay'
-  gem 'rspec'
-  # for error thrown by devise password gem
   gem 'active_record_query_trace'
+  ##--- gems for debugging and error reporting ---##
+  # static analysis
+  gem 'brakeman'
   gem 'bundle-audit', require: false
   gem 'byebug', platform: :mri
   gem 'climate_control'
   gem 'factory_bot_rails'
-  gem 'faker'
   gem 'listen'
   gem 'mock_redis'
   gem 'pry-rails'
-  gem 'rspec-rails', '~> 5.0.0'
+  gem 'rspec_junit_formatter'
+  gem 'rspec-rails', '~> 5.0.3'
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
@@ -178,3 +202,13 @@ group :development, :test do
   gem 'spring'
   gem 'spring-watcher-listen'
 end
+
+# worked with microsoft refresh token
+gem 'omniauth-oauth2'
+
+gem 'audited', '~> 5.2'
+
+# need for google auth
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'

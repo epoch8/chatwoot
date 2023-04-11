@@ -90,7 +90,7 @@
           rel="noopener noreferrer"
           class="value"
         >
-          {{ value || '---' }}
+          {{ urlValue }}
         </a>
         <p v-else class="value">
           {{ displayValue || '---' }}
@@ -146,7 +146,7 @@ import format from 'date-fns/format';
 import { required, url } from 'vuelidate/lib/validators';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
 import MultiselectDropdown from 'shared/components/ui/MultiselectDropdown.vue';
-
+import { isValidURL } from '../helper/URLHelper';
 const DATE_FORMAT = 'yyyy-MM-dd';
 
 export default {
@@ -168,16 +168,6 @@ export default {
       isEditing: false,
       editedValue: null,
       search: '',
-    };
-  },
-  validations() {
-    if (this.isAttributeTypeLink) {
-      return {
-        editedValue: { required, url },
-      };
-    }
-    return {
-      editedValue: { required },
     };
   },
 
@@ -213,6 +203,9 @@ export default {
     isAttributeTypeDate() {
       return this.attributeType === 'date';
     },
+    urlValue() {
+      return isValidURL(this.value) ? this.value : '---';
+    },
     notAttributeTypeCheckboxAndList() {
       return !this.isAttributeTypeCheckbox && !this.isAttributeTypeList;
     },
@@ -245,6 +238,23 @@ export default {
     value() {
       this.editedValue = this.formattedValue;
     },
+  },
+  watch: {
+    value() {
+      this.isEditing = false;
+      this.editedValue = this.value;
+    },
+  },
+
+  validations() {
+    if (this.isAttributeTypeLink) {
+      return {
+        editedValue: { required, url },
+      };
+    }
+    return {
+      editedValue: { required },
+    };
   },
   mounted() {
     this.editedValue = this.formattedValue;

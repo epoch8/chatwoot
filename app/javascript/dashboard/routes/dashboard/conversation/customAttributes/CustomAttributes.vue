@@ -21,10 +21,11 @@
 </template>
 
 <script>
-import copy from 'copy-text-to-clipboard';
 import CustomAttribute from 'dashboard/components/CustomAttribute.vue';
 import alertMixin from 'shared/mixins/alertMixin';
 import attributeMixin from 'dashboard/mixins/attributeMixin';
+import { copyTextToClipboard } from 'shared/helpers/clipboard';
+
 export default {
   components: {
     CustomAttribute,
@@ -87,8 +88,8 @@ export default {
         this.showAlert(errorMessage);
       }
     },
-    onCopy(attributeValue) {
-      copy(attributeValue);
+    async onCopy(attributeValue) {
+      await copyTextToClipboard(attributeValue);
       this.showAlert(this.$t('CUSTOM_ATTRIBUTES.COPY_SUCCESSFUL'));
     },
   },

@@ -1,19 +1,37 @@
 <template>
   <div class="contact--profile">
     <div class="contact--info">
-      <thumbnail
-        v-if="showAvatar"
-        :src="contact.thumbnail"
-        size="56px"
-        :username="contact.name"
-        :status="contact.availability_status"
-      />
+      <div class="contact-info--header">
+        <thumbnail
+          v-if="showAvatar"
+          :src="contact.thumbnail"
+          size="56px"
+          :username="contact.name"
+          :status="contact.availability_status"
+        />
+        <woot-button
+          v-if="showCloseButton"
+          :icon="closeIconName"
+          class="clear secondary close-button--rtl"
+          @click="onPanelToggle"
+        />
+      </div>
 
       <div class="contact--details">
         <div v-if="showAvatar" class="contact--name-wrap">
           <h3 class="sub-block-title contact--name">
             {{ contact.name }}
           </h3>
+          <fluent-icon
+            v-if="contact.created_at"
+            v-tooltip="
+              `${$t('CONTACT_PANEL.CREATED_AT_LABEL')} ${dynamicTime(
+                contact.created_at
+              )}`
+            "
+            icon="info"
+            size="14"
+          />
           <a
             :href="contactProfileLink"
             class="fs-default"
@@ -28,6 +46,7 @@
             />
           </a>
         </div>
+
         <p v-if="additionalAttributes.description" class="contact--bio">
           {{ additionalAttributes.description }}
         </p>
@@ -49,6 +68,13 @@
             :title="$t('CONTACT_PANEL.PHONE_NUMBER')"
           />
           <contact-info-row
+            v-if="contact.identifier"
+            :value="contact.identifier"
+            icon="contact-identify"
+            emoji="🪪"
+            :title="$t('CONTACT_PANEL.IDENTIFIER')"
+          />
+          <contact-info-row
             :value="additionalAttributes.company_name"
             icon="building-bank"
             emoji="🏢"
@@ -65,7 +91,6 @@
       </div>
       <div class="contact-actions">
         <woot-button
-          v-if="showNewMessage"
           v-tooltip="$t('CONTACT_PANEL.NEW_MESSAGE')"
           title="$t('CONTACT_PANEL.NEW_MESSAGE')"
           class="new-message"
@@ -126,23 +151,22 @@
         @close="toggleMergeModal"
       />
     </div>
-    <woot-confirm-delete-modal
+    <woot-delete-modal
       v-if="showDeleteModal"
       :show.sync="showDeleteModal"
+      :on-close="closeDelete"
+      :on-confirm="confirmDeletion"
       :title="$t('DELETE_CONTACT.CONFIRM.TITLE')"
-      :message="confirmDeleteMessage"
-      :confirm-text="deleteConfirmText"
-      :reject-text="deleteRejectText"
-      :confirm-value="contact.name"
-      :confirm-place-holder-text="confirmPlaceHolderText"
-      @on-confirm="confirmDeletion"
-      @on-close="closeDelete"
+      :message="$t('DELETE_CONTACT.CONFIRM.MESSAGE')"
+      :message-value="confirmDeleteMessage"
+      :confirm-text="$t('DELETE_CONTACT.CONFIRM.YES')"
+      :reject-text="$t('DELETE_CONTACT.CONFIRM.NO')"
     />
   </div>
 </template>
 <script>
 import { mixin as clickaway } from 'vue-clickaway';
-
+import timeMixin from 'dashboard/mixins/time';
 import ContactInfoRow from './ContactInfoRow';
 import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
 import SocialIcons from './SocialIcons';
@@ -153,7 +177,7 @@ import ContactMergeModal from 'dashboard/modules/contact/ContactMergeModal';
 import alertMixin from 'shared/mixins/alertMixin';
 import adminMixin from '../../../../mixins/isAdmin';
 import { mapGetters } from 'vuex';
-import flag from 'country-code-emoji';
+import { getCountryFlag } from 'dashboard/helper/flag';
 
 export default {
   components: {
@@ -164,7 +188,7 @@ export default {
     NewConversation,
     ContactMergeModal,
   },
-  mixins: [alertMixin, adminMixin, clickaway],
+  mixins: [alertMixin, adminMixin, clickaway, timeMixin],
   props: {
     contact: {
       type: Object,
@@ -174,13 +198,17 @@ export default {
       type: String,
       default: '',
     },
-    showNewMessage: {
-      type: Boolean,
-      default: false,
-    },
     showAvatar: {
       type: Boolean,
       default: true,
+    },
+    showCloseButton: {
+      type: Boolean,
+      default: true,
+    },
+    closeIconName: {
+      type: String,
+      default: 'chevron-right',
     },
   },
   data() {
@@ -210,8 +238,7 @@ export default {
       if (!cityAndCountry) {
         return '';
       }
-      const countryFlag = countryCode ? flag(countryCode) : '🌎';
-      return `${cityAndCountry} ${countryFlag}`;
+      return this.findCountryFlag(countryCode, cityAndCountry);
     },
     socialProfiles() {
       const {
@@ -222,21 +249,8 @@ export default {
       return { twitter: twitterScreenName, ...(socialProfiles || {}) };
     },
     // Delete Modal
-    deleteConfirmText() {
-      return `${this.$t('DELETE_CONTACT.CONFIRM.YES')} ${this.contact.name}`;
-    },
-    deleteRejectText() {
-      return `${this.$t('DELETE_CONTACT.CONFIRM.NO')} ${this.contact.name}`;
-    },
     confirmDeleteMessage() {
-      return `${this.$t('DELETE_CONTACT.CONFIRM.MESSAGE')} ${
-        this.contact.name
-      } ?`;
-    },
-    confirmPlaceHolderText() {
-      return `${this.$t('DELETE_CONTACT.CONFIRM.PLACE_HOLDER', {
-        contactName: this.contact.name,
-      })}`;
+      return ` ${this.contact.name}?`;
     },
   },
   methods: {
@@ -245,6 +259,9 @@ export default {
     },
     toggleEditModal() {
       this.showEditModal = !this.showEditModal;
+    },
+    onPanelToggle() {
+      this.$emit('toggle-panel');
     },
     toggleConversationModal() {
       this.showConversationModal = !this.showConversationModal;
@@ -261,11 +278,22 @@ export default {
       this.showConversationModal = false;
       this.showEditModal = false;
     },
+    findCountryFlag(countryCode, cityAndCountry) {
+      try {
+        const countryFlag = countryCode ? getCountryFlag(countryCode) : '🌎';
+        return `${cityAndCountry} ${countryFlag}`;
+      } catch (error) {
+        return '';
+      }
+    },
     async deleteContact({ id }) {
       try {
         await this.$store.dispatch('contacts/delete', id);
         this.$emit('panel-close');
         this.showAlert(this.$t('DELETE_CONTACT.API.SUCCESS_MESSAGE'));
+        if (this.$route.name !== 'contacts_dashboard') {
+          this.$router.push({ name: 'contacts_dashboard' });
+        }
       } catch (error) {
         this.showAlert(
           error.message
@@ -286,10 +314,6 @@ export default {
   position: relative;
   align-items: flex-start;
   padding: var(--space-normal);
-
-  .user-thumbnail-box {
-    margin-right: var(--space-normal);
-  }
 }
 
 .contact--details {
@@ -301,6 +325,12 @@ export default {
   text-align: left;
 }
 
+.contact-info--header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 .contact--name-wrap {
   display: flex;
   align-items: center;
@@ -310,7 +340,7 @@ export default {
 .contact--name {
   text-transform: capitalize;
   white-space: normal;
-  margin: 0 var(--space-smaller) 0 0;
+  margin: 0 var(--space-smaller) 0 var(--space-smaller);
 
   a {
     color: var(--color-body);
@@ -337,8 +367,12 @@ export default {
     margin-right: var(--space-small);
   }
 }
-.merege-summary--card {
+.merge-summary--card {
   padding: var(--space-normal);
+}
+
+.contact--bio {
+  word-wrap: break-word;
 }
 
 .button--contact-menu {

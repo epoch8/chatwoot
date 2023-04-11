@@ -1,7 +1,7 @@
 .side-menu {
   i {
-    margin-right: $space-smaller;
-    min-width: $space-two;
+    margin-right: var(--space-smaller);
+    min-width: var(--space-two);
   }
 }
 
@@ -11,21 +11,21 @@
   //logo
   .logo {
     img {
-      @include padding($woot-logo-padding);
       max-height: 108px;
+      padding: $woot-logo-padding;
     }
   }
 
   .nested {
     a {
-      font-size: $font-size-small;
-      margin-bottom: $space-micro;
-      margin-top: $space-micro;
+      font-size: var(--font-size-small);
+      margin-bottom: var(--space-micro);
+      margin-top: var(--space-micro);
 
       .inbox-icon {
         display: inline-block;
-        margin-right: $space-micro;
-        min-width: $space-normal;
+        margin-right: var(--space-micro);
+        min-width: var(--space-normal);
         text-align: center;
       }
     }
@@ -36,9 +36,10 @@
 .bottom-nav {
   @include flex;
   @include space-between-column;
-  @include padding($space-one $space-normal $space-one $space-one);
   @include border-normal-top;
   flex-direction: column;
+  padding: var(--space-one) var(--space-normal) var(--space-one)
+    var(--space-one);
   position: relative;
 
   &:hover {
@@ -59,19 +60,19 @@
 
 .hamburger--menu {
   cursor: pointer;
-  display: none;
-  margin-right: $space-normal;
-
-  @media screen and (max-width: 1200px) {
-    display: block;
-  }
+  display: block;
+  margin-right: var(--space-normal);
 }
 
 .header--icon {
   display: block;
-  margin-right: $space-normal;
+  margin: 0 var(--space-small) 0 var(--space-smaller);
 
   @media screen and (max-width: 1200px) {
     display: none;
   }
+}
+
+.header-title {
+  margin: 0 var(--space-small);
 }

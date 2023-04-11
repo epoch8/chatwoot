@@ -3,9 +3,11 @@
     "NOT_AVAILABLE": "Ikke tilgjengelig",
     "EMAIL_ADDRESS": "E-postadresse",
     "PHONE_NUMBER": "Telefonnummer",
+    "IDENTIFIER": "Identifier",
     "COPY_SUCCESSFUL": "Kopiert til utklippstavle",
     "COMPANY": "Firma",
     "LOCATION": "Plassering",
+    "BROWSER_LANGUAGE": "Browser Language",
     "CONVERSATION_TITLE": "Samtaledetaljer",
     "VIEW_PROFILE": "View Profile",
     "BROWSER": "Nettleser",
@@ -13,6 +15,7 @@
     "INITIATED_FROM": "Startet fra",
     "INITIATED_AT": "Started",
     "IP_ADDRESS": "IP Adresse",
+    "CREATED_AT_LABEL": "Created",
     "NEW_MESSAGE": "New message",
     "CONVERSATIONS": {
       "NO_RECORDS_FOUND": "Det er ingen tidligere samtaler knyttet til denne kontakten.",
@@ -70,6 +73,14 @@
     "SUCCESS_MESSAGE": "Contacts saved successfully",
     "ERROR_MESSAGE": "Det oppstod en feil. Prøv igjen"
   },
+  "DELETE_NOTE": {
+    "CONFIRM": {
+      "TITLE": "Bekreft sletting",
+      "MESSAGE": "Are you want sure to delete this note?",
+      "YES": "Yes, Delete it",
+      "NO": "Nei, behold den"
+    }
+  },
   "DELETE_CONTACT": {
     "BUTTON_LABEL": "Delete Contact",
     "TITLE": "Delete contact",
@@ -77,9 +88,8 @@
     "CONFIRM": {
       "TITLE": "Bekreft sletting",
       "MESSAGE": "Er du sikker på at du vil slette ",
-      "PLACE_HOLDER": "Please type {contactName} to confirm",
-      "YES": "Ja, slett ",
-      "NO": "Nei, behold "
+      "YES": "Ja, slett",
+      "NO": "Nei, behold"
     },
     "API": {
       "SUCCESS_MESSAGE": "Contact deleted successfully",
@@ -104,7 +114,8 @@
       "EMAIL_ADDRESS": {
         "PLACEHOLDER": "Skriv inn e-postadressen til kontakten",
         "LABEL": "E-postadresse",
-        "DUPLICATE": "Denne e-postadressen er allerede i bruk av en annen kontakt."
+        "DUPLICATE": "Denne e-postadressen er allerede i bruk av en annen kontakt.",
+        "ERROR": "Vennligst skriv inn en gyldig e-postadresse."
       },
       "PHONE_NUMBER": {
         "PLACEHOLDER": "Skriv inn telefonnummeret til kontakten",
@@ -140,6 +151,12 @@
         }
       }
     },
+    "DELETE_AVATAR": {
+      "API": {
+        "SUCCESS_MESSAGE": "Contact avatar deleted successfully",
+        "ERROR_MESSAGE": "Could not delete the contact avatar. Please try again later."
+      }
+    },
     "SUCCESS_MESSAGE": "Contact saved successfully",
     "ERROR_MESSAGE": "Det oppstod en feil. Prøv igjen"
   },
@@ -169,6 +186,7 @@
       "SUBMIT": "Send message",
       "CANCEL": "Avbryt",
       "SUCCESS_MESSAGE": "Message sent!",
+      "GO_TO_CONVERSATION": "Vis",
       "ERROR_MESSAGE": "Couldn't send! try again"
     }
   },
@@ -178,6 +196,8 @@
     "SEARCH_BUTTON": "Søk",
     "SEARCH_INPUT_PLACEHOLDER": "Søk etter kontakter",
     "FILTER_CONTACTS": "Filter",
+    "FILTER_CONTACTS_SAVE": "Save filter",
+    "FILTER_CONTACTS_DELETE": "Delete filter",
     "LIST": {
       "LOADING_MESSAGE": "Laster inn kontakter...",
       "404": "Ingen kontakter samsvarer med søket ditt 🔍",
@@ -187,6 +207,7 @@
         "PHONE_NUMBER": "Telefonnummer",
         "CONVERSATIONS": "Samtaler",
         "LAST_ACTIVITY": "Last Activity",
+        "CREATED_AT": "Created At",
         "COUNTRY": "Country",
         "CITY": "City",
         "SOCIAL_PROFILES": "Social Profiles",

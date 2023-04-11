@@ -14,7 +14,9 @@ module Events::Types
 
   # conversation events
   CONVERSATION_CREATED = 'conversation.created'
+  CONVERSATION_UPDATED = 'conversation.updated'
   CONVERSATION_READ = 'conversation.read'
+  CONVERSATION_BOT_HANDOFF = 'conversation.bot_handoff'
   # FIXME: deprecate the opened and resolved events in future in favor of status changed event.
   CONVERSATION_OPENED = 'conversation.opened'
   CONVERSATION_RESOLVED = 'conversation.resolved'
@@ -37,6 +39,9 @@ module Events::Types
   CONTACT_UPDATED = 'contact.updated'
   CONTACT_MERGED = 'contact.merged'
   CONTACT_DELETED = 'contact.deleted'
+
+  # notification events
+  NOTIFICATION_CREATED = 'notification.created'
 
   # agent events
   AGENT_ADDED = 'agent.added'

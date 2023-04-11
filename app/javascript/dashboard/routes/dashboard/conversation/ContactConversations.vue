@@ -17,7 +17,7 @@
         />
       </div>
     </div>
-    <spinner v-else></spinner>
+    <spinner v-else />
   </div>
 </template>
 
@@ -73,5 +73,12 @@ export default {
 .no-label-message {
   margin-bottom: var(--space-normal);
   color: var(--b-500);
+}
+
+::v-deep .conversation {
+  padding-right: 0;
+  .conversation--details {
+    padding-left: var(--space-small);
+  }
 }
 </style>

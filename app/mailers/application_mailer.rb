@@ -25,8 +25,8 @@ class ApplicationMailer < ActionMailer::Base
   private
 
   def handle_smtp_exceptions(message)
-    Rails.logger.info 'Failed to send Email'
-    Rails.logger.info "Exception: #{message}"
+    Rails.logger.warn 'Failed to send Email'
+    Rails.logger.error "Exception: #{message}"
   end
 
   def send_mail_with_liquid(*args)
@@ -69,11 +69,11 @@ class ApplicationMailer < ActionMailer::Base
     Current.account = account if account.present?
   end
 
-  def switch_locale(&action)
+  def switch_locale(&)
     locale ||= locale_from_account(Current.account)
     locale ||= I18n.default_locale
     # ensure locale won't bleed into other requests
     # https://guides.rubyonrails.org/i18n.html#managing-the-locale-across-requests
-    I18n.with_locale(locale, &action)
+    I18n.with_locale(locale, &)
   end
 end

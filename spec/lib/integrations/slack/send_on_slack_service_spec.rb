@@ -2,7 +2,8 @@ require 'rails_helper'
 
 describe Integrations::Slack::SendOnSlackService do
   let!(:contact) { create(:contact) }
-  let!(:conversation) { create(:conversation, contact: contact, identifier: nil) }
+  let(:channel_email) { create(:channel_email) }
+  let!(:conversation) { create(:conversation, inbox: channel_email.inbox, contact: contact, identifier: nil) }
   let(:account) { conversation.account }
   let!(:hook) { create(:integrations_hook, account: account) }
   let!(:message) do
@@ -28,8 +29,8 @@ describe Integrations::Slack::SendOnSlackService do
 
         expect(slack_client).to receive(:chat_postMessage).with(
           channel: hook.reference_id,
-          text: "*Inbox: #{inbox.name} [#{inbox.inbox_type}]* \n\n #{message.content}",
-          username: "Contact: #{message.sender.name}",
+          text: "\n*Inbox:* #{inbox.name} (#{inbox.inbox_type})\n\n#{message.content}",
+          username: "#{message.sender.name} (Contact)",
           thread_ts: nil,
           icon_url: anything
         ).and_return(slack_message)
@@ -37,6 +38,32 @@ describe Integrations::Slack::SendOnSlackService do
         builder.perform
 
         expect(conversation.reload.identifier).to eq '12345.6789'
+      end
+
+      context 'with subject line in email' do
+        let(:message) do
+          create(:message,
+                 content_attributes: { 'email': { 'subject': 'Sample subject line' } },
+                 content: 'Sample Body',
+                 account: conversation.account,
+                 inbox: conversation.inbox, conversation: conversation)
+        end
+
+        it 'creates slack message with subject line' do
+          inbox = conversation.inbox
+
+          expect(slack_client).to receive(:chat_postMessage).with(
+            channel: hook.reference_id,
+            text: "\n*Inbox:* #{inbox.name} (#{inbox.inbox_type})\n*Subject:* Sample subject line\n\n\n#{message.content}",
+            username: "#{message.sender.name} (Contact)",
+            thread_ts: nil,
+            icon_url: anything
+          ).and_return(slack_message)
+
+          builder.perform
+
+          expect(conversation.reload.identifier).to eq '12345.6789'
+        end
       end
     end
 
@@ -49,7 +76,7 @@ describe Integrations::Slack::SendOnSlackService do
         expect(slack_client).to receive(:chat_postMessage).with(
           channel: hook.reference_id,
           text: message.content,
-          username: "Contact: #{message.sender.name}",
+          username: "#{message.sender.name} (Contact)",
           thread_ts: conversation.identifier,
           icon_url: anything
         ).and_return(slack_message)
@@ -63,7 +90,7 @@ describe Integrations::Slack::SendOnSlackService do
         expect(slack_client).to receive(:chat_postMessage).with(
           channel: hook.reference_id,
           text: message.content,
-          username: "Contact: #{message.sender.name}",
+          username: "#{message.sender.name} (Contact)",
           thread_ts: conversation.identifier,
           icon_url: anything
         ).and_return(slack_message)
@@ -71,15 +98,15 @@ describe Integrations::Slack::SendOnSlackService do
         attachment = message.attachments.new(account_id: message.account_id, file_type: :image)
         attachment.file.attach(io: File.open(Rails.root.join('spec/assets/avatar.png')), filename: 'avatar.png', content_type: 'image/png')
 
-        expect(slack_client).to receive(:files_upload).with(
-          channels: hook.reference_id,
-          initial_comment: 'Attached File!',
-          content: anything,
-          filename: attachment.file.filename,
-          filetype: 'png',
-          thread_ts: conversation.identifier,
-          title: anything
-        ).and_return(file_attachment)
+        expect(slack_client).to receive(:files_upload).with(hash_including(
+                                                              channels: hook.reference_id,
+                                                              thread_ts: conversation.identifier,
+                                                              initial_comment: 'Attached File!',
+                                                              filetype: 'png',
+                                                              content: anything,
+                                                              filename: attachment.file.filename,
+                                                              title: attachment.file.filename
+                                                            )).and_return(file_attachment)
 
         message.save!
 
@@ -93,7 +120,7 @@ describe Integrations::Slack::SendOnSlackService do
         expect(slack_client).to receive(:chat_postMessage).with(
           channel: hook.reference_id,
           text: message.content,
-          username: "Contact: #{message.sender.name}",
+          username: "#{message.sender.name} (Contact)",
           thread_ts: conversation.identifier,
           icon_url: anything
         ).and_raise(Slack::Web::Api::Errors::AccountInactive.new('Account disconnected'))

@@ -9,7 +9,7 @@
         )
       "
     />
-    <div class="row channels">
+    <div class="row channel-list">
       <channel-item
         v-for="channel in channelList"
         :key="channel.key"
@@ -50,7 +50,7 @@ export default {
         { key: 'facebook', name: 'Messenger' },
         { key: 'twitter', name: 'Twitter' },
         { key: 'whatsapp', name: 'WhatsApp' },
-        { key: 'sms', name: 'SMS via Twilio' },
+        { key: 'sms', name: 'SMS' },
         { key: 'email', name: 'Email' },
         {
           key: 'api',
@@ -87,5 +87,9 @@ export default {
 <style scoped>
 .height-auto {
   height: auto;
+}
+
+.channel-list {
+  margin-top: var(--space-medium);
 }
 </style>

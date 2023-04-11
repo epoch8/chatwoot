@@ -6,6 +6,7 @@
 #
 #  id                            :integer          not null, primary key
 #  allow_messages_after_resolved :boolean          default(TRUE)
+#  auto_assignment_config        :jsonb
 #  channel_type                  :string
 #  csat_survey_enabled           :boolean          default(FALSE)
 #  email_address                 :string
@@ -13,6 +14,7 @@
 #  enable_email_collect          :boolean          default(TRUE)
 #  greeting_enabled              :boolean          default(FALSE)
 #  greeting_message              :string
+#  lock_to_single_conversation   :boolean          default(FALSE), not null
 #  name                          :string           not null
 #  out_of_office_message         :string
 #  timezone                      :string           default("UTC")
@@ -24,7 +26,8 @@
 #
 # Indexes
 #
-#  index_inboxes_on_account_id  (account_id)
+#  index_inboxes_on_account_id                   (account_id)
+#  index_inboxes_on_channel_id_and_channel_type  (channel_id,channel_type)
 #
 
 class Inbox < ApplicationRecord
@@ -32,9 +35,13 @@ class Inbox < ApplicationRecord
   include Avatarable
   include OutOfOffisable
 
+  # Not allowing characters:
   validates :name, presence: true
+  validates :name, if: :check_channel_type?, format: { with: %r{^^\b[^/\\<>@]*\b$}, multiline: true,
+                                                       message: I18n.t('errors.inboxes.validations.name') }
   validates :account_id, presence: true
   validates :timezone, inclusion: { in: TZInfo::Timezone.all_identifiers }
+  validate :ensure_valid_max_assignment_limit
 
   belongs_to :account
 
@@ -72,6 +79,10 @@ class Inbox < ApplicationRecord
     channel_type == 'Channel::FacebookPage'
   end
 
+  def instagram?
+    facebook? && channel.instagram_id.present?
+  end
+
   def web_widget?
     channel_type == 'Channel::WebWidget'
   end
@@ -92,6 +103,18 @@ class Inbox < ApplicationRecord
     channel_type == 'Channel::TwitterProfile'
   end
 
+  def whatsapp?
+    channel_type == 'Channel::Whatsapp'
+  end
+
+  def assignable_agents
+    (account.users.where(id: members.select(:user_id)) + account.administrators).uniq
+  end
+
+  def active_bot?
+    agent_bot_inbox&.active? || hooks.pluck(:app_id).include?('dialogflow')
+  end
+
   def inbox_type
     channel.name
   end
@@ -106,15 +129,34 @@ class Inbox < ApplicationRecord
   def callback_webhook_url
     case channel_type
     when 'Channel::TwilioSms'
-      "#{ENV['FRONTEND_URL']}/twilio/callback"
+      "#{ENV.fetch('FRONTEND_URL', nil)}/twilio/callback"
+    when 'Channel::Sms'
+      "#{ENV.fetch('FRONTEND_URL', nil)}/webhooks/sms/#{channel.phone_number.delete_prefix('+')}"
     when 'Channel::Line'
-      "#{ENV['FRONTEND_URL']}/webhooks/line/#{channel.line_channel_id}"
+      "#{ENV.fetch('FRONTEND_URL', nil)}/webhooks/line/#{channel.line_channel_id}"
+    when 'Channel::Whatsapp'
+      "#{ENV.fetch('FRONTEND_URL', nil)}/webhooks/whatsapp/#{channel.phone_number}"
     end
+  end
+
+  def member_ids_with_assignment_capacity
+    members.ids
   end
 
   private
 
+  def ensure_valid_max_assignment_limit
+    # overridden in enterprise/app/models/enterprise/inbox.rb
+  end
+
   def delete_round_robin_agents
-    ::RoundRobin::ManageService.new(inbox: self).clear_queue
+    ::AutoAssignment::InboxRoundRobinService.new(inbox: self).clear_queue
+  end
+
+  def check_channel_type?
+    ['Channel::Email', 'Channel::Api', 'Channel::WebWidget'].include?(channel_type)
   end
 end
+
+Inbox.prepend_mod_with('Inbox')
+Inbox.include_mod_with('Audit::Inbox')

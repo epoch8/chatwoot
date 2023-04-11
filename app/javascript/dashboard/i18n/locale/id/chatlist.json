@@ -7,38 +7,17 @@
       "404": "Tidak ada percakapan aktif di grup ini."
     },
     "TAB_HEADING": "Percakapan",
-    "MENTION_HEADING": "Mentions",
+    "MENTION_HEADING": "Sebutkan",
+    "UNATTENDED_HEADING": "Unattended",
     "SEARCH": {
       "INPUT": "Telusuri Orang, Obrolan, Balasan Tersimpan.."
     },
     "FILTER_ALL": "Semua",
-    "STATUS_TABS": [
-      {
-        "NAME": "Terbuka",
-        "KEY": "openCount"
-      },
-      {
-        "NAME": "Terselesaikan",
-        "KEY": "allConvCount"
-      }
-    ],
-    "ASSIGNEE_TYPE_TABS": [
-      {
-        "NAME": "Milikku",
-        "KEY": "me",
-        "COUNT_KEY": "mineCount"
-      },
-      {
-        "NAME": "Belum ditugaskan",
-        "KEY": "unassigned",
-        "COUNT_KEY": "unAssignedCount"
-      },
-      {
-        "NAME": "Semua",
-        "KEY": "all",
-        "COUNT_KEY": "allCount"
-      }
-    ],
+    "ASSIGNEE_TYPE_TABS": {
+      "me": "Milikku",
+      "unassigned": "Belum ditugaskan",
+      "all": "Semua"
+    },
     "CHAT_STATUS_FILTER_ITEMS": {
       "open": {
         "TEXT": "Terbuka"
@@ -47,10 +26,13 @@
         "TEXT": "Terselesaikan"
       },
       "pending": {
-        "TEXT": "Pending"
+        "TEXT": "Ditunda"
       },
       "snoozed": {
-        "TEXT": "Snoozed"
+        "TEXT": "Ditunda Sebentar"
+      },
+      "all": {
+        "TEXT": "Semua"
       }
     },
     "ATTACHMENTS": {
@@ -76,10 +58,14 @@
     "RECEIVED_VIA_EMAIL": "Diterima melalui email",
     "VIEW_TWEET_IN_TWITTER": "Lihat tweet di Twitter",
     "REPLY_TO_TWEET": "Balas tweet ini",
-    "SENT": "Sent successfully",
+    "LINK_TO_STORY": "Go to instagram story",
+    "SENT": "Berhasil terkirim",
+    "READ": "Read successfully",
+    "DELIVERED": "Delivered successfully",
     "NO_MESSAGES": "Tidak Ada Pesan",
     "NO_CONTENT": "Tidak ada konten yang tersedia",
-    "HIDE_QUOTED_TEXT": "Hide Quoted Text",
-    "SHOW_QUOTED_TEXT": "Show Quoted Text"
+    "HIDE_QUOTED_TEXT": "Sembunyikan Teks yang Dikutip",
+    "SHOW_QUOTED_TEXT": "Tampilkan Tex yang Dikutip",
+    "MESSAGE_READ": "Read"
   }
 }

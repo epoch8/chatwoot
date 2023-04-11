@@ -20,7 +20,7 @@
             <image-bubble
               v-if="attachment.file_type === 'image' && !hasImageError"
               :url="attachment.data_url"
-              :thumb="attachment.thumb_url"
+              :thumb="attachment.data_url"
               :readable-time="readableTime"
               @error="onImageLoadError"
             />
@@ -28,6 +28,8 @@
               v-else
               :url="attachment.data_url"
               :is-in-progress="isInProgress"
+              :widget-color="widgetColor"
+              is-user-bubble
             />
           </div>
         </div>

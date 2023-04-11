@@ -33,12 +33,18 @@ class SuperAdmin::AccountsController < SuperAdmin::ApplicationController
   # empty values into nil values. It uses other APIs such as `resource_class`
   # and `dashboard`:
   #
-  # def resource_params
-  #   params.require(resource_class.model_name.param_key).
-  #     permit(dashboard.permitted_attributes).
-  #     transform_values { |value| value == "" ? nil : value }
-  # end
+  def resource_params
+    permitted_params = super
+    permitted_params[:limits] = permitted_params[:limits].to_h.compact
+    permitted_params[:selected_feature_flags] = params[:enabled_features].keys.map(&:to_sym) if params[:enabled_features].present?
+    permitted_params
+  end
 
   # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
   # for more information
+
+  def seed
+    Internal::SeedAccountJob.perform_later(requested_resource)
+    redirect_back(fallback_location: [namespace, requested_resource], notice: 'Account seeding triggered')
+  end
 end

@@ -1,6 +1,10 @@
 {
   "CONVERSATION": {
-    "404": "لطفا یک گفتگو را از پنجره گفتگوها انتخاب کنید",
+    "SELECT_A_CONVERSATION": "لطفا یک گفتگو را از پنجره گفتگوها انتخاب کنید",
+    "CSAT_REPLY_MESSAGE": "لطفاً به مکالمه امتیاز دهید",
+    "404": "با عرض پوزش، ما نمی‌توانیم گفتگو را پیدا کنیم. لطفا دوباره تلاش کنید",
+    "SWITCH_VIEW_LAYOUT": "تغییر طرح‌بندی",
+    "DASHBOARD_APP_TAB_MESSAGES": "پیام‌ها",
     "UNVERIFIED_SESSION": "هویت این کاربر تایید نشده است",
     "NO_MESSAGE_1": "اوه اوه! به نظر می‌رسد هیچ پیامی از طرف مشتری در صندوق ورودی شما وجود ندارد.",
     "NO_MESSAGE_2": " برای ارسال پیام به صفحه خود بروید!",
@@ -22,18 +26,26 @@
     "LOADING_CONVERSATIONS": "در حال بارگیری گفتگو‌ها",
     "CANNOT_REPLY": "شما نمی‌توانید پاسخ بدهید به دلیل",
     "24_HOURS_WINDOW": "محدودیت ۲۴ ساعته پنجره پیام",
+    "NOT_ASSIGNED_TO_YOU": "این گفتگو به شما اختصاص داده نشده است. آیا می خواهید این گفتگو را به خودتان اختصاص دهید؟",
+    "ASSIGN_TO_ME": "اختصاص به من",
     "TWILIO_WHATSAPP_CAN_REPLY": "شما فقط می توانید با استفاده از یک پیام الگو به این مکالمه پاسخ دهید",
     "TWILIO_WHATSAPP_24_HOURS_WINDOW": "محدودیت ۲۴ ساعته پنجره پیام",
     "SELECT_A_TWEET_TO_REPLY": "لطفا برای پاسخ دادن، یک توییت را انتخاب کنید.",
     "REPLYING_TO": "شما در حال پاسخ دادن به:",
     "REMOVE_SELECTION": "حذف انتخاب‌شده‌ها",
     "DOWNLOAD": "دانلود",
+    "UNKNOWN_FILE_TYPE": "پرونده ناشناخته",
+    "SAVE_CONTACT": "ذخیره",
     "UPLOADING_ATTACHMENTS": "در حال بارگذاری پیوست‌ها...",
     "SUCCESS_DELETE_MESSAGE": "پیام با موفقیت حذف شد",
     "FAIL_DELETE_MESSSAGE": "پیام حذف نشد! دوباره امتحان کنید",
     "NO_RESPONSE": "بدون پاسخ",
     "RATING_TITLE": "رتبه",
     "FEEDBACK_TITLE": "بازخورد",
+    "CARD": {
+      "SHOW_LABELS": "مشاهده کردن برچسب‌ها",
+      "HIDE_LABELS": "پنهان کردن برچسب‌ها"
+    },
     "HEADER": {
       "RESOLVE_ACTION": "حل شد",
       "REOPEN_ACTION": "دوباره باز کنید",
@@ -54,9 +66,44 @@
         "NEXT_WEEK": "هفته بعد"
       }
     },
+    "CARD_CONTEXT_MENU": {
+      "PENDING": "علامت گذاری به عنوان در انتظار",
+      "RESOLVED": "علامت زدن به عنوان حل شده",
+      "MARK_AS_UNREAD": "علامت گذاری به عنوان خوانده نشده",
+      "REOPEN": "مکالمه را دوباره باز کنید",
+      "SNOOZE": {
+        "TITLE": "به تعویق انداختن",
+        "NEXT_REPLY": "تا پاسخ بعدی",
+        "TOMORROW": "تا فردا",
+        "NEXT_WEEK": "تا هفته بعد"
+      },
+      "ASSIGN_AGENT": "ایجنت را تعیین کنید",
+      "ASSIGN_LABEL": "برچسب اختصاص دهید",
+      "AGENTS_LOADING": "بارگذاری ایجنت ها...",
+      "ASSIGN_TEAM": "تیم را تعیین کنید",
+      "API": {
+        "AGENT_ASSIGNMENT": {
+          "SUCCESFUL": "شناسه مکالمه %{conversationId} به \"%{agentName}\" اختصاص داده شد",
+          "FAILED": "ایجنت تعیین نشد. لطفا دوباره تلاش کنید."
+        },
+        "LABEL_ASSIGNMENT": {
+          "SUCCESFUL": "برچسب #%{labelName} را به شناسه مکالمه %{conversationId} اختصاص داد",
+          "FAILED": "برچسب اختصاص داده نشد. لطفا دوباره تلاش کنید."
+        },
+        "TEAM_ASSIGNMENT": {
+          "SUCCESFUL": "تیم \"%{team}\" را به شناسه مکالمه %{conversationId} اختصاص داد",
+          "FAILED": "تیم تعیین نشد. لطفا دوباره تلاش کنید."
+        }
+      }
+    },
     "FOOTER": {
+      "MESSAGE_SIGN_TOOLTIP": "امضای پیام",
+      "ENABLE_SIGN_TOOLTIP": "امضا را فعال کنید",
+      "DISABLE_SIGN_TOOLTIP": "غیرفعال کردن امضا",
       "MSG_INPUT": "برای رفتن به سرخط shift+enter و برای استفاده از پیام های ذخیره شده / را بزنید.",
-      "PRIVATE_MSG_INPUT": "برای رفتن به سرخط shift+enter را بزنید. این پیام فقط به ایجنت ها نمایش داده میشود"
+      "PRIVATE_MSG_INPUT": "برای رفتن به سرخط shift+enter را بزنید. این پیام فقط به ایجنت ها نمایش داده میشود",
+      "MESSAGE_SIGNATURE_NOT_CONFIGURED": "امضای پیام پیکربندی نشده است، لطفاً آن را در تنظیمات نمایه پیکربندی کنید.",
+      "CLICK_HERE": "برای به روز رسانی اینجا را کلیک کنید"
     },
     "REPLYBOX": {
       "REPLY": "پاسخ",
@@ -67,8 +114,13 @@
       "TIP_FORMAT_ICON": "نمایش ویرایشگر متنی پیشرفته",
       "TIP_EMOJI_ICON": "انتخاب ایموجی",
       "TIP_ATTACH_ICON": "ضمیمه فایل",
-      "ENTER_TO_SEND": "برای ارسال Enter را بزنید",
+      "TIP_AUDIORECORDER_ICON": "ضبط صدا",
+      "TIP_AUDIORECORDER_PERMISSION": "اجازه دسترسی به صدا",
+      "TIP_AUDIORECORDER_ERROR": "صدا را نمی‌توان باز کند",
       "DRAG_DROP": "برای ضمیمه کردن درگ و درآپ کنید",
+      "START_AUDIO_RECORDING": "در حال شروع ضبط صدا",
+      "STOP_AUDIO_RECORDING": "در حال توقف ضبط صدا",
+      "": "",
       "EMAIL_HEAD": {
         "ADD_BCC": "افزودن bcc",
         "CC": {
@@ -81,15 +133,30 @@
           "PLACEHOLDER": "ایمیل‌ها با کاما از هم جدا می‌شوند",
           "ERROR": "لطفا آدرس‌ ایمیل معتبر وارد کنید"
         }
+      },
+      "UNDEFINED_VARIABLES": {
+        "TITLE": "متغیرهای تعریف نشده",
+        "MESSAGE": "شما در پیام خود {undefinedVariablesCount} متغیر تعریف نشده دارید: {undefinedVariables}. آیا به هر حال می خواهید پیام را ارسال کنید؟",
+        "CONFIRM": {
+          "YES": "ارسال",
+          "CANCEL": "انصراف"
+        }
       }
     },
     "VISIBLE_TO_AGENTS": "یادداشت خصوصی: فقط برای شما و تیم شما قابل مشاهده است",
     "CHANGE_STATUS": "وضعیت گفتگو تغییر کرد",
+    "CHANGE_STATUS_FAILED": "تغییر وضعیت مکالمه انجام نشد",
     "CHANGE_AGENT": "مسول گفتگو تغییر کرد",
+    "CHANGE_AGENT_FAILED": "تغییر انجام نشد",
+    "ASSIGN_LABEL_SUCCESFUL": "برچسب با موفقیت تخصیص یافت",
+    "ASSIGN_LABEL_FAILED": "تخصیص برچسب ناموفق بود",
     "CHANGE_TEAM": "تیم مکالمه تغییر کرد",
-    "FILE_SIZE_LIMIT": "فایل ضمیمه شده بیشتر از {MAXIMUM_FILE_UPLOAD_SIZE} است",
+    "FILE_SIZE_LIMIT": "پرونده از حد مجاز پیوست {MAXIMUM_SUPPORTED_FILE_UPLOAD_SIZE} مگابایت بیشتر است",
     "MESSAGE_ERROR": "ارسال این پیام امکان پذیر نیست ، لطفاً بعداً دوباره امتحان کنید",
     "SENT_BY": "ارسال شده توسط:",
+    "BOT": "ربات",
+    "SEND_FAILED": "پیام ارسال نشد! دوباره امتحان کنید",
+    "TRY_AGAIN": "دوباره امتحان کنید",
     "ASSIGNMENT": {
       "SELECT_AGENT": "انتخاب ایجنت",
       "REMOVE": "حذف",
@@ -97,7 +164,9 @@
     },
     "CONTEXT_MENU": {
       "COPY": "کپی",
-      "DELETE": "حذف"
+      "DELETE": "حذف",
+      "CREATE_A_CANNED_RESPONSE": "اضافه کردن به پاسخ‌های آماده",
+      "TRANSLATE": "ترجمه"
     }
   },
   "EMAIL_TRANSCRIPT": {
@@ -154,7 +223,8 @@
       "CONVERSATION_LABELS": "برچسب‌های گفتگو",
       "CONVERSATION_INFO": "اطلاعات مکالمه",
       "CONTACT_ATTRIBUTES": "ویژگی‌های تماس",
-      "PREVIOUS_CONVERSATION": "گفتگوهای قبلی"
+      "PREVIOUS_CONVERSATION": "گفتگوهای قبلی",
+      "MACROS": "ماکروها"
     }
   },
   "CONVERSATION_CUSTOM_ATTRIBUTES": {
@@ -179,9 +249,34 @@
     }
   },
   "EMAIL_HEADER": {
+    "FROM": "از",
     "TO": "به",
     "BCC": "Bcc",
     "CC": "Cc",
     "SUBJECT": "موضوع"
+  },
+  "CONVERSATION_PARTICIPANTS": {
+    "SIDEBAR_MENU_TITLE": "شرکت کننده",
+    "SIDEBAR_TITLE": "شرکت کنندگان در گفتگو",
+    "NO_RECORDS_FOUND": "نتیجه‌ای یافت نشد",
+    "ADD_PARTICIPANTS": "شرکت کنندگان را انتخاب کنید",
+    "REMANING_PARTICIPANTS_TEXT": "+%{count} نفر دیگر",
+    "REMANING_PARTICIPANT_TEXT": "+%{count} دیگر",
+    "TOTAL_PARTICIPANTS_TEXT": "%{count} نفر شرکت می کنند.",
+    "TOTAL_PARTICIPANT_TEXT": "%{count} نفر شرکت می کند.",
+    "NO_PARTICIPANTS_TEXT": "هیچ کس شرکت نمی کند!.",
+    "WATCH_CONVERSATION": "به گفتگو بپیوندید",
+    "YOU_ARE_WATCHING": "شما شرکت می کنید",
+    "API": {
+      "ERROR_MESSAGE": "به روز رسانی نشد، دوباره امتحان کنید!",
+      "SUCCESS_MESSAGE": "شرکت کنندگان به روز شدند!"
+    }
+  },
+  "TRANSLATE_MODAL": {
+    "TITLE": "مشاهده محتوای ترجمه شده",
+    "DESC": "می‌توانید محتوای ترجمه شده را به هر زبان مشاهده کنید.",
+    "ORIGINAL_CONTENT": "محتوای اصلی",
+    "TRANSLATED_CONTENT": "مطالب ترجمه شده",
+    "NO_TRANSLATIONS_AVAILABLE": "هیچ ترجمه‌ای برای این مطلب موجود نیست"
   }
 }

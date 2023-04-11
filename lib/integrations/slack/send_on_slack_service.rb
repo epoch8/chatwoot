@@ -36,19 +36,33 @@ class Integrations::Slack::SendOnSlackService < Base::SendOnChannelService
     if conversation.identifier.present?
       "#{private_indicator}#{message.content}"
     else
-      "*Inbox: #{message.inbox.name} [#{message.inbox.inbox_type}]* \n\n #{message.content}"
+      "#{formatted_inbox_name}#{email_subject_line}\n#{message.content}"
     end
   end
 
+  def formatted_inbox_name
+    "\n*Inbox:* #{message.inbox.name} (#{message.inbox.inbox_type})\n"
+  end
+
+  def email_subject_line
+    return '' unless message.inbox.email?
+
+    email_payload = message.content_attributes['email']
+    return "*Subject:* #{email_payload['subject']}\n\n" if email_payload.present? && email_payload['subject'].present?
+
+    ''
+  end
+
   def avatar_url(sender)
-    sender.try(:avatar_url) || "#{ENV['FRONTEND_URL']}/admin/avatar_square.png"
+    sender_type = sender.instance_of?(Contact) ? 'contact' : 'user'
+    "#{ENV.fetch('FRONTEND_URL', nil)}/integrations/slack/#{sender_type}.png"
   end
 
   def send_message
     post_message if message_content.present?
     upload_file if message.attachments.any?
   rescue Slack::Web::Api::Errors::AccountInactive => e
-    Rails.logger.info e
+    Rails.logger.error e
     hook.authorization_error!
     hook.disable if hook.enabled?
   end
@@ -73,7 +87,7 @@ class Integrations::Slack::SendOnSlackService < Base::SendOnChannelService
   end
 
   def file_type
-    File.extname(message.attachments.first.file_url).strip.downcase[1..]
+    File.extname(message.attachments.first.download_url).strip.downcase[1..]
   end
 
   def file_information
@@ -86,7 +100,7 @@ class Integrations::Slack::SendOnSlackService < Base::SendOnChannelService
   end
 
   def sender_name(sender)
-    sender.try(:name) ? "#{sender_type(sender)}: #{sender.try(:name)}" : sender_type(sender)
+    sender.try(:name) ? "#{sender.try(:name)} (#{sender_type(sender)})" : sender_type(sender)
   end
 
   def sender_type(sender)

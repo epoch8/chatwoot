@@ -23,7 +23,7 @@
         "ERROR": "Por favor, insira um nome de conta válido"
       },
       "LANGUAGE": {
-        "LABEL": "Idioma do site (Beta)",
+        "LABEL": "Idioma do site",
         "PLACEHOLDER": "Nome da sua conta",
         "ERROR": ""
       },
@@ -40,25 +40,34 @@
       "AUTO_RESOLVE_DURATION": {
         "LABEL": "Depois de quantos dias um ticket deve resolver a si mesmo caso não haja nenhuma atividade",
         "PLACEHOLDER": "30",
-        "ERROR": "Por favor insira um prazo válido até que seja considerado resolvido (mínimo 1 dia)"
+        "ERROR": "Por favor, insira um período de resolução automática válido (mínimo de 1 dia e máximo de 999 dias)"
       },
       "FEATURES": {
         "INBOUND_EMAIL_ENABLED": "A continuidade das conversas com e-mails está ativada para sua conta.",
         "CUSTOM_EMAIL_DOMAIN_ENABLED": "Você pode receber e-mails em seu domínio personalizado agora."
       }
     },
-    "UPDATE_CHATWOOT": "Uma atualização %{latestChatwootVersion} para o Chatwoot está disponível. Por favor, atualize sua instância."
+    "UPDATE_CHATWOOT": "Uma atualização %{latestChatwootVersion} para o Chatwoot está disponível. Por favor, atualize sua instância.",
+    "LEARN_MORE": "Saiba mais"
   },
   "FORMS": {
     "MULTISELECT": {
       "ENTER_TO_SELECT": "Digite enter para selecionar",
       "ENTER_TO_REMOVE": "Digite enter para remover",
-      "SELECT_ONE": "Selecione um"
+      "SELECT_ONE": "Selecione um",
+      "SELECT": "Selecionar"
     }
   },
   "NOTIFICATIONS_PAGE": {
     "HEADER": "Notificações",
     "MARK_ALL_DONE": "Marcar Tudo Feito",
+    "DELETE_TITLE": "Excluído",
+    "UNREAD_NOTIFICATION": {
+      "TITLE": "Notificações não lidas",
+      "ALL_NOTIFICATIONS": "Visualizar todas as notificações",
+      "LOADING_UNREAD_MESSAGE": "Carregando notificações não lidas...",
+      "EMPTY_MESSAGE": "Você não tem notificações não lidas"
+    },
     "LIST": {
       "LOADING_MESSAGE": "Carregando notificações...",
       "404": "Sem Notificações",
@@ -73,6 +82,7 @@
       "conversation_creation": "Nova conversa",
       "conversation_assignment": "Conversa Atribuída",
       "assigned_conversation_new_message": "Nova Mensagem",
+      "participating_conversation_new_message": "Nova Mensagem",
       "conversation_mention": "Menção"
     }
   },
@@ -100,6 +110,7 @@
       "GO_TO_CONVERSATION_DASHBOARD": "Ir para Painel de Conversação",
       "GO_TO_CONTACTS_DASHBOARD": "Ir para Painel de Contatos",
       "GO_TO_REPORTS_OVERVIEW": "Ir para Resumo de Relatórios",
+      "GO_TO_CONVERSATION_REPORTS": "Ir para Relatórios das Conversas",
       "GO_TO_AGENT_REPORTS": "Ir para Relatórios do Agente",
       "GO_TO_LABEL_REPORTS": "Ir para Relatórios de Rótulos",
       "GO_TO_INBOX_REPORTS": "Ir para Relatórios da Caixa de Entrada",
@@ -127,5 +138,8 @@
       "UNTIL_NEXT_WEEK": "Até a próxima semana",
       "UNTIL_TOMORROW": "Até amanhã"
     }
+  },
+  "DASHBOARD_APPS": {
+    "LOADING_MESSAGE": "Carregando Dashboard App..."
   }
 }

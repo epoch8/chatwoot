@@ -3,16 +3,19 @@
     "NOT_AVAILABLE": "No Disponible",
     "EMAIL_ADDRESS": "Dirección de correo",
     "PHONE_NUMBER": "Número de teléfono",
+    "IDENTIFIER": "Idenrificador",
     "COPY_SUCCESSFUL": "Copiado al portapapeles satisfactoriamente",
     "COMPANY": "Empresa",
     "LOCATION": "Ubicación",
+    "BROWSER_LANGUAGE": "Idioma del navegador",
     "CONVERSATION_TITLE": "Detalles de la conversación",
-    "VIEW_PROFILE": "Ver perfil",
+    "VIEW_PROFILE": "Ver Perfil",
     "BROWSER": "Navegador",
     "OS": "Sistema operativo",
     "INITIATED_FROM": "Iniciado desde",
     "INITIATED_AT": "Iniciado el",
     "IP_ADDRESS": "Dirección IP",
+    "CREATED_AT_LABEL": "Creado",
     "NEW_MESSAGE": "Nuevo mensaje",
     "CONVERSATIONS": {
       "NO_RECORDS_FOUND": "No hay conversaciones previas asociadas a este contacto.",
@@ -70,6 +73,14 @@
     "SUCCESS_MESSAGE": "Contacto guardado correctamente",
     "ERROR_MESSAGE": "Hubo un error, por favor inténtelo de nuevo"
   },
+  "DELETE_NOTE": {
+    "CONFIRM": {
+      "TITLE": "Confirmar eliminación",
+      "MESSAGE": "¿Está seguro de eliminar esta nota?",
+      "YES": "Sí, eliminar",
+      "NO": "No, mantenerlo"
+    }
+  },
   "DELETE_CONTACT": {
     "BUTTON_LABEL": "Eliminar contacto",
     "TITLE": "Eliminar contacto",
@@ -77,9 +88,8 @@
     "CONFIRM": {
       "TITLE": "Confirmar eliminación",
       "MESSAGE": "¿Está seguro de eliminar ",
-      "PLACE_HOLDER": "Por favor, escriba {contactName} para confirmar",
-      "YES": "Sí, eliminar ",
-      "NO": "No, mantenerlo "
+      "YES": "Sí, eliminar",
+      "NO": "No, mantenerlo"
     },
     "API": {
       "SUCCESS_MESSAGE": "Contacto eliminado correctamente",
@@ -104,7 +114,8 @@
       "EMAIL_ADDRESS": {
         "PLACEHOLDER": "Escriba la dirección email del contacto",
         "LABEL": "Dirección de correo",
-        "DUPLICATE": "Ésta dirección de correo está siendo utilizada por otro contacto."
+        "DUPLICATE": "Ésta dirección de correo está siendo utilizada por otro contacto.",
+        "ERROR": "Por favor, introduzca una dirección de correo válida."
       },
       "PHONE_NUMBER": {
         "PLACEHOLDER": "Escriba el número de teléfono del contacto",
@@ -140,6 +151,12 @@
         }
       }
     },
+    "DELETE_AVATAR": {
+      "API": {
+        "SUCCESS_MESSAGE": "Avatar de contacto eliminado correctamente",
+        "ERROR_MESSAGE": "No se pudo eliminar el avatar de contacto. Por favor, inténtelo de nuevo más tarde."
+      }
+    },
     "SUCCESS_MESSAGE": "Contacto guardado correctamente",
     "ERROR_MESSAGE": "Hubo un error, por favor inténtelo de nuevo"
   },
@@ -169,6 +186,7 @@
       "SUBMIT": "Enviar mensaje",
       "CANCEL": "Cancelar",
       "SUCCESS_MESSAGE": "¡Mensaje enviado!",
+      "GO_TO_CONVERSATION": "Ver",
       "ERROR_MESSAGE": "¡No se pudo enviar! intente nuevamente"
     }
   },
@@ -178,6 +196,8 @@
     "SEARCH_BUTTON": "Buscar",
     "SEARCH_INPUT_PLACEHOLDER": "Buscar contactos",
     "FILTER_CONTACTS": "Filtro",
+    "FILTER_CONTACTS_SAVE": "Guardar filtro",
+    "FILTER_CONTACTS_DELETE": "Eliminar filtro",
     "LIST": {
       "LOADING_MESSAGE": "Cargando contactos...",
       "404": "No hay contactos que coincidan con tu búsqueda 🔍",
@@ -187,6 +207,7 @@
         "PHONE_NUMBER": "Número telefónico",
         "CONVERSATIONS": "Conversaciones",
         "LAST_ACTIVITY": "Última actividad",
+        "CREATED_AT": "Creado el",
         "COUNTRY": "País",
         "CITY": "Ciudad",
         "SOCIAL_PROFILES": "Perfiles Sociales",

@@ -23,7 +23,7 @@
         "ERROR": "Harap masukkan nama akun yang valid"
       },
       "LANGUAGE": {
-        "LABEL": "Bahasa Situs (Beta)",
+        "LABEL": "Site language",
         "PLACEHOLDER": "Nama akun Anda",
         "ERROR": ""
       },
@@ -40,25 +40,34 @@
       "AUTO_RESOLVE_DURATION": {
         "LABEL": "Jumlah hari setelah tiket harus diselesaikan secara otomatis jika tidak ada aktivitas",
         "PLACEHOLDER": "30",
-        "ERROR": "Harap masukkan durasi penyelesaian otomatis yang valid (minimal 1 hari)"
+        "ERROR": "Please enter a valid auto resolve duration (minimum 1 day and maximum 999 days)"
       },
       "FEATURES": {
         "INBOUND_EMAIL_ENABLED": "Kelanjutan percakapan dengan email diaktifkan untuk akun Anda.",
         "CUSTOM_EMAIL_DOMAIN_ENABLED": "Anda dapat menerima email di domain kustom Anda sekarang."
       }
     },
-    "UPDATE_CHATWOOT": "Pembaharuan Chatwoot %{latestChatwootVersion} telah tersedia. Silahkan lakukan pembaharuan instance Anda."
+    "UPDATE_CHATWOOT": "Pembaharuan Chatwoot %{latestChatwootVersion} telah tersedia. Silahkan lakukan pembaharuan instance Anda.",
+    "LEARN_MORE": "Pelajari lebih lanjut"
   },
   "FORMS": {
     "MULTISELECT": {
       "ENTER_TO_SELECT": "Tekan enter untuk memilih",
       "ENTER_TO_REMOVE": "Tekan enter untuk menghapus",
-      "SELECT_ONE": "Pilih satu"
+      "SELECT_ONE": "Pilih satu",
+      "SELECT": "Select"
     }
   },
   "NOTIFICATIONS_PAGE": {
     "HEADER": "Notifikasi",
     "MARK_ALL_DONE": "Tandai Semua Selesai",
+    "DELETE_TITLE": "terhapus",
+    "UNREAD_NOTIFICATION": {
+      "TITLE": "Unread Notifications",
+      "ALL_NOTIFICATIONS": "View all notifications",
+      "LOADING_UNREAD_MESSAGE": "Loading unread notifications...",
+      "EMPTY_MESSAGE": "You have no unread notifications"
+    },
     "LIST": {
       "LOADING_MESSAGE": "Memuat notifikasi...",
       "404": "Tidak Ada Notifikasi",
@@ -73,6 +82,7 @@
       "conversation_creation": "Percakapan baru",
       "conversation_assignment": "Percakapan ditugaskan",
       "assigned_conversation_new_message": "Pesan Baru",
+      "participating_conversation_new_message": "Pesan Baru",
       "conversation_mention": "Mention"
     }
   },
@@ -100,6 +110,7 @@
       "GO_TO_CONVERSATION_DASHBOARD": "Menuju ke Dasbor Percakapan",
       "GO_TO_CONTACTS_DASHBOARD": "Menuju ke Dasbor Kontak",
       "GO_TO_REPORTS_OVERVIEW": "Go to Reports Overview",
+      "GO_TO_CONVERSATION_REPORTS": "Go to Conversation Reports",
       "GO_TO_AGENT_REPORTS": "Go to Agent Reports",
       "GO_TO_LABEL_REPORTS": "Go to Label Reports",
       "GO_TO_INBOX_REPORTS": "Go to Inbox Reports",
@@ -127,5 +138,8 @@
       "UNTIL_NEXT_WEEK": "Until next week",
       "UNTIL_TOMORROW": "Until tomorrow"
     }
+  },
+  "DASHBOARD_APPS": {
+    "LOADING_MESSAGE": "Loading Dashboard App..."
   }
 }

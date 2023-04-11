@@ -1,56 +1,21 @@
 <template>
   <div class="view-box fill-height">
-    <div
-      v-if="!currentChat.can_reply && !isAWhatsappChannel"
-      class="banner messenger-policy--banner"
-    >
-      <span>
-        {{ $t('CONVERSATION.CANNOT_REPLY') }}
-        <a
-          :href="facebookReplyPolicy"
-          rel="noopener noreferrer nofollow"
-          target="_blank"
-        >
-          {{ $t('CONVERSATION.24_HOURS_WINDOW') }}
-        </a>
-      </span>
-    </div>
-    <div
-      v-if="!currentChat.can_reply && isAWhatsappChannel"
-      class="banner messenger-policy--banner"
-    >
-      <span>
-        {{ $t('CONVERSATION.TWILIO_WHATSAPP_CAN_REPLY') }}
-        <a
-          :href="twilioWhatsAppReplyPolicy"
-          rel="noopener noreferrer nofollow"
-          target="_blank"
-        >
-          {{ $t('CONVERSATION.TWILIO_WHATSAPP_24_HOURS_WINDOW') }}
-        </a>
-      </span>
-    </div>
+    <banner
+      v-if="!currentChat.can_reply"
+      color-scheme="alert"
+      :banner-message="replyWindowBannerMessage"
+      :href-link="replyWindowLink"
+      :href-link-text="replyWindowLinkText"
+    />
 
-    <div v-if="isATweet" class="banner">
-      <span v-if="!selectedTweetId">
-        {{ $t('CONVERSATION.SELECT_A_TWEET_TO_REPLY') }}
-      </span>
-      <span v-else>
-        {{ $t('CONVERSATION.REPLYING_TO') }}
-        {{ selectedTweet.content || '' }}
-      </span>
-      <button
-        v-if="selectedTweetId"
-        class="banner-close-button"
-        @click="removeTweetSelection"
-      >
-        <fluent-icon
-          v-tooltip="$t('CONVERSATION.REMOVE_SELECTION')"
-          size="16"
-          icon="dismiss"
-        />
-      </button>
-    </div>
+    <banner
+      v-if="isATweet"
+      color-scheme="gray"
+      :banner-message="tweetBannerText"
+      :has-close-button="hasSelectedTweetId"
+      @close="removeTweetSelection"
+    />
+
     <div class="sidebar-toggle__wrap">
       <woot-button
         variant="smooth"
@@ -59,8 +24,7 @@
         class="sidebar-toggle--button"
         :icon="isRightOrLeftIcon"
         @click="onToggleContactPanel"
-      >
-      </woot-button>
+      />
     </div>
     <ul class="conversation-panel">
       <transition name="slide-up">
@@ -71,15 +35,18 @@
       <message
         v-for="message in getReadMessages"
         :key="message.id"
-        class="message--read"
+        class="message--read ph-no-capture"
         :data="message"
         :is-a-tweet="isATweet"
+        :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :has-instagram-story="hasInstagramStory"
+        :is-web-widget-inbox="isAWebWidgetInbox"
       />
-      <li v-show="getUnreadCount != 0" class="unread--toast">
+      <li v-show="unreadMessageCount != 0" class="unread--toast">
         <span class="text-uppercase">
-          {{ getUnreadCount }}
+          {{ unreadMessageCount }}
           {{
-            getUnreadCount > 1
+            unreadMessageCount > 1
               ? $t('CONVERSATION.UNREAD_MESSAGES')
               : $t('CONVERSATION.UNREAD_MESSAGE')
           }}
@@ -88,9 +55,12 @@
       <message
         v-for="message in getUnReadMessages"
         :key="message.id"
-        class="message--unread"
+        class="message--unread ph-no-capture"
         :data="message"
         :is-a-tweet="isATweet"
+        :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :has-instagram-story="hasInstagramStory"
+        :is-web-widget-inbox="isAWebWidgetInbox"
       />
     </ul>
     <div
@@ -108,13 +78,11 @@
         </div>
       </div>
       <reply-box
-        v-on-clickaway="closePopoutReplyBox"
         :conversation-id="currentChat.id"
         :is-a-tweet="isATweet"
         :selected-tweet="selectedTweet"
         :popout-reply-box.sync="isPopoutReplyBox"
         @click="showPopoutReplyBox"
-        @scrollToMessage="scrollToBottom"
       />
     </div>
   </div>
@@ -126,6 +94,7 @@ import { mapGetters } from 'vuex';
 import ReplyBox from './ReplyBox';
 import Message from './Message';
 import conversationMixin from '../../../mixins/conversations';
+import Banner from 'dashboard/components/ui/Banner.vue';
 import { getTypingUsersText } from '../../../helper/commons';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
 import { REPLY_POLICY } from 'shared/constants/links';
@@ -133,14 +102,14 @@ import inboxMixin from 'shared/mixins/inboxMixin';
 import { calculateScrollTop } from './helpers/scrollTopCalculationHelper';
 import { isEscape } from 'shared/helpers/KeyboardHelpers';
 import eventListenerMixins from 'shared/mixins/eventListenerMixins';
-import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
   components: {
     Message,
     ReplyBox,
+    Banner,
   },
-  mixins: [conversationMixin, inboxMixin, eventListenerMixins, clickaway],
+  mixins: [conversationMixin, inboxMixin, eventListenerMixins],
   props: {
     isContactPanelOpen: {
       type: Boolean,
@@ -164,7 +133,6 @@ export default {
       allConversations: 'getAllConversations',
       inboxesList: 'inboxes/getInboxes',
       listLoadingStatus: 'getAllMessagesLoaded',
-      getUnreadCount: 'getUnreadCount',
       loadingChatList: 'getChatListLoadingStatus',
     }),
     inboxId() {
@@ -173,7 +141,16 @@ export default {
     inbox() {
       return this.$store.getters['inboxes/getInbox'](this.inboxId);
     },
-
+    hasSelectedTweetId() {
+      return !!this.selectedTweetId;
+    },
+    tweetBannerText() {
+      return !this.selectedTweetId
+        ? this.$t('CONVERSATION.SELECT_A_TWEET_TO_REPLY')
+        : `
+          ${this.$t('CONVERSATION.REPLYING_TO')}
+          ${this.selectedTweet.content}` || '';
+    },
     typingUsersList() {
       const userList = this.$store.getters[
         'conversationTypingStatus/getUserList'
@@ -230,6 +207,10 @@ export default {
       return this.conversationType === 'tweet';
     },
 
+    hasInstagramStory() {
+      return this.conversationType === 'instagram_direct_message';
+    },
+
     selectedTweet() {
       if (this.selectedTweetId) {
         const { messages = [] } = this.getMessages;
@@ -240,17 +221,53 @@ export default {
       }
       return '';
     },
-    facebookReplyPolicy() {
-      return REPLY_POLICY.FACEBOOK;
-    },
-    twilioWhatsAppReplyPolicy() {
-      return REPLY_POLICY.TWILIO_WHATSAPP;
-    },
     isRightOrLeftIcon() {
       if (this.isContactPanelOpen) {
         return 'arrow-chevron-right';
       }
       return 'arrow-chevron-left';
+    },
+    getLastSeenAt() {
+      const { contact_last_seen_at: contactLastSeenAt } = this.currentChat;
+      return contactLastSeenAt;
+    },
+
+    replyWindowBannerMessage() {
+      if (this.isAWhatsAppChannel) {
+        return this.$t('CONVERSATION.TWILIO_WHATSAPP_CAN_REPLY');
+      }
+      if (this.isAPIInbox) {
+        const { additional_attributes: additionalAttributes = {} } = this.inbox;
+        if (additionalAttributes) {
+          const {
+            agent_reply_time_window_message: agentReplyTimeWindowMessage,
+          } = additionalAttributes;
+          return agentReplyTimeWindowMessage;
+        }
+        return '';
+      }
+      return this.$t('CONVERSATION.CANNOT_REPLY');
+    },
+    replyWindowLink() {
+      if (this.isAWhatsAppChannel) {
+        return REPLY_POLICY.FACEBOOK;
+      }
+      if (!this.isAPIInbox) {
+        return REPLY_POLICY.TWILIO_WHATSAPP;
+      }
+      return '';
+    },
+    replyWindowLinkText() {
+      if (this.isAWhatsAppChannel) {
+        return this.$t('CONVERSATION.24_HOURS_WINDOW');
+      }
+      if (!this.isAPIInbox) {
+        return this.$t('CONVERSATION.TWILIO_WHATSAPP_24_HOURS_WINDOW');
+      }
+      return '';
+    },
+    unreadMessageCount() {
+      return this.currentChat.unread_count;
     },
   },
 
@@ -312,7 +329,7 @@ export default {
     },
     scrollToBottom() {
       let relevantMessages = [];
-      if (this.getUnreadCount > 0) {
+      if (this.unreadMessageCount > 0) {
         // capturing only the unread messages
         relevantMessages = this.conversationPanel.querySelectorAll(
           '.message--unread'
@@ -375,31 +392,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.banner {
-  background: var(--b-500);
-  color: var(--white);
-  font-size: var(--font-size-mini);
-  padding: var(--space-slab) var(--space-normal);
-  text-align: center;
-  position: relative;
-
-  a {
-    text-decoration: underline;
-    color: var(--white);
-    font-size: var(--font-size-mini);
-  }
-
-  &.messenger-policy--banner {
-    background: var(--r-400);
-  }
-
-  .banner-close-button {
-    cursor: pointer;
-    margin-left: var(--space--two);
-    color: var(--white);
-  }
-}
-
 .spinner--container {
   min-height: var(--space-jumbo);
 }
@@ -435,12 +427,7 @@ export default {
       position: fixed;
       left: unset;
       position: absolute;
-    }
-
-    .emoji-dialog::before {
-      transform: rotate(0deg);
-      left: 5px;
-      bottom: var(--space-minus-slab);
+      bottom: var(--space-smaller);
     }
   }
 }

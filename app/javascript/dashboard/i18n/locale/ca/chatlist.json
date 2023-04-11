@@ -7,38 +7,17 @@
       "404": "No hi ha converses actives en aquest grup."
     },
     "TAB_HEADING": "Converses",
-    "MENTION_HEADING": "Mentions",
+    "MENTION_HEADING": "Mencions",
+    "UNATTENDED_HEADING": "Unattended",
     "SEARCH": {
       "INPUT": "Cerca persones, xats, respostes desades .."
     },
     "FILTER_ALL": "Totes",
-    "STATUS_TABS": [
-      {
-        "NAME": "Obrir",
-        "KEY": "openCount"
-      },
-      {
-        "NAME": "Resoltes",
-        "KEY": "allConvCount"
-      }
-    ],
-    "ASSIGNEE_TYPE_TABS": [
-      {
-        "NAME": "Meves",
-        "KEY": "me",
-        "COUNT_KEY": "mineCount"
-      },
-      {
-        "NAME": "Sense assignar",
-        "KEY": "unassigned",
-        "COUNT_KEY": "unAssignedCount"
-      },
-      {
-        "NAME": "Totes",
-        "KEY": "all",
-        "COUNT_KEY": "allCount"
-      }
-    ],
+    "ASSIGNEE_TYPE_TABS": {
+      "me": "Meves",
+      "unassigned": "Sense assignar",
+      "all": "Totes"
+    },
     "CHAT_STATUS_FILTER_ITEMS": {
       "open": {
         "TEXT": "Obrir"
@@ -47,10 +26,13 @@
         "TEXT": "Resoltes"
       },
       "pending": {
-        "TEXT": "Pending"
+        "TEXT": "Pendent"
       },
       "snoozed": {
-        "TEXT": "Snoozed"
+        "TEXT": "Posposat"
+      },
+      "all": {
+        "TEXT": "Totes"
       }
     },
     "ATTACHMENTS": {
@@ -76,10 +58,14 @@
     "RECEIVED_VIA_EMAIL": "Rebut per correu electrònic",
     "VIEW_TWEET_IN_TWITTER": "Veure el tuit a Twitter",
     "REPLY_TO_TWEET": "Respon a aquest tuit",
-    "SENT": "Sent successfully",
+    "LINK_TO_STORY": "Ves a la història d'instagram",
+    "SENT": "Enviat correctament",
+    "READ": "Read successfully",
+    "DELIVERED": "Delivered successfully",
     "NO_MESSAGES": "Cap Missatge",
-    "NO_CONTENT": "No content available",
-    "HIDE_QUOTED_TEXT": "Hide Quoted Text",
-    "SHOW_QUOTED_TEXT": "Show Quoted Text"
+    "NO_CONTENT": "No hi ha contingut disponible",
+    "HIDE_QUOTED_TEXT": "Amaga text entre cometes",
+    "SHOW_QUOTED_TEXT": "Mostra text entre cometes",
+    "MESSAGE_READ": "Llegir"
   }
 }

@@ -23,7 +23,7 @@
         "ERROR": "Anna kelvollinen tilin nimi"
       },
       "LANGUAGE": {
-        "LABEL": "Sivuston kieli (Beta)",
+        "LABEL": "Site language",
         "PLACEHOLDER": "Tilisi nimi",
         "ERROR": ""
       },
@@ -40,25 +40,34 @@
       "AUTO_RESOLVE_DURATION": {
         "LABEL": "Kuinka monen päivän jälkeen tukipyyntö suljetaan automaattisesti, mikäli sillä ei ole toimintaa",
         "PLACEHOLDER": "30",
-        "ERROR": "Syötä kelvollinen automaattisen ratkaisun kesto (vähintään 1 päivä)"
+        "ERROR": "Please enter a valid auto resolve duration (minimum 1 day and maximum 999 days)"
       },
       "FEATURES": {
         "INBOUND_EMAIL_ENABLED": "Keskustelun jatkuvuus sähköpostin kautta on käytössä tililläsi.",
         "CUSTOM_EMAIL_DOMAIN_ENABLED": "Voit nyt vastaanottaa sähköposteja mukautetulla verkkotunnuksellasi."
       }
     },
-    "UPDATE_CHATWOOT": "An update %{latestChatwootVersion} for Chatwoot is available. Please update your instance."
+    "UPDATE_CHATWOOT": "An update %{latestChatwootVersion} for Chatwoot is available. Please update your instance.",
+    "LEARN_MORE": "Learn more"
   },
   "FORMS": {
     "MULTISELECT": {
       "ENTER_TO_SELECT": "Paina enter valitaksesi",
       "ENTER_TO_REMOVE": "Paina enter poistaaksesi",
-      "SELECT_ONE": "Valitse yksi"
+      "SELECT_ONE": "Valitse yksi",
+      "SELECT": "Select"
     }
   },
   "NOTIFICATIONS_PAGE": {
     "HEADER": "Ilmoitukset",
     "MARK_ALL_DONE": "Mark All Done",
+    "DELETE_TITLE": "deleted",
+    "UNREAD_NOTIFICATION": {
+      "TITLE": "Unread Notifications",
+      "ALL_NOTIFICATIONS": "View all notifications",
+      "LOADING_UNREAD_MESSAGE": "Loading unread notifications...",
+      "EMPTY_MESSAGE": "You have no unread notifications"
+    },
     "LIST": {
       "LOADING_MESSAGE": "Loading notifications...",
       "404": "No Notifications",
@@ -73,6 +82,7 @@
       "conversation_creation": "Uusi keskustelu",
       "conversation_assignment": "Conversation Assigned",
       "assigned_conversation_new_message": "New Message",
+      "participating_conversation_new_message": "New Message",
       "conversation_mention": "Mention"
     }
   },
@@ -100,6 +110,7 @@
       "GO_TO_CONVERSATION_DASHBOARD": "Go to Conversation Dashboard",
       "GO_TO_CONTACTS_DASHBOARD": "Go to Contacts Dashboard",
       "GO_TO_REPORTS_OVERVIEW": "Go to Reports Overview",
+      "GO_TO_CONVERSATION_REPORTS": "Go to Conversation Reports",
       "GO_TO_AGENT_REPORTS": "Go to Agent Reports",
       "GO_TO_LABEL_REPORTS": "Go to Label Reports",
       "GO_TO_INBOX_REPORTS": "Go to Inbox Reports",
@@ -127,5 +138,8 @@
       "UNTIL_NEXT_WEEK": "Until next week",
       "UNTIL_TOMORROW": "Until tomorrow"
     }
+  },
+  "DASHBOARD_APPS": {
+    "LOADING_MESSAGE": "Loading Dashboard App..."
   }
 }

@@ -8,37 +8,16 @@
     },
     "TAB_HEADING": "Rozhovory",
     "MENTION_HEADING": "Zmienky",
+    "UNATTENDED_HEADING": "Unattended",
     "SEARCH": {
       "INPUT": "Vyhľadávanie ľudí, konverzácií, uložených odpovedí.."
     },
     "FILTER_ALL": "Všetko",
-    "STATUS_TABS": [
-      {
-        "NAME": "Otvorené",
-        "KEY": "openCount"
-      },
-      {
-        "NAME": "Vyriešené",
-        "KEY": "allConvCount"
-      }
-    ],
-    "ASSIGNEE_TYPE_TABS": [
-      {
-        "NAME": "Moje",
-        "KEY": "me",
-        "COUNT_KEY": "mineCount"
-      },
-      {
-        "NAME": "Nepriradené",
-        "KEY": "unassigned",
-        "COUNT_KEY": "unAssignedCount"
-      },
-      {
-        "NAME": "Všetko",
-        "KEY": "all",
-        "COUNT_KEY": "allCount"
-      }
-    ],
+    "ASSIGNEE_TYPE_TABS": {
+      "me": "Moje",
+      "unassigned": "Nepriradené",
+      "all": "Všetko"
+    },
     "CHAT_STATUS_FILTER_ITEMS": {
       "open": {
         "TEXT": "Otvorené"
@@ -51,6 +30,9 @@
       },
       "snoozed": {
         "TEXT": "Odložené"
+      },
+      "all": {
+        "TEXT": "Všetko"
       }
     },
     "ATTACHMENTS": {
@@ -76,10 +58,14 @@
     "RECEIVED_VIA_EMAIL": "Prijaté emailom",
     "VIEW_TWEET_IN_TWITTER": "Zobraz tweet na Twitteri",
     "REPLY_TO_TWEET": "Odpovedať na tento Tweet",
+    "LINK_TO_STORY": "Go to instagram story",
     "SENT": "Úspešne odoslané",
+    "READ": "Read successfully",
+    "DELIVERED": "Delivered successfully",
     "NO_MESSAGES": "Žiadne správy",
     "NO_CONTENT": "Žiaden obsah nie je k dispozícii",
     "HIDE_QUOTED_TEXT": "Skryť citovaný text",
-    "SHOW_QUOTED_TEXT": "Ukázať citovaný text"
+    "SHOW_QUOTED_TEXT": "Ukázať citovaný text",
+    "MESSAGE_READ": "Read"
   }
 }

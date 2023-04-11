@@ -35,7 +35,6 @@ class ConversationReplyMailer < ApplicationMailer
     init_conversation_attributes(message.conversation)
     @message = message
     reply_mail_object = prepare_mail(true)
-
     message.update(source_id: reply_mail_object.message_id)
   end
 
@@ -115,6 +114,14 @@ class ConversationReplyMailer < ApplicationMailer
     end
   end
 
+  def channel_email_with_name
+    if @conversation.assignee.present?
+      I18n.t('conversations.reply.channel_email.header.reply_with_name', assignee_name: assignee_name, inbox_name: @inbox.name)
+    else
+      I18n.t('conversations.reply.channel_email.header.reply_with_inbox_name', inbox_name: @inbox.name, from_email: @channel.email)
+    end
+  end
+
   def parse_email(email_string)
     Mail::Address.new(email_string).address
   end
@@ -128,11 +135,11 @@ class ConversationReplyMailer < ApplicationMailer
   def custom_message_id
     last_message = @message || @messages&.last
 
-    "<conversation/#{@conversation.uuid}/messages/#{last_message&.id}@#{@account.inbound_email_domain}>"
+    "<conversation/#{@conversation.uuid}/messages/#{last_message&.id}@#{channel_email_domain}>"
   end
 
   def in_reply_to_email
-    conversation_reply_email_id || "<account/#{@account.id}/conversation/#{@conversation.uuid}@#{@account.inbound_email_domain}>"
+    conversation_reply_email_id || "<account/#{@account.id}/conversation/#{@conversation.uuid}@#{channel_email_domain}>"
   end
 
   def conversation_reply_email_id

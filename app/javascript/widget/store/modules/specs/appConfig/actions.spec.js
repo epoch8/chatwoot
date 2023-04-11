@@ -11,12 +11,17 @@ describe('#actions', () => {
     });
   });
 
+  describe('#setBubbleVisibility', () => {
+    it('creates actions properly', () => {
+      actions.setBubbleVisibility({ commit }, false);
+      expect(commit.mock.calls).toEqual([['SET_BUBBLE_VISIBILITY', false]]);
+    });
+  });
+
   describe('#setWidgetColor', () => {
     it('creates actions properly', () => {
-      actions.setWidgetColor({ commit }, { widgetColor: '#eaeaea' });
-      expect(commit.mock.calls).toEqual([
-        ['SET_WIDGET_COLOR', { widgetColor: '#eaeaea' }],
-      ]);
+      actions.setWidgetColor({ commit }, '#eaeaea');
+      expect(commit.mock.calls).toEqual([['SET_WIDGET_COLOR', '#eaeaea']]);
     });
   });
 });

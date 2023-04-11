@@ -6,10 +6,12 @@ module ActivityMessageHandler
   def create_activity
     user_name = Current.user.name if Current.user.present?
     status_change_activity(user_name) if saved_change_to_status?
-    create_label_change(user_name) if saved_change_to_label_list?
+    create_label_change(activity_message_ownner(user_name)) if saved_change_to_label_list?
   end
 
   def status_change_activity(user_name)
+    return send_automation_activity if Current.executed_by.present?
+
     create_status_change_message(user_name)
   end
 
@@ -20,10 +22,17 @@ module ActivityMessageHandler
   def create_status_change_message(user_name)
     content = if user_name
                 I18n.t("conversations.activity.status.#{status}", user_name: user_name)
+              elsif Current.contact.present? && resolved?
+                I18n.t('conversations.activity.status.contact_resolved', contact_name: Current.contact.name.capitalize)
               elsif resolved?
                 I18n.t('conversations.activity.status.auto_resolved', duration: auto_resolve_duration)
               end
 
+    ::Conversations::ActivityMessageJob.perform_later(self, activity_message_params(content)) if content
+  end
+
+  def send_automation_activity
+    content = I18n.t("conversations.activity.status.#{status}", user_name: 'Automation System')
     ::Conversations::ActivityMessageJob.perform_later(self, activity_message_params(content)) if content
   end
 
@@ -64,7 +73,8 @@ module ActivityMessageHandler
   end
 
   def generate_team_change_activity_key
-    key = team_id ? 'assigned' : 'removed'
+    team = Team.find_by(id: team_id)
+    key = team.present? ? 'assigned' : 'removed'
     key += '_with_assignee' if key == 'assigned' && saved_change_to_assignee_id? && assignee
     key
   end
@@ -75,6 +85,7 @@ module ActivityMessageHandler
   end
 
   def create_team_change_activity(user_name)
+    user_name = activity_message_ownner(user_name)
     return unless user_name
 
     key = generate_team_change_activity_key
@@ -93,9 +104,16 @@ module ActivityMessageHandler
   end
 
   def create_assignee_change_activity(user_name)
+    user_name = activity_message_ownner(user_name)
+
     return unless user_name
 
     content = generate_assignee_change_activity_content(user_name)
     ::Conversations::ActivityMessageJob.perform_later(self, activity_message_params(content)) if content
+  end
+
+  def activity_message_ownner(user_name)
+    user_name = 'Automation System' if !user_name && Current.executed_by.present?
+    user_name
   end
 end

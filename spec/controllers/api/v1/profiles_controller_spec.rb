@@ -26,6 +26,7 @@ RSpec.describe 'Profile API', type: :request do
         expect(json_response['email']).to eq(agent.email)
         expect(json_response['access_token']).to eq(agent.access_token.token)
         expect(json_response['custom_attributes']['test']).to eq('test')
+        expect(json_response['message_signature']).to be_nil
       end
     end
   end
@@ -56,6 +57,21 @@ RSpec.describe 'Profile API', type: :request do
         expect(agent.name).to eq('test')
       end
 
+      it 'updates the message_signature' do
+        put '/api/v1/profile',
+            params: { profile: { name: 'test', message_signature: 'Thanks\nMy Signature' } },
+            headers: agent.create_new_auth_token,
+            as: :json
+
+        expect(response).to have_http_status(:success)
+        json_response = JSON.parse(response.body)
+        agent.reload
+        expect(json_response['id']).to eq(agent.id)
+        expect(json_response['name']).to eq(agent.name)
+        expect(agent.name).to eq('test')
+        expect(json_response['message_signature']).to eq('Thanks\nMy Signature')
+      end
+
       it 'updates the password when current password is provided' do
         put '/api/v1/profile',
             params: { profile: { current_password: 'Test123!', password: 'Test1234!', password_confirmation: 'Test1234!' } },
@@ -63,7 +79,7 @@ RSpec.describe 'Profile API', type: :request do
             as: :json
 
         expect(response).to have_http_status(:success)
-        expect(agent.reload.valid_password?('Test1234!')).to eq true
+        expect(agent.reload.valid_password?('Test1234!')).to be true
       end
 
       it 'throws error when current password provided is invalid' do
@@ -75,9 +91,21 @@ RSpec.describe 'Profile API', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
+      it 'validate name' do
+        user_name = 'test' * 999
+        put '/api/v1/profile',
+            params: { profile: { name: user_name } },
+            headers: agent.create_new_auth_token,
+            as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json_response = JSON.parse(response.body)
+        expect(json_response['message']).to eq('Name is too long (maximum is 255 characters)')
+      end
+
       it 'updates avatar' do
         # no avatar before upload
-        expect(agent.avatar.attached?).to eq(false)
+        expect(agent.avatar.attached?).to be(false)
         file = fixture_file_upload(Rails.root.join('spec/assets/avatar.png'), 'image/png')
         put '/api/v1/profile',
             params: { profile: { avatar: file } },
@@ -85,7 +113,7 @@ RSpec.describe 'Profile API', type: :request do
 
         expect(response).to have_http_status(:success)
         agent.reload
-        expect(agent.avatar.attached?).to eq(true)
+        expect(agent.avatar.attached?).to be(true)
       end
 
       it 'updates the ui settings' do
@@ -96,7 +124,7 @@ RSpec.describe 'Profile API', type: :request do
 
         expect(response).to have_http_status(:success)
         json_response = JSON.parse(response.body)
-        expect(json_response['ui_settings']['is_contact_sidebar_open']).to eq(false)
+        expect(json_response['ui_settings']['is_contact_sidebar_open']).to be(false)
       end
     end
 
@@ -164,6 +192,53 @@ RSpec.describe 'Profile API', type: :request do
 
         expect(response).to have_http_status(:success)
         expect(::OnlineStatusTracker.get_status(account.id, agent.id)).to eq('busy')
+      end
+    end
+  end
+
+  describe 'POST /api/v1/profile/auto_offline' do
+    context 'when it is an unauthenticated user' do
+      it 'returns unauthorized' do
+        post '/api/v1/profile/auto_offline'
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when it is an authenticated user' do
+      let(:agent) { create(:user, password: 'Test123!', account: account, role: :agent) }
+
+      it 'updates the auto offline status' do
+        post '/api/v1/profile/auto_offline',
+             params: { profile: { auto_offline: false, account_id: account.id } },
+             headers: agent.create_new_auth_token,
+             as: :json
+
+        expect(response).to have_http_status(:success)
+        json_response = JSON.parse(response.body)
+        expect(json_response['accounts'].first['auto_offline']).to be(false)
+      end
+    end
+  end
+
+  describe 'PUT /api/v1/profile/set_active_account' do
+    context 'when it is an unauthenticated user' do
+      it 'returns unauthorized' do
+        put '/api/v1/profile/set_active_account'
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when it is an authenticated user' do
+      let(:agent) { create(:user, password: 'Test123!', account: account, role: :agent) }
+
+      it 'updates the last active account id' do
+        put '/api/v1/profile/set_active_account',
+            params: { profile: { account_id: account.id } },
+            headers: agent.create_new_auth_token,
+            as: :json
+
+        expect(response).to have_http_status(:success)
       end
     end
   end

@@ -23,7 +23,7 @@
         "ERROR": "لطفا نام حساب‌کاربری را به درستی وارد نمایید"
       },
       "LANGUAGE": {
-        "LABEL": "زبان سایت (آزمایشی)",
+        "LABEL": "زبان سایت",
         "PLACEHOLDER": "نام حساب‌کاربری شما",
         "ERROR": ""
       },
@@ -40,25 +40,34 @@
       "AUTO_RESOLVE_DURATION": {
         "LABEL": "تعداد روزهایی که اگر فعالیتی وجود نداشته باشد، گفتگو به صورت خودکار بسته شود",
         "PLACEHOLDER": "۳۰",
-        "ERROR": "لطفاً یک مدت زمان حل خودکار معتبر (حداقل 1 روز) وارد کنید"
+        "ERROR": "لطفا یک مدت زمان حل خودکار معبر (بین حداقل 1 روز تا حداکثر 999 روز) وارد کنید"
       },
       "FEATURES": {
         "INBOUND_EMAIL_ENABLED": "تداوم مکالمه با ایمیل برای حساب شما فعال است.",
         "CUSTOM_EMAIL_DOMAIN_ENABLED": "اکنون می‌توانید ایمیل‌ها را در دامنه سفارشی خود دریافت کنید."
       }
     },
-    "UPDATE_CHATWOOT": "به روزرسانی%{latestChatwootVersion} برای Chatwoot در دسترس است. لطفا نمونه خود را به روز کنید."
+    "UPDATE_CHATWOOT": "به روزرسانی%{latestChatwootVersion} برای Chatwoot در دسترس است. لطفا نمونه خود را به روز کنید.",
+    "LEARN_MORE": "بیشتر بدانید"
   },
   "FORMS": {
     "MULTISELECT": {
       "ENTER_TO_SELECT": "برای انتخاب Enter را فشار دهید",
       "ENTER_TO_REMOVE": "برای حذف دکمه enter را فشار دهید",
-      "SELECT_ONE": "یکی را انتخاب کن"
+      "SELECT_ONE": "یکی را انتخاب کن",
+      "SELECT": "انتخاب کنید"
     }
   },
   "NOTIFICATIONS_PAGE": {
     "HEADER": "اعلان ها",
     "MARK_ALL_DONE": "همه را به انجام شده تغییر بده",
+    "DELETE_TITLE": "حذف شده",
+    "UNREAD_NOTIFICATION": {
+      "TITLE": "آگاه‌سازی‌های خوانده نشده",
+      "ALL_NOTIFICATIONS": "مشاهده همه آگاه‌سازی‌ها",
+      "LOADING_UNREAD_MESSAGE": "در حال بارگیری آگاه‌سازی‌های خوانده نشده...",
+      "EMPTY_MESSAGE": "شما هیچ آگاه‌سازی‌ خوانده نشده‌ای ندارید"
+    },
     "LIST": {
       "LOADING_MESSAGE": "در حال بارگیری اعلان ها...",
       "404": "اعلانی وجود ندارد",
@@ -73,6 +82,7 @@
       "conversation_creation": "گفتگوی جدید",
       "conversation_assignment": "مکالمه اختصاص داده شد",
       "assigned_conversation_new_message": "پیام جدید",
+      "participating_conversation_new_message": "پیام جدید",
       "conversation_mention": "اشاره"
     }
   },
@@ -100,6 +110,7 @@
       "GO_TO_CONVERSATION_DASHBOARD": "به داشبورد مکالمه بروید",
       "GO_TO_CONTACTS_DASHBOARD": "به داشبورد مخاطبین بروید",
       "GO_TO_REPORTS_OVERVIEW": "به نمای کلی گزارش ها بروید",
+      "GO_TO_CONVERSATION_REPORTS": "به گزارش های گفتگو بروید",
       "GO_TO_AGENT_REPORTS": "به گزارش های ایجنت بروید",
       "GO_TO_LABEL_REPORTS": "به گزارش برچسب بروید",
       "GO_TO_INBOX_REPORTS": "به گزارش صندوق ورودی بروید",
@@ -127,5 +138,8 @@
       "UNTIL_NEXT_WEEK": "تا هفته بعد",
       "UNTIL_TOMORROW": "تا فردا"
     }
+  },
+  "DASHBOARD_APPS": {
+    "LOADING_MESSAGE": "در حال بارگیری برنامه پیشخوان..."
   }
 }
