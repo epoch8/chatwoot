@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
       args:
-        BUNDLE_WITHOUT: ''
-        EXECJS_RUNTIME: 'Node'
-        RAILS_ENV: 'development'
-        RAILS_SERVE_STATIC_FILES: 'false'
+        BUNDLE_WITHOUT_ARG: ''
+        EXECJS_RUNTIME_ARG: 'Node'
+        RAILS_ENV_ARG: 'development'
+        RAILS_SERVE_STATIC_FILES_ARG: 'false'
     tty: true
     stdin_open: true
     image: chatwoot:development
