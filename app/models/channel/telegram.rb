@@ -79,7 +79,8 @@ class Channel::Telegram < ApplicationRecord
 
   def send_message(message)
     buttons = message.content_attributes[:items] if message.content_type == 'input_select'
-    response = message_request(message.conversation[:additional_attributes]['chat_id'], message.content, buttons)
+    buttons_layout = message.content_attributes[:buttons_layout] if message.content_type == 'input_select' 
+    response = message_request(message.conversation[:additional_attributes]['chat_id'], message.content, buttons_layout, buttons)
     response.parsed_response['result']['message_id'] if response.success?
   end
 
@@ -127,7 +128,7 @@ class Channel::Telegram < ApplicationRecord
     RestClient.post("#{telegram_api_url}/sendMediaGroup", body)
   end
 
-  def message_request(chat_id, text, buttons=nil)
+  def message_request(chat_id, text, buttons_layout=nil, buttons=nil)
     body = {
       chat_id: chat_id,
       text: text
@@ -140,7 +141,13 @@ class Channel::Telegram < ApplicationRecord
           callback_data: button[:value]
         }
       end
-      inline_keyboard_rows = inline_keyboard.size > 8 ? inline_keyboard.each_slice(1).to_a : [inline_keyboard]
+      if buttons_layout == 'vertical'
+        inline_keyboard_rows = inline_keyboard.each_slice(1).to_a
+      elsif buttons_layout == 'inline'
+        inline_keyboard_rows = [inline_keyboard]
+      else
+        inline_keyboard_rows = inline_keyboard.size > 4 ? inline_keyboard.each_slice(1).to_a : [inline_keyboard]
+      end
       body[:reply_markup] = {inline_keyboard: inline_keyboard_rows}.to_json
     end
     puts "Sending to telegram: #{body}"

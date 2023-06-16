@@ -14,6 +14,7 @@ class Messages::MessageBuilder
 
     @in_reply_to = params.to_unsafe_h&.dig(:content_attributes, :in_reply_to)
     @items = params.to_unsafe_h&.dig(:content_attributes, :items)
+    @buttons_layout = params.to_unsafe_h&.dig(:content_attributes, :buttons_layout)
   end
 
   def perform
@@ -111,6 +112,7 @@ class Messages::MessageBuilder
       sender: sender,
       content_type: @params[:content_type],
       items: @items,
+      buttons_layout: @buttons_layout,
       in_reply_to: @in_reply_to,
       echo_id: @params[:echo_id]
     }.merge(external_created_at).merge(automation_rule_id).merge(campaign_id).merge(template_params)
