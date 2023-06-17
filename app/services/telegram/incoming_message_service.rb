@@ -133,7 +133,8 @@ class Telegram::IncomingMessageService
   end
 
   def location
-    @location ||= params[:message][:location].presence
+    message = params[:message] || params[:callback_query]
+    @location ||= message[:location].presence
   end
 
   def visual_media_params
