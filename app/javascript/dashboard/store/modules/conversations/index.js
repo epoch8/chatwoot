@@ -52,6 +52,7 @@ export const mutations = {
     if (data.length) {
       const [chat] = _state.allConversations.filter(c => c.id === id);
       chat.messages.unshift(...data);
+      Vue.set(chat, 'dataFetched', true);
     }
   },
 
