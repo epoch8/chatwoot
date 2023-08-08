@@ -29,6 +29,19 @@
       "SAVED": "Сохранено"
     },
     "ARTICLE_EDITOR": {
+      "QUESTIONS": {
+        "ADD_QUESTION": {
+          "LABEL": "Добавить вопрос для статьи",
+          "TITLE": "Добавить вопрос для статьи",
+          "PLACEHOLDER": "Введите вопрос"
+        },
+        "LIST_QUESTION": {
+          "LABEL": "Список вопросов"
+        },
+        "BUTTON_ADD_QUESTION": {
+          "TEXT": "Добавить"
+        }
+      },
       "IMAGE_UPLOAD": {
         "TITLE": "Загрузить изображение",
         "UPLOADING": "Загружаем...",
@@ -63,6 +76,10 @@
         "META_DESCRIPTION": {
           "LABEL": "Мета описание",
           "PLACEHOLDER": "Добавьте мета-описание для лучших SEO результатов..."
+        },
+        "INTENT": {
+          "LABEL": "Интент",
+          "PLACEHOLDER": "Добавить интент для статьи..."
         },
         "META_TAGS": {
           "LABEL": "Мета теги",

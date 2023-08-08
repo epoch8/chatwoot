@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_15_105847) do
+ActiveRecord::Schema.define(version: 2023_08_07_090151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2023_03_15_105847) do
     t.jsonb "meta", default: {}
     t.string "slug", null: false
     t.integer "position"
+    t.string "intent"
     t.index ["associated_article_id"], name: "index_articles_on_associated_article_id"
     t.index ["author_id"], name: "index_articles_on_author_id"
     t.index ["slug"], name: "index_articles_on_slug", unique: true
@@ -769,6 +770,12 @@ ActiveRecord::Schema.define(version: 2023_03_15_105847) do
     t.index ["user_id"], name: "index_portals_members_on_user_id"
   end
 
+  create_table "questions", force: :cascade do |t|
+    t.text "content"
+    t.bigint "article_id", null: false
+    t.index ["article_id"], name: "index_questions_on_article_id"
+  end
+
   create_table "related_categories", force: :cascade do |t|
     t.bigint "category_id"
     t.bigint "related_category_id"
@@ -916,6 +923,7 @@ ActiveRecord::Schema.define(version: 2023_03_15_105847) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "questions", "articles"
   create_trigger("accounts_after_insert_row_tr", :generated => true, :compatibility => 1).
       on("accounts").
       after(:insert).

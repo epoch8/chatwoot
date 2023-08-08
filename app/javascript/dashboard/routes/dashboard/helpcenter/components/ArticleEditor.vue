@@ -18,6 +18,35 @@
       @blur="onBlur"
       @input="onContentInput"
     />
+    <label
+      class="article-questions"
+      >
+      {{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION.LABEL')}}
+      <div class="article-questions-list"
+        v-for="item in articleQuestions"
+        :key="item.id">
+          <div class="article-question-flex-wrapper">
+            <p>{{ item.content }}</p>
+          </div>
+      </div>
+    </label>
+    <label>
+      {{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.LABEL') }}
+      <textarea
+      v-model="tmpQuestion"
+      rows="2"
+      type="text"
+      :placeholder="
+        $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.PLACEHOLDER')
+      "
+      />
+      <woot-submit-button
+        class="button nice success"
+        :button-text="$t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.BUTTON_ADD_QUESTION.TEXT')"
+        @click="onAddQuestion"
+      />
+    </label>
+    <div></div>
   </div>
 </template>
 
@@ -39,18 +68,22 @@ export default {
     isSettingsSidebarOpen: {
       type: Boolean,
       default: false,
-    },
+    }
   },
   data() {
     return {
       articleTitle: '',
       articleContent: '',
+      tmpQuestion: '',
+      articleQuestions: [],
       saveArticle: () => {},
     };
   },
   mounted() {
     this.articleTitle = this.article.title;
     this.articleContent = this.article.content;
+    this.articleQuestions = this.article.questions;
+    this.tmpQuestion = '';
     this.saveArticle = debounce(
       values => {
         this.$emit('save-article', values);
@@ -72,6 +105,14 @@ export default {
     onContentInput() {
       this.saveArticle({ content: this.articleContent });
     },
+    onAddQuestion() {
+      this.saveArticle({ article: {questions: [{content: this.tmpQuestion }]}});
+      this.tmpQuestion = '';
+      this.articleQuestions = this.article.questions;
+    },
+    onClickDeleteQuestion(id){
+      console.log(id);
+    }
   },
 };
 </script>
@@ -102,6 +143,24 @@ export default {
     background: var(--s-25);
     border-radius: var(--border-radius-normal);
   }
+}
+
+
+.article-questions-list {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--s-200);
+}
+
+.article-questions-list p {
+  font-weight: var(--font-weight-medium);
+  padding-top: 4px;
+  margin: 0;
+}
+
+.article-question-flex-wrapper{
+  display: flex;
+  justify-content: space-between;
 }
 
 .article-content {
