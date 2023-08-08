@@ -175,9 +175,7 @@ export default {
   },
   mounted() {
     this.intent = this.article.intent;
-    console.log(this.article);
     if (!isEmptyObject(this.article.meta || {})) {
-      console.log("article")
       const {
         meta: { title = '', description = '', tags = [] },
       } = this.article;
@@ -187,7 +185,6 @@ export default {
     }
     this.saveArticle = debounce(
       () => {
-        console.log("debounce")
         this.$emit('save-article', {
           meta: {
             title: this.metaTitle,
