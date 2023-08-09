@@ -93,6 +93,16 @@
             @tag="addTagValue"
           />
         </label>
+        <label>
+          {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.INTENT.LABEL') }}
+          <resizable-text-area
+            v-model="intent"
+            type="text"
+            rows="2"
+            :placeholder="$t('HELP_CENTER.ARTICLE_SETTINGS.FORM.INTENT.PLACEHOLDER')"
+            @input="onChangeIntent"
+          />
+        </label>
       </div>
       <div class="action-buttons">
         <woot-button
@@ -120,12 +130,14 @@
 
 <script>
 import MultiselectDropdown from 'shared/components/ui/MultiselectDropdown';
+import ResizableTextArea from 'shared/components/ResizableTextArea';
 import { mapGetters } from 'vuex';
 import { debounce } from '@chatwoot/utils';
 import { isEmptyObject } from 'dashboard/helper/commons.js';
 export default {
   components: {
     MultiselectDropdown,
+    ResizableTextArea,
   },
   props: {
     article: {
@@ -135,6 +147,7 @@ export default {
   },
   data() {
     return {
+      intent: '',
       metaTitle: '',
       metaDescription: '',
       metaTags: [],
@@ -153,11 +166,15 @@ export default {
     selectedCategory() {
       return this.article?.category;
     },
+    selectIntent(){
+      return this.article.intent;
+    },
     allTags() {
       return this.metaTags.map(item => item.name);
     },
   },
   mounted() {
+    this.intent = this.article.intent;
     if (!isEmptyObject(this.article.meta || {})) {
       const {
         meta: { title = '', description = '', tags = [] },
@@ -166,7 +183,6 @@ export default {
       this.metaDescription = description;
       this.metaTags = this.formattedTags({ tags });
     }
-
     this.saveArticle = debounce(
       () => {
         this.$emit('save-article', {
@@ -209,6 +225,9 @@ export default {
     },
     onClickAssignAuthor({ id }) {
       this.$emit('save-article', { author_id: id });
+    },
+    onChangeIntent(){
+      this.$emit('save-article', { intent: this.intent });
     },
     onChangeMetaInput() {
       this.saveArticle();

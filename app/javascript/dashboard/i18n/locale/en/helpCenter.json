@@ -29,6 +29,19 @@
       "SAVED": "Saved"
     },
     "ARTICLE_EDITOR": {
+      "QUESTIONS": {
+        "ADD_QUESTION": {
+          "LABEL": "Add Question",
+          "TITLE": "Add question",
+          "PLACEHOLDER": "Add question"
+        },
+        "LIST_QUESTION": {
+          "LABEL": "List Question"
+        },
+        "BUTTON_ADD_QUESTION": {
+          "TEXT": "Add"
+        }
+      },
       "IMAGE_UPLOAD": {
         "TITLE": "Upload image",
         "UPLOADING": "Uploading...",
@@ -63,6 +76,10 @@
         "META_DESCRIPTION": {
           "LABEL": "Meta description",
           "PLACEHOLDER": "Add your meta description for better SEO results..."
+        },
+        "INTENT": {
+          "LABEL": "Intent",
+          "PLACEHOLDER": "Add intent for article"
         },
         "META_TAGS": {
           "LABEL": "Meta tags",

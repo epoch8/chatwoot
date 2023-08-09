@@ -5,6 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  content               :text
 #  description           :text
+#  intent                :string
 #  meta                  :jsonb
 #  position              :integer
 #  slug                  :string           not null
@@ -35,6 +36,8 @@ class Article < ApplicationRecord
            dependent: :nullify,
            inverse_of: 'root_article'
 
+  has_many :questions
+  
   belongs_to :root_article,
              class_name: :Article,
              foreign_key: :associated_article_id,

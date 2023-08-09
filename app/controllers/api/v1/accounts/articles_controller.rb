@@ -23,7 +23,11 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
   def show; end
 
   def update
-    @article.update!(article_params) if params[:article].present?
+    if article_params[:questions]
+      @article.questions.create!(article_params[:questions])
+    else
+      @article.update!(article_params) if params[:article].present?
+    end
     render json: { error: @article.errors.messages }, status: :unprocessable_entity and return unless @article.valid?
   end
 
@@ -53,11 +57,15 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     @portal ||= Current.account.portals.find_by!(slug: params[:portal_id])
   end
 
+  def questions
+    @questions = Question.all
+  end
+
   def article_params
     params.require(:article).permit(
-      :title, :slug, :position, :content, :description, :position, :category_id, :author_id, :associated_article_id, :status, meta: [:title,
+      :title, :slug, :position, :intent, :content, :description, :position, :category_id, :author_id, :associated_article_id, :status, meta: [:title,
                                                                                                                                      :description,
-                                                                                                                                     { tags: [] }]
+                                                                                                                                     { tags: [] }], questions: [:content]
     )
   end
 

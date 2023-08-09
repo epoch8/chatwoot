@@ -195,6 +195,7 @@ Rails.application.routes.draw do
             resources :categories
             resources :articles do
               post :attach_file, on: :collection
+              resources :questions
             end
           end
         end
