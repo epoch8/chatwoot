@@ -108,11 +108,18 @@ class Message < ApplicationRecord
     @token ||= inbox.channel.try(:page_access_token)
   end
 
+  def start_message_web_widget
+    Rails.logger.info "Year: #{inbox.channel[:channel_type]}"
+    current_channel = inbox.channel
+    return current_channel.try(:start_message)
+  end
+
   def push_event_data
     data = attributes.merge(
       created_at: created_at.to_i,
       message_type: message_type_before_type_cast,
       conversation_id: conversation.display_id,
+      start_message: start_message_web_widget,
       conversation: {
         assignee_id: conversation.assignee_id,
         unread_count: conversation.unread_incoming_messages.count

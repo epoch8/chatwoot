@@ -99,6 +99,20 @@
           }}
         </p>
       </label>
+      <div class="medium-12 columns">
+        <label>
+          {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_START_MESSAGE.LABEL') }}
+          <input
+            v-model.trim="channelStartMessage"
+            type="text"
+            :placeholder="
+              $t(
+                'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_START_MESSAGE.PLACEHOLDER'
+              )
+            "
+          />
+        </label>
+      </div>
       <greetings-editor
         v-if="greetingEnabled"
         v-model.trim="greetingMessage"
@@ -145,6 +159,7 @@ export default {
       channelWebsiteUrl: '',
       channelWidgetColor: '#009CE0',
       channelWelcomeTitle: '',
+      channelStartMessage: '/get_started',
       channelWelcomeTagline: '',
       greetingEnabled: false,
       greetingMessage: '',
@@ -179,6 +194,7 @@ export default {
               widget_color: this.channelWidgetColor,
               welcome_title: this.channelWelcomeTitle,
               welcome_tagline: this.channelWelcomeTagline,
+              start_message: this.channelStartMessage,
             },
           }
         );

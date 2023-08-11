@@ -7,6 +7,7 @@ json.chatwoot_website_channel do
   json.welcome_tagline @web_widget.welcome_tagline
   json.welcome_title @web_widget.welcome_title
   json.widget_color @web_widget.widget_color
+  json.start_message @web_widget.start_message
   json.enabled_features @web_widget.selected_feature_flags
   json.enabled_languages available_locales_with_name
   json.reply_time @web_widget.reply_time

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_07_090151) do
+ActiveRecord::Schema.define(version: 2023_08_10_081613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -365,6 +365,7 @@ ActiveRecord::Schema.define(version: 2023_08_07_090151) do
     t.jsonb "pre_chat_form_options", default: {}
     t.boolean "hmac_mandatory", default: false
     t.boolean "continuity_via_email", default: true, null: false
+    t.string "start_message", default: "/get_started"
     t.index ["hmac_token"], name: "index_channel_web_widgets_on_hmac_token", unique: true
     t.index ["website_token"], name: "index_channel_web_widgets_on_website_token", unique: true
   end
