@@ -109,7 +109,6 @@ class Message < ApplicationRecord
   end
 
   def start_message_web_widget
-    Rails.logger.info "Year: #{inbox.channel[:channel_type]}"
     current_channel = inbox.channel
     return current_channel.try(:start_message)
   end
