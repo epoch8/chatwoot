@@ -117,6 +117,19 @@
           <woot-color-picker v-model="inbox.widget_color" />
         </label>
 
+        <label v-if="isAWebWidgetInbox">
+          {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_START_MESSAGE.LABEL') }}
+          <input
+            v-model.trim="inbox.start_message"
+            type="text"
+            :placeholder="
+              $t(
+                'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_START_MESSAGE.PLACEHOLDER'
+              )
+            "
+          />
+        </label>
+
         <label v-if="isAWhatsAppChannel" class="medium-9 columns settings-item">
           {{ $t('INBOX_MGMT.ADD.WHATSAPP.PROVIDERS.LABEL') }}
           <input v-model="whatsAppAPIProviderName" type="text" disabled />
@@ -592,6 +605,7 @@ export default {
         this.continuityViaEmail = this.inbox.continuity_via_email;
         this.channelWebsiteUrl = this.inbox.website_url;
         this.channelWelcomeTitle = this.inbox.welcome_title;
+        this.startMessage = this.inbox.start_message;
         this.channelWelcomeTagline = this.inbox.welcome_tagline;
         this.selectedFeatureFlags = this.inbox.selected_feature_flags || [];
         this.replyTime = this.inbox.reply_time;
@@ -610,6 +624,7 @@ export default {
           greeting_message: this.greetingMessage || '',
           lock_to_single_conversation: this.locktoSingleConversation,
           channel: {
+            start_message: this.inbox.start_message,
             widget_color: this.inbox.widget_color,
             website_url: this.channelWebsiteUrl,
             webhook_url: this.webhookUrl,

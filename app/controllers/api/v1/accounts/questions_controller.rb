@@ -1,4 +1,4 @@
-class Api::V1::Accounts::QuestionsController < Api::V1::Accounts::ApplicationController
+class Api::V1::Accounts::QuestionsController < Api::V1::Accounts::BaseController
     before_action :set_article!
 
     def create

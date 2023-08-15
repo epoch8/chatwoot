@@ -20,6 +20,10 @@ class Api::V1::Widget::BaseController < ApplicationController
     @conversation ||= conversations.last
   end
 
+  def start_message
+    @start_message = @web_widget.start_message
+  end
+
   def create_conversation
     ::Conversation.create!(conversation_params)
   end

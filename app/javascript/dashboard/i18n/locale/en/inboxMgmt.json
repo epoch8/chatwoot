@@ -73,6 +73,10 @@
           "LABEL": "Welcome Heading",
           "PLACEHOLDER": "Hi there !"
         },
+        "CHANNEL_START_MESSAGE": {
+          "LABEL": "Start Message",
+          "PLACEHOLDER": "Enter start message"
+        },
         "CHANNEL_WELCOME_TAGLINE": {
           "LABEL": "Welcome Tagline",
           "PLACEHOLDER": "We make it simple to connect with us. Ask us anything, or share your feedback."
