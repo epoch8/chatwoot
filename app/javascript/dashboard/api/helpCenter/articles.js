@@ -41,7 +41,6 @@ class ArticlesAPI extends PortalsAPI {
       author_id,
       category_id,
       questions,
-      intent,
     });
   }
 

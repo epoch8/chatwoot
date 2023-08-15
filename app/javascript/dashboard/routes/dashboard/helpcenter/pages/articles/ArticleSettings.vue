@@ -167,7 +167,7 @@ export default {
       return this.article?.category;
     },
     selectIntent(){
-      return this.article.intent;
+      return this.article?.intent;
     },
     allTags() {
       return this.metaTags.map(item => item.name);
