@@ -69,6 +69,7 @@ export const actions = {
       commit(types.SET_UI_FLAG, { isFetching: false });
     }
   },
+
   update: async ({ commit }, { portalSlug, articleId, ...articleObj }) => {
     commit(types.UPDATE_ARTICLE_FLAG, {
       uiFlags: {
@@ -85,7 +86,6 @@ export const actions = {
         articleId,
         articleObj,
       });
-
       commit(types.UPDATE_ARTICLE, payload);
 
       return articleId;
@@ -100,6 +100,7 @@ export const actions = {
       });
     }
   },
+
   delete: async ({ commit }, { portalSlug, articleId }) => {
     commit(types.UPDATE_ARTICLE_FLAG, {
       uiFlags: {
@@ -124,6 +125,56 @@ export const actions = {
     }
   },
 
+  deleteQuestion: async ({ commit }, { portalSlug, articleId, questionId }) => {
+    commit(types.UPDATE_ARTICLE_FLAG, {
+      uiFlags: {
+        isUpdating: true,
+      },
+      articleId,
+    });
+    try {
+      const {
+        data: { payload },
+      } = await articlesAPI.deleteQuestion({ portalSlug, articleId, questionId });
+      commit(types.UPDATE_ARTICLE_QUESTIONS, {id: articleId, payload: payload} );
+      return articleId;
+    } catch (error) {
+      return throwErrorMessage(error);
+    } finally {
+      commit(types.UPDATE_ARTICLE_FLAG, {
+        uiFlags: {
+          isUpdating: false,
+        },
+        articleId,
+      });
+    }
+  },
+
+  addQuestion: async ({ commit }, { portalSlug, articleId, content }) => {
+    commit(types.UPDATE_ARTICLE_FLAG, {
+      uiFlags: {
+        isUpdating: true,
+      },
+      articleId,
+    });
+    try {
+      const {
+        data: { payload },
+      } = await articlesAPI.addQuestion( { portalSlug, articleId, content });
+      commit(types.UPDATE_ARTICLE_QUESTIONS, { id: articleId, payload: payload });
+      return articleId;
+    } catch (error) {
+      return throwErrorMessage(error);
+    } finally {
+      commit(types.UPDATE_ARTICLE_FLAG, {
+        uiFlags: {
+          isUpdating: false,
+        },
+        articleId,
+      });
+    }
+  },
+
   attachImage: async (_, { portalSlug, file }) => {
     try {
       const {
@@ -137,5 +188,5 @@ export const actions = {
       throwErrorMessage(error);
     }
     return '';
-  },
+  }
 };

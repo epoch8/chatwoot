@@ -67,13 +67,19 @@ export const mutations = {
       ...uiFlags,
     });
   },
-  [types.UPDATE_ARTICLE]($state, article) {
+  [types.UPDATE_ARTICLE]: ($state, article) => {
     const articleId = article.id;
     if (!$state.articles.allIds.includes(articleId)) return;
-
     Vue.set($state.articles.byId, articleId, {
       ...article,
     });
+  },
+  [types.UPDATE_ARTICLE_QUESTIONS]: ($state, {id, payload} ) => {
+    const article = $state.articles.byId[id];
+    article.questions = payload;
+    Vue.set($state.articles.byId, id, {
+      ...article
+    })
   },
   [types.REMOVE_ARTICLE]($state, articleId) {
     const { [articleId]: toBeRemoved, ...newById } = $state.articles.byId;
