@@ -23,6 +23,8 @@
         :is-settings-sidebar-open="showArticleSettings"
         :article="article"
         @save-article="saveArticle"
+        @delete-question="deleteQuestion"
+        @add-question="addQuestion"
       />
     </div>
     <article-settings
@@ -140,6 +142,44 @@ export default {
           this.isUpdating = false;
           this.isSaved = true;
         }, 1500);
+      }
+    },
+    async addQuestion({ content }){
+      try {
+        await this.$store.dispatch('articles/addQuestion', {
+          portalSlug: this.portalSlug,
+          articleId: this.articleId,
+          content: content
+        });
+        await this.fetchArticleDetails();
+        this.alertMessage = this.$t(
+          'HELP_CENTER.ADD_QUESTION.API.SUCCESS_MESSAGE'
+        )
+      } catch (error) {
+        this.alertMessage =
+          error?.message ||
+          this.$t('HELP_CENTER.ADD_QUESTION.API.ERROR_MESSAGE');
+      } finally {
+        this.showAlert(this.alertMessage);
+      }
+    },
+    async deleteQuestion({ questionId }) {
+      try {
+        await this.$store.dispatch('articles/deleteQuestion', {
+          portalSlug: this.portalSlug,
+          articleId: this.articleId,
+          questionId: questionId,
+        });
+        await this.fetchArticleDetails();
+        this.alertMessage = this.$t(
+          'HELP_CENTER.DELETE_QUESTION.API.SUCCESS_MESSAGE'
+        )
+      } catch (error) {
+        this.alertMessage =
+          error?.message ||
+          this.$t('HELP_CENTER.DELETE_QUESTION.API.ERROR_MESSAGE');
+      } finally {
+        this.showAlert(this.alertMessage);
       }
     },
     async deleteArticle() {

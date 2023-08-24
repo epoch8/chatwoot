@@ -31,12 +31,15 @@
     "ARTICLE_EDITOR": {
       "QUESTIONS": {
         "ADD_QUESTION": {
-          "LABEL": "Add Question",
-          "TITLE": "Add question",
-          "PLACEHOLDER": "Add question"
+          "LABEL": "Add a Question",
+          "TITLE": "Add a question",
+          "PLACEHOLDER": "Add a question"
         },
         "LIST_QUESTION": {
-          "LABEL": "List Question"
+          "LABEL": "List of questions"
+        },
+        "LIST_QUESTION_IS_EMPTY":{
+          "TEXT": "You haven't added any questions yet!"
         },
         "BUTTON_ADD_QUESTION": {
           "TEXT": "Add"
@@ -354,6 +357,18 @@
       "API": {
         "SUCCESS_MESSAGE": "Article deleted successfully",
         "ERROR_MESSAGE": "Error while deleting article"
+      }
+    },
+    "DELETE_QUESTION": {
+      "API": {
+        "SUCCESS_MESSAGE": "Question deleted successfully",
+        "ERROR_MESSAGE": "Error while deleting question"
+      }
+    },
+    "ADD_QUESTION": {
+      "API": {
+        "SUCCESS_MESSAGE": "Question added successfully",
+        "ERROR_MESSAGE": "Error while adding question"
       }
     },
     "CREATE_ARTICLE": {

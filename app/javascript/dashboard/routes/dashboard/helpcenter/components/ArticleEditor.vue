@@ -18,20 +18,30 @@
       @blur="onBlur"
       @input="onContentInput"
     />
-    <label
+    <div
       class="article-questions"
       >
-      {{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION.LABEL')}}
+      <h6>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION.LABEL')}}</h6>
+      <div class="article-questions-not-found" v-if="articleQuestions===[]">
+        <p>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION_IS_EMPTY.TEXT') }}</p>
+      </div>
       <div class="article-questions-list"
-        v-for="item in articleQuestions"
-        :key="item.id">
-          <div class="article-question-flex-wrapper">
+        v-else>
+          <div v-for="item in articleQuestions" :key="item.id" class="article-question-flex-wrapper">
             <p>{{ item.content }}</p>
+            <woot-button
+              class="button-delete"
+              icon="delete"
+              size="small"
+              variant="clear"
+              color-scheme="alert"
+              @click="onClickDeleteQuestion(item.id)">
+            </woot-button>
           </div>
       </div>
-    </label>
-    <label>
-      {{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.LABEL') }}
+    </div>
+    <label class="article-add-question">
+      <h6>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.LABEL') }}</h6>
       <textarea
       v-model="tmpQuestion"
       rows="2"
@@ -41,16 +51,16 @@
       "
       />
       <woot-submit-button
-        class="button nice success"
+        class="button nice success button-submit-success"
         :button-text="$t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.BUTTON_ADD_QUESTION.TEXT')"
         @click="onAddQuestion"
       />
     </label>
-    <div></div>
   </div>
 </template>
 
 <script>
+
 import { debounce } from '@chatwoot/utils';
 import ResizableTextArea from 'shared/components/ResizableTextArea';
 import WootArticleEditor from 'dashboard/components/widgets/WootWriter/FullEditor.vue';
@@ -77,13 +87,23 @@ export default {
       tmpQuestion: '',
       articleQuestions: [],
       saveArticle: () => {},
+      saveQuestion: () => {},
+      deleteQuestion: () => {},
     };
   },
   mounted() {
     this.articleTitle = this.article.title;
     this.articleContent = this.article.content;
-    this.articleQuestions = this.article.questions;
+    this.articleQuestions = this.article.questions.sort((a, b) => {
+      return a.id - b.id
+    });
     this.tmpQuestion = '';
+    this.saveQuestion = (data) => {
+      this.$emit('add-question', data);
+    }
+    this.deleteQuestion = (data) => {
+      this.$emit('delete-question', data);
+    }
     this.saveArticle = debounce(
       values => {
         this.$emit('save-article', values);
@@ -106,12 +126,11 @@ export default {
       this.saveArticle({ content: this.articleContent });
     },
     onAddQuestion() {
-      this.saveArticle({ article: {questions: [{content: this.tmpQuestion }]}});
+      this.saveQuestion({ content: this.tmpQuestion })
       this.tmpQuestion = '';
-      this.articleQuestions = this.article.questions;
     },
     onClickDeleteQuestion(id){
-      console.log(id);
+      this.deleteQuestion( {questionId: id} )
     }
   },
 };
@@ -145,27 +164,45 @@ export default {
   }
 }
 
+.article-questions h6{
+  font-weight: var(--font-weight-bold);
+}
 
 .article-questions-list {
-  margin-top: 2px;
+  margin-top: 12px;
+
+}
+
+
+.article-question-flex-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 2px;
   border-bottom: 1px solid var(--s-200);
 }
 
-.article-questions-list p {
-  font-weight: var(--font-weight-medium);
+.article-question-flex-wrapper p {
   padding-top: 4px;
-  margin: 0;
 }
 
-.article-question-flex-wrapper{
-  display: flex;
-  justify-content: space-between;
+.button-submit-success {
+  float: right;
+}
+
+.button-delete {
+  min-width: 32px;
+  min-height: 32px;
 }
 
 .article-content {
   padding: 0 var(--space-normal);
   height: fit-content;
+}
+
+.article-add-question {
+  margin-top: 16px;
+  font-weight: var(--font-weight-bold);
 }
 
 ::v-deep {

@@ -61,6 +61,20 @@ class ArticlesAPI extends PortalsAPI {
       }
     );
   }
+
+  deleteQuestion({ articleId, portalSlug, questionId }) {
+    return axios.delete(`${this.url}/${portalSlug}/articles/${articleId}/questions/${questionId}`);
+  }
+
+  getQuestions({ articleId, portalSlug }) {
+    return axios.get(`${this.url}/${portalSlug}/articles/${articleId}/questions`);
+  }
+
+  addQuestion({ articleId, portalSlug, content}) {
+    return axios.post(`${this.url}/${portalSlug}/articles/${articleId}/questions`, {
+      content: content
+    });
+  }
 }
 
 export default new ArticlesAPI();
