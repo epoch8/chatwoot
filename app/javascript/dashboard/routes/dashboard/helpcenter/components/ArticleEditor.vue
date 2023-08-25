@@ -94,7 +94,7 @@ export default {
   mounted() {
     this.articleTitle = this.article.title;
     this.articleContent = this.article.content;
-    this.articleQuestions = this.article.questions.sort((a, b) => {
+    this.articleQuestions = this.article.questions?.sort((a, b) => {
       return a.id - b.id
     });
     this.tmpQuestion = '';
