@@ -188,5 +188,19 @@ export const actions = {
       throwErrorMessage(error);
     }
     return '';
-  }
+  },
+
+  reorder: async (_, { portalSlug, categorySlug, reorderedGroup }) => {
+    try {
+      await articlesAPI.reorderArticles({
+        portalSlug,
+        reorderedGroup,
+        categorySlug,
+      });
+    } catch (error) {
+      throwErrorMessage(error);
+    }
+
+    return '';
+  },
 };

@@ -17,7 +17,7 @@ json.meta do
 end
 
 json.id conversation.display_id
-if conversation.messages.count.zero?
+if conversation.messages.first.blank?
   json.messages []
 elsif conversation.unread_incoming_messages.count.zero?
   json.messages [conversation.messages.includes([{ attachments: [{ file_attachment: [:blob] }] }]).last.try(:push_event_data)]
@@ -26,6 +26,7 @@ else
 end
 
 json.account_id conversation.account_id
+json.uuid conversation.uuid
 json.additional_attributes conversation.additional_attributes
 json.agent_last_seen_at conversation.agent_last_seen_at.to_i
 json.assignee_last_seen_at conversation.assignee_last_seen_at.to_i
@@ -42,3 +43,5 @@ json.timestamp conversation.last_activity_at.to_i
 json.first_reply_created_at conversation.first_reply_created_at.to_i
 json.unread_count conversation.unread_incoming_messages.count
 json.last_non_activity_message conversation.messages.non_activity_messages.first.try(:push_event_data)
+json.last_activity_at conversation.last_activity_at.to_i
+json.priority conversation.priority

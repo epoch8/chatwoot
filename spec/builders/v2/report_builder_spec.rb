@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ::V2::ReportBuilder do
+describe V2::ReportBuilder do
   include ActiveJob::TestHelper
   let_it_be(:account) { create(:account) }
   let_it_be(:label_1) { create(:label, title: 'Label_1', account: account) }
@@ -57,10 +57,10 @@ describe ::V2::ReportBuilder do
           metric: 'conversations_count',
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today]).to be 10
@@ -72,10 +72,10 @@ describe ::V2::ReportBuilder do
           metric: 'incoming_messages_count',
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today]).to be 20
@@ -87,10 +87,10 @@ describe ::V2::ReportBuilder do
           metric: 'outgoing_messages_count',
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today]).to be 50
@@ -102,16 +102,24 @@ describe ::V2::ReportBuilder do
           metric: 'resolutions_count',
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
         conversations = account.conversations.where('created_at < ?', 1.day.ago)
-        conversations.each(&:resolved!)
-        builder = V2::ReportBuilder.new(account, params)
+        perform_enqueued_jobs do
+          # Resolve all 5 conversations
+          conversations.each(&:resolved!)
+
+          # Reopen 1 conversation
+          conversations.first.open!
+        end
+
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
-        expect(metrics[Time.zone.today]).to be 0
-        expect(metrics[Time.zone.today - 2.days]).to be 5
+        # 4 conversations are resolved
+        expect(metrics[Time.zone.today]).to be 4
+        expect(metrics[Time.zone.today - 2.days]).to be 0
       end
 
       it 'returns average first response time' do
@@ -119,10 +127,10 @@ describe ::V2::ReportBuilder do
           metric: 'avg_first_response_time',
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today].to_f).to be 0.48e4
@@ -132,10 +140,10 @@ describe ::V2::ReportBuilder do
         params = {
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.summary
 
         expect(metrics[:conversations_count]).to be 15
@@ -149,11 +157,11 @@ describe ::V2::ReportBuilder do
         params = {
           type: :account,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s,
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s,
           group_by: 'test'.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         expect { builder.summary }.to raise_error(ArgumentError)
       end
     end
@@ -165,10 +173,10 @@ describe ::V2::ReportBuilder do
           type: :label,
           id: label_2.id,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today - 2.days]).to be 5
@@ -183,7 +191,7 @@ describe ::V2::ReportBuilder do
           until: (Time.zone.today + 1.day).to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today]).to be 20
@@ -199,7 +207,7 @@ describe ::V2::ReportBuilder do
           until: (Time.zone.today + 1.day).to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
         expect(metrics[Time.zone.today]).to be 50
@@ -216,11 +224,21 @@ describe ::V2::ReportBuilder do
         }
 
         conversations = account.conversations.where('created_at < ?', 1.day.ago)
-        conversations.each(&:resolved!)
-        builder = V2::ReportBuilder.new(account, params)
+
+        perform_enqueued_jobs do
+          # ensure 5 reporting events are created
+          conversations.each(&:resolved!)
+
+          # open one of the conversations to check if it is not counted
+          conversations.last.open!
+        end
+
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
 
-        expect(metrics[Time.zone.today - 2.days]).to be 5
+        # this should count only 4 since the last conversation was reopened
+        expect(metrics[Time.zone.today]).to be 4
+        expect(metrics[Time.zone.today - 2.days]).to be 0
       end
 
       it 'returns average first response time' do
@@ -231,10 +249,10 @@ describe ::V2::ReportBuilder do
           type: :label,
           id: label_2.id,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.timeseries
         expect(metrics[Time.zone.today].to_f).to be 0.15e1
       end
@@ -244,10 +262,10 @@ describe ::V2::ReportBuilder do
           type: :label,
           id: label_2.id,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.summary
 
         expect(metrics[:conversations_count]).to be 5
@@ -262,11 +280,11 @@ describe ::V2::ReportBuilder do
           type: :label,
           id: label_2.id,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s,
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s,
           group_by: 'week'.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         metrics = builder.summary
 
         expect(metrics[:conversations_count]).to be 5
@@ -281,11 +299,11 @@ describe ::V2::ReportBuilder do
           type: :label,
           id: label_2.id,
           since: (Time.zone.today - 3.days).to_time.to_i.to_s,
-          until: Time.zone.today.to_time.to_i.to_s,
+          until: Time.zone.today.end_of_day.to_time.to_i.to_s,
           group_by: 'test'.to_s
         }
 
-        builder = V2::ReportBuilder.new(account, params)
+        builder = described_class.new(account, params)
         expect { builder.summary }.to raise_error(ArgumentError)
       end
     end

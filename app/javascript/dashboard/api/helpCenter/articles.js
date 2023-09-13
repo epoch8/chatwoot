@@ -62,6 +62,13 @@ class ArticlesAPI extends PortalsAPI {
     );
   }
 
+  reorderArticles({ portalSlug, reorderedGroup, categorySlug }) {
+    return axios.post(`${this.url}/${portalSlug}/articles/reorder`, {
+      positions_hash: reorderedGroup,
+      category_slug: categorySlug,
+    });
+  }
+
   deleteQuestion({ articleId, portalSlug, questionId }) {
     return axios.delete(`${this.url}/${portalSlug}/articles/${articleId}/questions/${questionId}`);
   }
