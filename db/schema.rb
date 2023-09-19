@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_10_081613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -363,6 +363,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
     t.jsonb "pre_chat_form_options", default: {}
     t.boolean "hmac_mandatory", default: false
     t.boolean "continuity_via_email", default: true, null: false
+    t.string "widget_bot_color", default: "#1f93ff"
+    t.string "widget_operator_color", default: "#1f93ff"
     t.string "start_message", default: "/get_started"
     t.index ["hmac_token"], name: "index_channel_web_widgets_on_hmac_token", unique: true
     t.index ["website_token"], name: "index_channel_web_widgets_on_website_token", unique: true
@@ -945,8 +947,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_103936) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "questions", "articles"
   add_foreign_key "inboxes", "portals"
+  add_foreign_key "questions", "articles"
   create_trigger("accounts_after_insert_row_tr", :generated => true, :compatibility => 1).
       on("accounts").
       after(:insert).
