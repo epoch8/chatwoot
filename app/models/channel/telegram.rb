@@ -79,9 +79,23 @@ class Channel::Telegram < ApplicationRecord
 
   def send_message(message)
     buttons = message.content_attributes[:items] if message.content_type == 'input_select'
-    buttons_layout = message.content_attributes[:buttons_layout] if message.content_type == 'input_select' 
+    buttons_layout = message.content_attributes[:buttons_layout] if message.content_type == 'input_select'
     response = message_request(message.conversation[:additional_attributes]['chat_id'], message.content, buttons_layout, buttons)
     response.parsed_response['result']['message_id'] if response.success?
+  end
+
+  def reply_markup(message)
+    return unless message.content_type == 'input_select'
+
+    {
+      one_time_keyboard: true,
+      inline_keyboard: message.content_attributes['items'].map do |item|
+        [{
+          text: item['title'],
+          callback_data: item['value']
+        }]
+      end
+    }.to_json
   end
 
   def send_attachments(message)

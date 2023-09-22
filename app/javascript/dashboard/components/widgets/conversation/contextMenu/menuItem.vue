@@ -1,5 +1,5 @@
 <template>
-  <div class="menu" @click.stop="$emit('click')">
+  <div class="menu" role="button" @click.stop="$emit('click')">
     <fluent-icon
       v-if="variant === 'icon' && option.icon"
       :icon="option.icon"
@@ -15,6 +15,7 @@
       v-if="variant === 'agent'"
       :username="option.label"
       :src="option.thumbnail"
+      :status="option.status"
       size="20px"
       class="agent-thumbnail"
     />

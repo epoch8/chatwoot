@@ -15,7 +15,9 @@
 #  website_url           :string
 #  welcome_tagline       :string
 #  welcome_title         :string
+#  widget_bot_color      :string           default("#1f93ff")
 #  widget_color          :string           default("#1f93ff")
+#  widget_operator_color :string           default("#1f93ff")
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  account_id            :integer
@@ -49,6 +51,7 @@ class Channel::WebWidget < ApplicationRecord
   has_flags 1 => :attachments,
             2 => :emoji_picker,
             3 => :end_conversation,
+            4 => :use_inbox_avatar_for_bot,
             :column => 'feature_flags',
             :check_for_column => false
 
