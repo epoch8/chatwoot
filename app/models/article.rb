@@ -36,7 +36,7 @@ class Article < ApplicationRecord
            dependent: :nullify,
            inverse_of: 'root_article'
 
-  has_many :questions
+  has_many :questions, dependent: :destroy
   
   belongs_to :root_article,
              class_name: :Article,
