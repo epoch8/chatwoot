@@ -6,8 +6,10 @@
 #  content               :text
 #  description           :text
 #  intent                :string
+#  language              :string           default("russian")
 #  meta                  :jsonb
 #  position              :integer
+#  searchable            :tsvector
 #  slug                  :string           not null
 #  status                :integer
 #  title                 :string
@@ -25,6 +27,7 @@
 #
 #  index_articles_on_associated_article_id  (associated_article_id)
 #  index_articles_on_author_id              (author_id)
+#  index_articles_on_searchable             (searchable) USING gin
 #  index_articles_on_slug                   (slug) UNIQUE
 #
 class Article < ApplicationRecord
@@ -55,6 +58,7 @@ class Article < ApplicationRecord
   validates :author_id, presence: true
   validates :title, presence: true
   validates :content, presence: true
+  validates :language, presence: true
 
   # ensuring that the position is always set correctly
   before_create :add_position_to_article
@@ -72,14 +76,14 @@ class Article < ApplicationRecord
   # TODO: if text search slows down https://www.postgresql.org/docs/current/textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS
   pg_search_scope(
     :text_search,
-    against: %i[
-      title
-      description
-      content
-    ],
+    against: {
+      title: 'A',
+      description: 'C',
+      content: 'B'
+    },
     using: {
       tsearch: {
-        prefix: true
+        tsvector_column: 'searchable'
       }
     }
   )

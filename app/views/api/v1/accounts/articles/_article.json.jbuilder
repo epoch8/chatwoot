@@ -8,6 +8,7 @@ json.position article.position
 json.questions article.questions
 json.account_id article.account_id
 json.intent article.intent
+json.language article.language
 json.updated_at article.updated_at.to_i
 json.meta article.meta
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_10_081613) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_05_090526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -133,8 +133,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_10_081613) do
     t.string "slug", null: false
     t.integer "position"
     t.string "intent"
+    t.string "language", default: "russian"
+    t.virtual "searchable", type: :tsvector, as: "((setweight(to_tsvector('simple'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, COALESCE(content, ''::text)), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, COALESCE(description, ''::text)), 'C'::\"char\"))", stored: true
     t.index ["associated_article_id"], name: "index_articles_on_associated_article_id"
     t.index ["author_id"], name: "index_articles_on_author_id"
+    t.index ["searchable"], name: "index_articles_on_searchable", using: :gin
     t.index ["slug"], name: "index_articles_on_slug", unique: true
   end
 

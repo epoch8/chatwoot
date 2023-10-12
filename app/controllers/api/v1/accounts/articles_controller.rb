@@ -65,7 +65,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
 
   def article_params
     params.require(:article).permit(
-      :title, :slug, :position, :intent, :content, :description, :position, :category_id, :author_id, :associated_article_id, :status, meta: [:title,
+      :title, :slug, :position, :language, :intent, :content, :description, :position, :category_id, :author_id, :associated_article_id, :status, meta: [:title,
                                                                                                                                      :description,
                                                                                                                                      { tags: [] }], questions: [ :content]
     )
