@@ -14,7 +14,8 @@ class Api::V1::Widget::EventsController < Api::V1::Widget::BaseController
       pre_chat_form_enabled: @web_widget.pre_chat_form_enabled,
       widget_language: params[:locale],
       browser_language: browser.accept_language.first&.code,
-      browser: browser_params
+      browser: browser_params,
+      start_message: @web_widget.start_message
     }
   end
 
