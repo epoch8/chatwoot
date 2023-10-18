@@ -62,6 +62,7 @@ class Article < ApplicationRecord
 
   # ensuring that the position is always set correctly
   before_create :add_position_to_article
+  before_create :generate_article_intent
   after_save :category_id_changed_action, if: :saved_change_to_category_id?
 
   enum status: { draft: 0, published: 1, archived: 2 }
@@ -151,6 +152,11 @@ class Article < ApplicationRecord
     return if position.present?
 
     update_article_position_in_category
+  end
+
+  def generate_article_intent
+    return if self.intent.present?
+    self.intent = self.title.parameterize(separator: '_')
   end
 
   def update_article_position_in_category
