@@ -19,43 +19,49 @@
       @input="onContentInput"
     />
     <div
-      class="article-questions"
-      >
-      <h6>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION.LABEL')}}</h6>
-      <div class="article-questions-not-found" v-if="articleQuestions===[]">
-        <p>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION_IS_EMPTY.TEXT') }}</p>
-      </div>
-      <div class="article-questions-list"
-        v-else>
+        v-if="isNewArticle"
+        class="article-not-active"
+    >
+      {{ $t('HELP_CENTER.DISABLE_QUESTION') }}
+    </div>
+    <div v-else>
+      <div class="article-questions">
+        <h6>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION.LABEL')}}</h6>
+        <div class="article-questions-not-found" v-if="articleQuestions.length === 0">
+          <p>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.LIST_QUESTION_IS_EMPTY.TEXT') }}</p>
+        </div>
+        <div class="article-questions-list"
+             v-else>
           <div v-for="item in articleQuestions" :key="item.id" class="article-question-flex-wrapper">
             <p>{{ item.content }}</p>
             <woot-button
-              class="button-delete"
-              icon="delete"
-              size="small"
-              variant="clear"
-              color-scheme="alert"
-              @click="onClickDeleteQuestion(item.id)">
+                class="button-delete"
+                icon="delete"
+                size="small"
+                variant="clear"
+                color-scheme="alert"
+                @click="onClickDeleteQuestion(item.id)">
             </woot-button>
           </div>
+        </div>
       </div>
-    </div>
-    <label class="article-add-question">
-      <h6>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.LABEL') }}</h6>
-      <textarea
-      v-model="tmpQuestion"
-      rows="2"
-      type="text"
-      :placeholder="
+      <label class="article-add-question">
+        <h6>{{ $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.LABEL') }}</h6>
+        <textarea
+            v-model="tmpQuestion"
+            rows="2"
+            type="text"
+            :placeholder="
         $t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.ADD_QUESTION.PLACEHOLDER')
       "
-      />
-      <woot-submit-button
-        class="button nice success button-submit-success"
-        :button-text="$t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.BUTTON_ADD_QUESTION.TEXT')"
-        @click="onAddQuestion"
-      />
-    </label>
+        />
+        <woot-submit-button
+            class="button nice success button-submit-success"
+            :button-text="$t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.BUTTON_ADD_QUESTION.TEXT')"
+            @click="onAddQuestion"
+        />
+      </label>
+    </div>
   </div>
 </template>
 
@@ -90,6 +96,11 @@ export default {
       saveQuestion: () => {},
       deleteQuestion: () => {},
     };
+  },
+  computed: {
+    isNewArticle() {
+      return this.article.status === 'new';
+    },
   },
   mounted() {
     this.articleTitle = this.article.title;
@@ -173,6 +184,10 @@ export default {
 
 }
 
+.article-not-active {
+  font-size: 16px;
+  line-height: 1.2;
+}
 
 .article-question-flex-wrapper {
   display: flex;

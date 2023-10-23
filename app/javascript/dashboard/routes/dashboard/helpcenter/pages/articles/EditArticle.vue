@@ -81,6 +81,7 @@ export default {
       articles: 'articles/articles',
     }),
     article() {
+      console.log('article getters function')
       return this.$store.getters['articles/articleById'](this.articleId);
     },
     articleId() {
@@ -126,6 +127,7 @@ export default {
       });
     },
     async saveArticle({ ...values }) {
+      console.log('saveArticle method', { ...values });
       this.isUpdating = true;
       try {
         await this.$store.dispatch('articles/update', {
@@ -145,6 +147,7 @@ export default {
       }
     },
     async addQuestion({ content }){
+      this.isUpdating = true;
       try {
         await this.$store.dispatch('articles/addQuestion', {
           portalSlug: this.portalSlug,
@@ -160,10 +163,12 @@ export default {
           error?.message ||
           this.$t('HELP_CENTER.ADD_QUESTION.API.ERROR_MESSAGE');
       } finally {
+        this.isUpdating = false;
         this.showAlert(this.alertMessage);
       }
     },
     async deleteQuestion({ questionId }) {
+      this.isUpdating = true;
       try {
         await this.$store.dispatch('articles/deleteQuestion', {
           portalSlug: this.portalSlug,
@@ -179,6 +184,7 @@ export default {
           error?.message ||
           this.$t('HELP_CENTER.DELETE_QUESTION.API.ERROR_MESSAGE');
       } finally {
+        this.isUpdating = false;
         this.showAlert(this.alertMessage);
       }
     },

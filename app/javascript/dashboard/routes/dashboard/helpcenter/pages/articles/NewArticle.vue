@@ -44,6 +44,7 @@ export default {
       showOpenSidebarButton: false,
       showArticleSettings: true,
       article: {},
+      typeArticle: 'new',
     };
   },
   computed: {
@@ -56,7 +57,7 @@ export default {
       return this.$route.params.articleSlug;
     },
     newArticle() {
-      return { title: this.articleTitle, content: this.articleContent };
+      return { title: this.articleTitle, content: this.articleContent, status: this.typeArticle };
     },
     selectedPortalSlug() {
       return this.$route.params.portalSlug;
