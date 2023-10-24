@@ -58,6 +58,7 @@
         <woot-submit-button
             class="button nice success button-submit-success"
             :button-text="$t('HELP_CENTER.ARTICLE_EDITOR.QUESTIONS.BUTTON_ADD_QUESTION.TEXT')"
+            :disabled="questionsButtonDisable"
             @click="onAddQuestion"
         />
       </label>
@@ -100,6 +101,9 @@ export default {
   computed: {
     isNewArticle() {
       return this.article.status === 'new';
+    },
+    questionsButtonDisable() {
+      return this.tmpQuestion.length === 0;
     },
   },
   mounted() {

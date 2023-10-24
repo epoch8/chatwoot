@@ -81,7 +81,6 @@ export default {
       articles: 'articles/articles',
     }),
     article() {
-      console.log('article getters function')
       return this.$store.getters['articles/articleById'](this.articleId);
     },
     articleId() {
@@ -127,7 +126,6 @@ export default {
       });
     },
     async saveArticle({ ...values }) {
-      console.log('saveArticle method', { ...values });
       this.isUpdating = true;
       try {
         await this.$store.dispatch('articles/update', {
