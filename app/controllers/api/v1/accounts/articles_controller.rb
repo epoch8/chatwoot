@@ -26,6 +26,14 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     render json: { error: @article.errors.messages }, status: :unprocessable_entity and return unless @article.valid?
   end
 
+  def import
+    file = params[:file]
+    if file.content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ArticlesXlsxService.call file
+    elsif file.content_type == 'text/csv'
+    elsif file.content_type == 'application/json'
+  end
+
   def update
     @article.update!(article_params) if params[:article].present?
     render json: { error: @article.errors.messages }, status: :unprocessable_entity and return unless @article.valid?
