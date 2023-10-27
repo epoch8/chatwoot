@@ -82,6 +82,13 @@
         color-scheme="secondary"
       />
       <woot-button
+          class-names=""
+          size="small"
+          icon=""
+          color-scheme="primary"
+          @click="toggleVisibleSearchForm"
+      >Поиск</woot-button>
+      <woot-button
         class-names="article--buttons"
         size="small"
         icon="add"
@@ -100,11 +107,13 @@ import { mixin as clickaway } from 'vue-clickaway';
 import WootDropdownItem from 'shared/components/ui/dropdown/DropdownItem.vue';
 import WootDropdownMenu from 'shared/components/ui/dropdown/DropdownMenu.vue';
 import FluentIcon from 'shared/components/FluentIcon/DashboardIcon';
+import WootButton from 'dashboard/components/ui/WootButton.vue';
 export default {
   components: {
     FluentIcon,
     WootDropdownItem,
     WootDropdownMenu,
+    WootButton,
   },
   mixins: [clickaway],
   props: {
@@ -128,6 +137,7 @@ export default {
   data() {
     return {
       showSortByDropdown: false,
+      showSearchForm: false,
     };
   },
   methods: {
@@ -145,6 +155,10 @@ export default {
     onClickNewArticlePage() {
       this.$emit('newArticlePage');
     },
+    toggleVisibleSearchForm() {
+      this.showSearchForm = !this.showSearchForm;
+      this.$emit('visible-search-form', this.showSearchForm);
+    }
   },
 };
 </script>

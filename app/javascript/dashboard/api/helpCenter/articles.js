@@ -14,11 +14,20 @@ class ArticlesAPI extends PortalsAPI {
     status,
     author_id,
     category_slug,
+    titleSearch,
+    textSearch,
   }) {
     let baseUrl = `${this.url}/${portalSlug}/articles?page=${pageNumber}&locale=${locale}`;
     if (status !== undefined) baseUrl += `&status=${status}`;
     if (author_id) baseUrl += `&author_id=${author_id}`;
     if (category_slug) baseUrl += `&category_slug=${category_slug}`;
+    if (titleSearch && textSearch) {
+      baseUrl += `&query='${titleSearch}<->${textSearch}'`;
+    } else if (titleSearch) {
+      baseUrl += `&query='${titleSearch}'`;
+    } else if (textSearch) {
+      baseUrl += `&query='${textSearch}'`;
+    }
     return axios.get(baseUrl);
   }
 

@@ -5,7 +5,16 @@
       :count="meta.count"
       selected-value="Published"
       @newArticlePage="newArticlePage"
+      @visible-search-form="toggleVisibleSearchForm"
     />
+    <div
+        v-if="isSearchFormVisible"
+        class="article-list-search-container">
+      <form-search
+          :is-loading-search="isLoadingSearch"
+          @submit="searchFormArticles"
+      ></form-search>
+    </div>
     <article-table
       :articles="articles"
       :current-page="Number(meta.currentPage)"
@@ -30,6 +39,7 @@ import Spinner from 'shared/components/Spinner.vue';
 import ArticleHeader from 'dashboard/routes/dashboard/helpcenter/components/Header/ArticleHeader';
 import EmptyState from 'dashboard/components/widgets/EmptyState';
 import ArticleTable from '../../components/ArticleTable';
+import FormSearch from "../../components/FormSearch";
 
 export default {
   components: {
@@ -37,10 +47,13 @@ export default {
     ArticleTable,
     EmptyState,
     Spinner,
+    FormSearch,
   },
   data() {
     return {
       pageNumber: 1,
+      isSearchFormVisible: false,
+      isLoadingSearch: false,
     };
   },
   computed: {
@@ -123,10 +136,21 @@ export default {
   },
 
   methods: {
+    toggleVisibleSearchForm(data) {
+      this.isSearchFormVisible = data;
+    },
+    searchFormArticles({ title, text }) {
+      if (title.length === 0 && text.length === 0) {
+        return;
+      }
+
+      this.isLoadingSearch = true;
+      this.fetchArticles({pageNumber: 1, titleSearch: title, textSearch: text});
+    },
     newArticlePage() {
       this.$router.push({ name: 'new_article' });
     },
-    fetchArticles({ pageNumber } = {}) {
+    fetchArticles({ pageNumber, titleSearch, textSearch } = {}) {
       this.$store.dispatch('articles/index', {
         pageNumber: pageNumber || this.pageNumber,
         portalSlug: this.$route.params.portalSlug,
@@ -134,7 +158,10 @@ export default {
         status: this.status,
         author_id: this.author,
         category_slug: this.selectedCategorySlug,
+        titleSearch,
+        textSearch,
       });
+      this.isLoadingSearch = false;
     },
     onPageChange(pageNumber) {
       this.fetchArticles({ pageNumber });
