@@ -7,17 +7,17 @@
         class="form-article-search__input"
         v-model.trim="title"
         type="text"
-        :placeholder="$t('HELP_CENTER.HEADER.FORM_SEARCH.ARTICLE_TITLE')"
+        :placeholder="$t('HELP_CENTER.FORM_SEARCH.PLACEHOLDER_TITLE_INPUT')"
     />
     <input
         class="form-article-search__input"
         v-model.trim="text"
         type="text"
-        :placeholder="$t('HELP_CENTER.HEADER.FORM_SEARCH.ARTICLE_CONTENT')"
+        :placeholder="$t('HELP_CENTER.FORM_SEARCH.PLACEHOLDER_TEXT_INPUT')"
     />
     <woot-submit-button
         class="form-article-search__submit"
-        :button-text="$t('HELP_CENTER.HEADER.FORM_SEARCH.FIND')"
+        :button-text="$t('HELP_CENTER.FORM_SEARCH.SEARCH_BUTTON')"
         type="submit"
         :loading="isLoadingSearch"
         :disabled="isLoadingSearch"
@@ -56,12 +56,12 @@ $b: '.form-article-search';
   gap: 8px;
 
   &__input {
-    width: 45%;
-    flex: 0 1 auto;
+    width: 40%;
+    flex: 1 1 auto;
   }
 
   &__submit {
-    width: 10%;
+    max-width: 20%;
     flex: 0 0 auto;
     justify-content: center;
   }

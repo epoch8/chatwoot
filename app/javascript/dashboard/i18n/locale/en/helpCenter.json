@@ -462,6 +462,11 @@
           "ERROR_MESSAGE": "Unable to delete category"
         }
       }
+    },
+    "FORM_SEARCH": {
+      "SEARCH_BUTTON": "Find",
+      "PLACEHOLDER_TITLE_INPUT": "Enter article title",
+      "PLACEHOLDER_TEXT_INPUT": "Enter article text"
     }
   }
 }

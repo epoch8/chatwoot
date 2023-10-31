@@ -81,15 +81,13 @@
         size="small"
         color-scheme="secondary"
       />
-      <woot-button
-          class-names=""
-          size="small"
-          icon=""
-          color-scheme="primary"
+      <button
+          class="button button--only-icon small primary"
+          :class="{ 'article-search-button__active': showSearchForm }"
           @click="toggleVisibleSearchForm"
       >
-        {{ $t('HELP_CENTER.HEADER.SEARCH') }}
-      </woot-button>
+        <fluent-icon icon="search" size="14px" class="search--icon" />
+      </button>
       <woot-button
         class-names="article--buttons"
         size="small"
