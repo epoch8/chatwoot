@@ -5,6 +5,12 @@
       "SORT": "Sort by",
       "SETTINGS_BUTTON": "Settings",
       "NEW_BUTTON": "New Article",
+      "SEARCH": "Search",
+      "FORM_SEARCH": {
+        "ARTICLE_TITLE": "Enter the title of the article",
+        "ARTICLE_CONTENT": "Enter the text of the article",
+        "FIND": "Find"
+      },
       "DROPDOWN_OPTIONS": {
         "PUBLISHED": "Published",
         "DRAFT": "Draft",

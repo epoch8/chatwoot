@@ -42,6 +42,9 @@ gem 'gmail_xoauth'
 # Prevent CSV injection
 gem 'csv-safe'
 
+# Xlsx reader
+gem 'rubyXL', '~> 3.4'
+
 ##-- for active storage --##
 gem 'aws-sdk-s3', require: false
 # original gem isn't maintained actively

@@ -3,13 +3,13 @@
       class="form-article-search"
       @submit.prevent="submit"
   >
-    <woot-input
+    <input
         class="form-article-search__input"
         v-model.trim="title"
         type="text"
         :placeholder="$t('HELP_CENTER.FORM_SEARCH.PLACEHOLDER_TITLE_INPUT')"
     />
-    <woot-input
+    <input
         class="form-article-search__input"
         v-model.trim="text"
         type="text"

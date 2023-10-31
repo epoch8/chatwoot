@@ -9,7 +9,6 @@
 #  language              :string           default("russian")
 #  meta                  :jsonb
 #  position              :integer
-#  searchable            :tsvector
 #  slug                  :string           not null
 #  status                :integer
 #  title                 :string
@@ -27,7 +26,6 @@
 #
 #  index_articles_on_associated_article_id  (associated_article_id)
 #  index_articles_on_author_id              (author_id)
-#  index_articles_on_searchable             (searchable) USING gin
 #  index_articles_on_slug                   (slug) UNIQUE
 #
 class Article < ApplicationRecord
@@ -79,12 +77,38 @@ class Article < ApplicationRecord
     :text_search,
     against: {
       title: 'A',
-      description: 'C',
       content: 'B'
     },
     using: {
       tsearch: {
-        tsvector_column: 'searchable'
+        prefix: true
+      },
+      trigram: {
+        threshold: 0.2
+      }
+   }
+  )
+  pg_search_scope(
+    :title_search,
+    against: :title,
+    using: {
+      tsearch: {
+        prefix: true
+      },
+      trigram: {
+        threshold: 0.2
+      }
+    }
+  )
+  pg_search_scope(
+    :content_search,
+    against: :content,
+    using: {
+      tsearch: {
+        prefix: true
+      },
+      trigram: {
+        threshold: 0.2
       }
     }
   )
@@ -95,8 +119,19 @@ class Article < ApplicationRecord
     ).search_by_category_slug(
       params[:category_slug]
     ).search_by_category_locale(params[:locale]).search_by_author(params[:author_id]).search_by_status(params[:status])
-
-    records = records.text_search(params[:query]) if params[:query].present?
+    title = params[:title]
+    content = params[:content]
+    if title.present? && content.present?
+      params = title + '&' + content
+      records = records.text_search(params)
+    elsif title.present?
+      records = records.title_search(title)
+    elsif content.present?
+      records = records.content_search(content)
+    end
+    #query = params[:query] if params[:query].present?
+    #query = query.split('<->')
+    # records = records.text_search(params[:query]) if params[:query].present?
     records
   end
 
@@ -156,7 +191,8 @@ class Article < ApplicationRecord
 
   def generate_article_intent
     return if self.intent.present?
-    self.intent = self.title.parameterize(separator: '_')
+    self.intent = self.title.downcase
+    self.intent.gsub!(/\s/,'_')
   end
 
   def update_article_position_in_category
