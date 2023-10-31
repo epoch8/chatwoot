@@ -87,7 +87,9 @@
           icon=""
           color-scheme="primary"
           @click="toggleVisibleSearchForm"
-      >Поиск</woot-button>
+      >
+        {{ $t('HELP_CENTER.HEADER.SEARCH') }}
+      </woot-button>
       <woot-button
         class-names="article--buttons"
         size="small"

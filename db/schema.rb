@@ -134,10 +134,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_05_090526) do
     t.integer "position"
     t.string "intent"
     t.string "language", default: "russian"
-    t.virtual "searchable", type: :tsvector, as: "((setweight(to_tsvector('simple'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, COALESCE(content, ''::text)), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, COALESCE(description, ''::text)), 'C'::\"char\"))", stored: true
     t.index ["associated_article_id"], name: "index_articles_on_associated_article_id"
     t.index ["author_id"], name: "index_articles_on_author_id"
-    t.index ["searchable"], name: "index_articles_on_searchable", using: :gin
     t.index ["slug"], name: "index_articles_on_slug", unique: true
   end
 

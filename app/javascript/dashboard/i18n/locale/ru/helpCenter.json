@@ -5,6 +5,12 @@
       "SORT": "Сортировать по",
       "SETTINGS_BUTTON": "Настройки",
       "NEW_BUTTON": "Новая статья",
+      "SEARCH": "Поиск",
+      "FORM_SEARCH": {
+        "ARTICLE_TITLE": "Введите заголовок статьи",
+        "ARTICLE_CONTENT": "Введите текст статьи",
+        "FIND": "Найти"
+      },
       "DROPDOWN_OPTIONS": {
         "PUBLISHED": "Опубликовано",
         "DRAFT": "Черновик",

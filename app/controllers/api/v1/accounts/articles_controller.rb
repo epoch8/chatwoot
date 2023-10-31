@@ -32,6 +32,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
       ArticlesXlsxService.call file
     elsif file.content_type == 'text/csv'
     elsif file.content_type == 'application/json'
+    end
   end
 
   def update
@@ -80,7 +81,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
   end
 
   def list_params
-    params.permit(:locale, :query, :page, :category_slug, :status, :author_id)
+    params.permit(:locale, :title, :content, :page, :category_slug, :status, :author_id)
   end
 
   def set_current_page

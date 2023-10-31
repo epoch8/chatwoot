@@ -3,21 +3,21 @@
       class="form-article-search"
       @submit.prevent="submit"
   >
-    <woot-input
+    <input
         class="form-article-search__input"
         v-model.trim="title"
         type="text"
-        placeholder="Введите заголовок статьи"
+        :placeholder="$t('HELP_CENTER.HEADER.FORM_SEARCH.ARTICLE_TITLE')"
     />
-    <woot-input
+    <input
         class="form-article-search__input"
         v-model.trim="text"
         type="text"
-        placeholder="Введите текст статьи"
+        :placeholder="$t('HELP_CENTER.HEADER.FORM_SEARCH.ARTICLE_CONTENT')"
     />
     <woot-submit-button
         class="form-article-search__submit"
-        button-text="Найти"
+        :button-text="$t('HELP_CENTER.HEADER.FORM_SEARCH.FIND')"
         type="submit"
         :loading="isLoadingSearch"
         :disabled="isLoadingSearch"

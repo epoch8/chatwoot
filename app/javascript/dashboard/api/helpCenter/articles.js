@@ -21,12 +21,13 @@ class ArticlesAPI extends PortalsAPI {
     if (status !== undefined) baseUrl += `&status=${status}`;
     if (author_id) baseUrl += `&author_id=${author_id}`;
     if (category_slug) baseUrl += `&category_slug=${category_slug}`;
+    
     if (titleSearch && textSearch) {
-      baseUrl += `&query='${titleSearch}<->${textSearch}'`;
+      baseUrl += `&title=${titleSearch}&content=${textSearch}`;
     } else if (titleSearch) {
-      baseUrl += `&query='${titleSearch}'`;
+      baseUrl += `&title=${titleSearch}`;
     } else if (textSearch) {
-      baseUrl += `&query='${textSearch}'`;
+      baseUrl += `&content=${textSearch}`;
     }
     return axios.get(baseUrl);
   }
