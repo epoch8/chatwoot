@@ -446,6 +446,11 @@
           "ERROR_MESSAGE": "Не удается удалить категорию"
         }
       }
+    },
+    "FORM_SEARCH": {
+      "SEARCH_BUTTON": "Найти",
+      "PLACEHOLDER_TITLE_INPUT": "Введите заголовок статьи",
+      "PLACEHOLDER_TEXT_INPUT": "Введите текст статьи"
     }
   }
 }
