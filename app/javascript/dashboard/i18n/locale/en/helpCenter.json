@@ -5,6 +5,12 @@
       "SORT": "Sort by",
       "SETTINGS_BUTTON": "Settings",
       "NEW_BUTTON": "New Article",
+      "SEARCH": "Search",
+      "FORM_SEARCH": {
+        "ARTICLE_TITLE": "Enter the title of the article",
+        "ARTICLE_CONTENT": "Enter the text of the article",
+        "FIND": "Find"
+      },
       "DROPDOWN_OPTIONS": {
         "PUBLISHED": "Published",
         "DRAFT": "Draft",
@@ -367,6 +373,7 @@
         "ERROR_MESSAGE": "Error while deleting article"
       }
     },
+    "DISABLE_QUESTION": "To add a question, you need to fill in the title and content of the article",
     "DELETE_QUESTION": {
       "API": {
         "SUCCESS_MESSAGE": "Question deleted successfully",
@@ -456,6 +463,11 @@
           "ERROR_MESSAGE": "Unable to delete category"
         }
       }
+    },
+    "FORM_SEARCH": {
+      "SEARCH_BUTTON": "Find",
+      "PLACEHOLDER_TITLE_INPUT": "Enter article title",
+      "PLACEHOLDER_TEXT_INPUT": "Enter article text"
     }
   }
 }

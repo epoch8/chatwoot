@@ -79,7 +79,7 @@ export const mutations = {
     article.questions = payload;
     Vue.set($state.articles.byId, id, {
       ...article
-    })
+    });
   },
   [types.REMOVE_ARTICLE]($state, articleId) {
     const { [articleId]: toBeRemoved, ...newById } = $state.articles.byId;

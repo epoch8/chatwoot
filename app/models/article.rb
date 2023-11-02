@@ -6,6 +6,7 @@
 #  content               :text
 #  description           :text
 #  intent                :string
+#  language              :string           default("russian")
 #  meta                  :jsonb
 #  position              :integer
 #  slug                  :string           not null
@@ -36,7 +37,7 @@ class Article < ApplicationRecord
            dependent: :nullify,
            inverse_of: 'root_article'
 
-  has_many :questions
+  has_many :questions, dependent: :destroy
   
   belongs_to :root_article,
              class_name: :Article,
@@ -55,9 +56,11 @@ class Article < ApplicationRecord
   validates :author_id, presence: true
   validates :title, presence: true
   validates :content, presence: true
+  validates :language, presence: true
 
   # ensuring that the position is always set correctly
   before_create :add_position_to_article
+  before_create :generate_article_intent
   after_save :category_id_changed_action, if: :saved_change_to_category_id?
 
   enum status: { draft: 0, published: 1, archived: 2 }
@@ -72,14 +75,40 @@ class Article < ApplicationRecord
   # TODO: if text search slows down https://www.postgresql.org/docs/current/textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS
   pg_search_scope(
     :text_search,
-    against: %i[
-      title
-      description
-      content
-    ],
+    against: {
+      title: 'A',
+      content: 'B'
+    },
     using: {
       tsearch: {
         prefix: true
+      },
+      trigram: {
+        threshold: 0.2
+      }
+   }
+  )
+  pg_search_scope(
+    :title_search,
+    against: :title,
+    using: {
+      tsearch: {
+        prefix: true
+      },
+      trigram: {
+        threshold: 0.2
+      }
+    }
+  )
+  pg_search_scope(
+    :content_search,
+    against: :content,
+    using: {
+      tsearch: {
+        prefix: true
+      },
+      trigram: {
+        threshold: 0.2
       }
     }
   )
@@ -90,8 +119,19 @@ class Article < ApplicationRecord
     ).search_by_category_slug(
       params[:category_slug]
     ).search_by_category_locale(params[:locale]).search_by_author(params[:author_id]).search_by_status(params[:status])
-
-    records = records.text_search(params[:query]) if params[:query].present?
+    title = params[:title]
+    content = params[:content]
+    if title.present? && content.present?
+      params = title + '&' + content
+      records = records.text_search(params)
+    elsif title.present?
+      records = records.title_search(title)
+    elsif content.present?
+      records = records.content_search(content)
+    end
+    #query = params[:query] if params[:query].present?
+    #query = query.split('<->')
+    # records = records.text_search(params[:query]) if params[:query].present?
     records
   end
 
@@ -147,6 +187,12 @@ class Article < ApplicationRecord
     return if position.present?
 
     update_article_position_in_category
+  end
+
+  def generate_article_intent
+    return if self.intent.present?
+    self.intent = self.title.downcase
+    self.intent.gsub!(/\s/,'_')
   end
 
   def update_article_position_in_category

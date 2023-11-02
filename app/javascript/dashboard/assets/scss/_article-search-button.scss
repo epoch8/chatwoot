@@ -1,0 +1,7 @@
+$b: '.article-search-button';
+
+#{$b} {
+  &__active.button {
+    background-color: mix($black, $color-woot, 20%);
+  }
+}
