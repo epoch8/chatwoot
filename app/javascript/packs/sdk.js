@@ -13,7 +13,7 @@ import {
 import { addClasses, removeClasses } from '../sdk/DOMHelpers';
 import { setCookieWithDomain } from '../sdk/cookieHelpers';
 import { SDK_SET_BUBBLE_VISIBILITY } from 'shared/constants/sharedFrameEvents';
-const runSDK = ({ baseUrl, websiteToken }) => {
+const runSDK = ({ baseUrl, websiteToken, isOpenWidget = false }) => {
   if (window.$chatwoot) {
     return;
   }
@@ -31,7 +31,7 @@ const runSDK = ({ baseUrl, websiteToken }) => {
     baseDomain,
     hasLoaded: false,
     hideMessageBubble: chatwootSettings.hideMessageBubble || false,
-    isOpen: false,
+    isOpen: isOpenWidget,
     position: chatwootSettings.position === 'left' ? 'left' : 'right',
     websiteToken,
     locale,
