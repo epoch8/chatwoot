@@ -183,6 +183,7 @@ export const IFrameHelper = {
       if (!window.$chatwoot.resetTriggered) {
         dispatchWindowEvent({ eventName: CHATWOOT_READY });
       }
+      onBubbleClick({ toggleValue: !window.$chatwoot.isOpen });
     },
     error: ({ errorType, data }) => {
       dispatchWindowEvent({ eventName: CHATWOOT_ERROR, data: data });

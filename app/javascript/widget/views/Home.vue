@@ -3,24 +3,16 @@
     <div class="flex flex-1 overflow-auto">
       <!-- Load Conversation List Components Here -->
     </div>
-    <team-availability
-      :available-agents="availableAgents"
-      :has-conversation="!!conversationSize"
-      @start-conversation="startConversation"
-    />
   </div>
 </template>
 
 <script>
 import configMixin from '../mixins/configMixin';
-import TeamAvailability from 'widget/components/TeamAvailability';
 import { mapGetters } from 'vuex';
 import routerMixin from 'widget/mixins/routerMixin';
 export default {
   name: 'Home',
-  components: {
-    TeamAvailability,
-  },
+  components: {},
   mixins: [configMixin, routerMixin],
   props: {
     hasFetched: {
@@ -34,6 +26,9 @@ export default {
   },
   data() {
     return {};
+  },
+  created() {
+    this.startConversation();
   },
   computed: {
     ...mapGetters({

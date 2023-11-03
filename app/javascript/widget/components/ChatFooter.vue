@@ -57,6 +57,7 @@ export default {
       conversationSize: 'conversation/getConversationSize',
       currentUser: 'contacts/getCurrentUser',
       isWidgetStyleFlat: 'appConfig/isWidgetStyleFlat',
+      activeCampaign: 'campaign/getActiveCampaign',
     }),
     textColor() {
       return getContrastingTextColor(this.widgetColor);
@@ -93,9 +94,30 @@ export default {
       this.sendAttachment({ attachment });
     },
     startNewConversation() {
+      const activeCampaignId = this.activeCampaign.id;
+      const { email, phone_number, name } = this.currentUser;
       this.clearConversations();
       this.clearConversationAttributes();
-      this.replaceRoute('prechat-form');
+      if (activeCampaignId) {
+        bus.$emit('execute-campaign', {
+          campaignId: activeCampaignId,
+          customAttributes: {},
+        });
+        this.$store.dispatch('contacts/update', {
+          user: {
+            email: email,
+            name: name,
+            phone_number: phone_number,
+          },
+        });
+      } else {
+        this.$store.dispatch('conversation/createConversation', {
+          fullName: null,
+          emailAddress: email,
+          phoneNumber: phone_number,
+          customAttributes: {},
+        });
+      }
     },
     async sendTranscript() {
       const { email } = this.currentUser;
