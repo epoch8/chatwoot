@@ -468,6 +468,13 @@
       "SEARCH_BUTTON": "Find",
       "PLACEHOLDER_TITLE_INPUT": "Enter article title",
       "PLACEHOLDER_TEXT_INPUT": "Enter article text"
+    },
+    "LOAD_CONFIG_FORM": {
+      "LOAD_BUTTON": "Upload file",
+      "DISCLAIMER_FILE": "Please click on the file upload window or drag and drop the file into the file upload window",
+      "DISCLAIMER_SELECTED_FILE": "File attached",
+      "ERROR_REQUIRE": "You must select a file to upload",
+      "ERROR_FORMAT_FILE": "The file is not in a valid format, please select another file. Only formats allowed xls, xlsx, json, csv"
     }
   }
 }

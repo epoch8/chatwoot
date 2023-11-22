@@ -5,7 +5,7 @@ import types from '../../mutation-types';
 export const actions = {
   index: async (
     { commit },
-    { pageNumber, portalSlug, locale, status, author_id, category_slug, titleSearch, textSearch }
+    { pageNumber, portalSlug, locale, status, author_id, category_slug, titleSearch, textSearch, sort }
   ) => {
     try {
       commit(types.SET_UI_FLAG, { isFetching: true });
@@ -20,6 +20,7 @@ export const actions = {
         category_slug,
         titleSearch,
         textSearch,
+        sort,
       });
       const articleIds = payload.map(article => article.id);
       commit(types.CLEAR_ARTICLES);
@@ -204,5 +205,30 @@ export const actions = {
     }
 
     return '';
+  },
+  loadConfigFile: async (
+    { commit },
+    { formData, portalSlug, account_id }
+  ) => {
+    try {
+      commit(types.SET_UI_FLAG, { isFetching: true });
+      const {
+        data: { payload, meta },
+      } = await articlesAPI.loadConfigFile({
+        formData,
+        portalSlug,
+        account_id,
+      });
+      // const articleIds = payload.map(article => article.id);
+      // commit(types.CLEAR_ARTICLES);
+      // commit(types.ADD_MANY_ARTICLES, payload);
+      // commit(types.SET_ARTICLES_META, meta);
+      // commit(types.ADD_MANY_ARTICLES_ID, articleIds);
+      // return articleIds;
+    } catch (error) {
+      return throwErrorMessage(error);
+    } finally {
+      commit(types.SET_UI_FLAG, { isFetching: false });
+    }
   },
 };
