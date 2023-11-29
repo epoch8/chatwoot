@@ -221,4 +221,3 @@ class Article < ApplicationRecord
     self.slug ||= "#{Time.now.utc.to_i}-#{value.underscore.gsub!(/\s/,'-')}" if value.present?
   end
 end
-``
