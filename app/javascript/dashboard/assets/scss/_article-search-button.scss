@@ -1,7 +1,13 @@
 $b: '.article-search-button';
 
 #{$b} {
+  margin-left: var(--space-smaller);
+
+  & .search {
+    padding: 0;
+  }
+
   &__active.button {
-    background-color: mix($black, $color-woot, 20%);
+    background-color: mix($black, $color-woot, 40%);
   }
 }

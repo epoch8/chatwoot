@@ -205,7 +205,7 @@ Rails.application.routes.draw do
             resources :articles do
               post :attach_file, on: :collection
               post :reorder, on: :collection
-              post :import, on: :collection
+              post :import_from_file, on: :collection
               resources :questions
             end
           end

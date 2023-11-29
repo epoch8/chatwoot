@@ -5,19 +5,39 @@
       :class="{ draggable: onCategoryPage }"
     >
       <div class="heading-item heading-title">
-        {{ $t('HELP_CENTER.TABLE.HEADERS.TITLE') }}
+        <button-sort-articles
+            :active="buttonsSort.titleSortActive"
+            :disabled="isFetching"
+            @click="sortArticles($event, 'title')"
+        >
+          <p>
+            {{ $t('HELP_CENTER.TABLE.HEADERS.TITLE') }}
+          </p>
+        </button-sort-articles>
       </div>
       <div class="heading-item heading-category">
         {{ $t('HELP_CENTER.TABLE.HEADERS.CATEGORY') }}
       </div>
       <div class="heading-item heading-read-count">
-        {{ $t('HELP_CENTER.TABLE.HEADERS.READ_COUNT') }}
+        <p>
+          {{ $t('HELP_CENTER.TABLE.HEADERS.READ_COUNT') }}
+        </p>
       </div>
       <div class="heading-item heading-status">
-        {{ $t('HELP_CENTER.TABLE.HEADERS.STATUS') }}
+        <p>
+          {{ $t('HELP_CENTER.TABLE.HEADERS.STATUS') }}
+        </p>
       </div>
       <div class="heading-item heading-last-edited">
-        {{ $t('HELP_CENTER.TABLE.HEADERS.LAST_EDITED') }}
+        <button-sort-articles
+            :active="buttonsSort.lastEditedSortActive"
+            :disabled="isFetching"
+            @click="sortArticles($event, 'updated_at')"
+        >
+          <p>
+            {{ $t('HELP_CENTER.TABLE.HEADERS.LAST_EDITED') }}
+          </p>
+        </button-sort-articles>
       </div>
     </div>
     <draggable
@@ -54,15 +74,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ArticleItem from './ArticleItem.vue';
 import TableFooter from 'dashboard/components/widgets/TableFooter';
 import draggable from 'vuedraggable';
+import ButtonSortArticles from '../components/ButtonSortArticles';
 
 export default {
   components: {
     ArticleItem,
     TableFooter,
     draggable,
+    ButtonSortArticles,
   },
   props: {
     articles: {
@@ -81,6 +104,10 @@ export default {
       type: Number,
       default: 25,
     },
+    buttonsSort: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -88,6 +115,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      isFetching: 'articles/isFetching',
+    }),
     dragEnabled() {
       // dragging allowed only on category page
       return (
@@ -98,12 +128,19 @@ export default {
       return this.$route.name === 'show_category';
     },
   },
+  mounted() {
+    this.localArticles = [...this.articles];
+  },
   watch: {
     articles() {
       this.localArticles = [...this.articles];
     },
   },
   methods: {
+    sortArticles(sortingAsc, categorySort) {
+      const emitValue = sortingAsc ? categorySort : `-${categorySort}`;
+      this.$emit('sort-articles', emitValue);
+    },
     onDragEnd() {
       // why reuse the same positons array, instead of creating a new one?
       // this ensures that the shuffling happens within the same group
@@ -176,6 +213,10 @@ export default {
       font-size: var(--font-size-small);
       text-align: right;
       padding: var(--space-small) 0;
+
+      & p {
+        margin-bottom: 0;
+      }
 
       &.heading-title {
         text-align: left;

@@ -458,6 +458,13 @@
       "SEARCH_BUTTON": "Найти",
       "PLACEHOLDER_TITLE_INPUT": "Введите заголовок статьи",
       "PLACEHOLDER_TEXT_INPUT": "Введите текст статьи"
+    },
+    "LOAD_CONFIG_FORM": {
+      "LOAD_BUTTON": "Загрузить файл",
+      "DISCLAIMER_FILE": "Пожалуйста нажмите на окно загрузки файла или перетащите файл в окно загрузки файла",
+      "DISCLAIMER_SELECTED_FILE": "Прикреплен файл",
+      "ERROR_REQUIRE": "Вы должны выбрать файл для загрузки",
+      "ERROR_FORMAT_FILE": "Файл имеет не допустимый формат, выберите другой файл. Допускаются только форматы xls, xlsx, json, csv"
     }
   }
 }

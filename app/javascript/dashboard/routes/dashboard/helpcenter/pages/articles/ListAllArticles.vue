@@ -6,7 +6,17 @@
       selected-value="Published"
       @newArticlePage="newArticlePage"
       @visible-search-form="toggleVisibleSearchForm"
+      @open-load-config-form="openVisibleLoadingConfigForm"
     />
+    <Modal
+        :show="showModalLoadingFile"
+        :on-close="closeVisibleLoadingConfigForm"
+    >
+      <form-load-config
+          :is-loading="loadingConfigFile"
+          @submit="loadConfigArticlesFile"
+      />
+    </Modal>
     <div
         v-if="isSearchFormVisible"
         class="article-list-search-container">
@@ -19,8 +29,10 @@
       :articles="articles"
       :current-page="Number(meta.currentPage)"
       :total-count="Number(meta.count)"
+      :buttons-sort="buttonsSort"
       @page-change="onPageChange"
       @reorder="onReorder"
+      @sort-articles="sortArticle"
     />
     <div v-if="shouldShowLoader" class="articles--loader">
       <spinner />
@@ -40,6 +52,8 @@ import ArticleHeader from 'dashboard/routes/dashboard/helpcenter/components/Head
 import EmptyState from 'dashboard/components/widgets/EmptyState';
 import ArticleTable from '../../components/ArticleTable';
 import FormSearch from "../../components/FormSearch";
+import Modal from "../../../../../components/Modal";
+import FormLoadConfig from "../../components/FormLoadConfig";
 
 export default {
   components: {
@@ -48,12 +62,23 @@ export default {
     EmptyState,
     Spinner,
     FormSearch,
+    Modal,
+    FormLoadConfig,
   },
   data() {
     return {
       pageNumber: 1,
       isSearchFormVisible: false,
       isLoadingSearch: false,
+      titleSearch: '',
+      textSearch: '',
+      buttonsSort: {
+        titleSortActive: false,
+        categorySortActive: false,
+        lastEditedSortActive: false,
+      },
+      loadingConfigFile: false,
+      showModalLoadingFile: false,
     };
   },
   computed: {
@@ -136,21 +161,57 @@ export default {
   },
 
   methods: {
+    loadConfigArticlesFile(file) {
+      const formData = new FormData();
+      this.loadingConfigFile = true;
+      this.$store.dispatch('articles/loadConfigFile', {
+        portalSlug: this.$route.params.portalSlug,
+        file: file
+      });
+      this.loadingConfigFile = false;
+    },
+    openVisibleLoadingConfigForm() {
+      this.showModalLoadingFile = true;
+    },
+    closeVisibleLoadingConfigForm() {
+      this.showModalLoadingFile = false;
+    },
+    resetAllSortButtons() {
+      this.buttonsSort.titleSortActive = false;
+      this.buttonsSort.categorySortActive = false;
+      this.buttonsSort.lastEditedSortActive = false;
+    },
+    sortArticle(sortValue) {
+      const localSortValue = sortValue.replace(/-/, '');
+      if (localSortValue === 'title') {
+        this.buttonsSort.titleSortActive = true;
+        this.buttonsSort.categorySortActive = false;
+        this.buttonsSort.lastEditedSortActive = false;
+      } else if (localSortValue === 'category') {
+        this.buttonsSort.titleSortActive = false;
+        this.buttonsSort.categorySortActive = true;
+        this.buttonsSort.lastEditedSortActive = false;
+      } else if (localSortValue === 'updated_at') {
+        this.buttonsSort.titleSortActive = false;
+        this.buttonsSort.categorySortActive = false;
+        this.buttonsSort.lastEditedSortActive = true;
+      }
+      this.fetchArticles({sort: sortValue, titleSearch: this.titleSearch, textSearch: this.textSearch});
+    },
     toggleVisibleSearchForm(data) {
       this.isSearchFormVisible = data;
     },
     searchFormArticles({ title, text }) {
-      if (title.length === 0 && text.length === 0) {
-        return;
-      }
-
       this.isLoadingSearch = true;
-      this.fetchArticles({pageNumber: 1, titleSearch: title, textSearch: text});
+      this.titleSearch = title;
+      this.textSearch = text;
+      this.resetAllSortButtons();
+      this.fetchArticles({pageNumber: 1, titleSearch: this.titleSearch, textSearch: this.textSearch});
     },
     newArticlePage() {
       this.$router.push({ name: 'new_article' });
     },
-    fetchArticles({ pageNumber, titleSearch, textSearch } = {}) {
+    fetchArticles({ pageNumber, titleSearch, textSearch, sort = null } = {}) {
       this.$store.dispatch('articles/index', {
         pageNumber: pageNumber || this.pageNumber,
         portalSlug: this.$route.params.portalSlug,
@@ -160,6 +221,7 @@ export default {
         category_slug: this.selectedCategorySlug,
         titleSearch,
         textSearch,
+        sort,
       });
       this.isLoadingSearch = false;
     },

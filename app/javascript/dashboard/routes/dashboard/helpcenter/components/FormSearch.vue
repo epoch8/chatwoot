@@ -37,11 +37,17 @@ export default {
     return {
       title: '',
       text: '',
+      prevTitle: '',
+      prevText: '',
     };
   },
   methods: {
     submit() {
-      this.$emit('submit', { title: this.title, text: this.text });
+      if (this.title !== this.prevTitle || this.text !== this.prevText) {
+        this.$emit('submit', { title: this.title, text: this.text });
+        this.prevTitle = this.title;
+        this.prevText = this.text;
+      }
     },
   },
 }

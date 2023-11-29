@@ -38,7 +38,7 @@ class Article < ApplicationRecord
            inverse_of: 'root_article'
 
   has_many :questions, dependent: :destroy
-  
+
   belongs_to :root_article,
              class_name: :Article,
              foreign_key: :associated_article_id,
@@ -69,8 +69,10 @@ class Article < ApplicationRecord
   scope :search_by_category_locale, ->(locale) { where(categories: { locale: locale }) if locale.present? }
   scope :search_by_author, ->(author_id) { where(author_id: author_id) if author_id.present? }
   scope :search_by_status, ->(status) { where(status: status) if status.present? }
-  scope :order_by_updated_at, -> { reorder(updated_at: :desc) }
-  scope :order_by_position, -> { reorder(position: :asc) }
+  scope :order_by_title, -> (direction) { order(title: direction) }
+  scope :order_by_updated_at, -> (direction) { order(updated_at: direction) }
+  scope :order_by_position, -> (direction) { order(position: direction) }
+  scope :order_by_category, -> (direction) { order(categories: { slug: direction }) }
 
   # TODO: if text search slows down https://www.postgresql.org/docs/current/textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS
   pg_search_scope(
@@ -84,7 +86,7 @@ class Article < ApplicationRecord
         prefix: true
       },
       trigram: {
-        threshold: 0.2
+        threshold: 0.7
       }
    }
   )
@@ -96,7 +98,7 @@ class Article < ApplicationRecord
         prefix: true
       },
       trigram: {
-        threshold: 0.2
+        threshold: 0.7
       }
     }
   )
@@ -108,7 +110,7 @@ class Article < ApplicationRecord
         prefix: true
       },
       trigram: {
-        threshold: 0.2
+        threshold: 0.7
       }
     }
   )
@@ -215,6 +217,8 @@ class Article < ApplicationRecord
   end
 
   def ensure_article_slug
-    self.slug ||= "#{Time.now.utc.to_i}-#{title.underscore.parameterize(separator: '-')}" if title.present?
+    value = title.clone
+    self.slug ||= "#{Time.now.utc.to_i}-#{value.underscore.gsub!(/\s/,'-')}" if value.present?
   end
 end
+``

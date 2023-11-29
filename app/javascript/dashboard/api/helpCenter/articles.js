@@ -16,12 +16,13 @@ class ArticlesAPI extends PortalsAPI {
     category_slug,
     titleSearch,
     textSearch,
+    sort,
   }) {
     let baseUrl = `${this.url}/${portalSlug}/articles?page=${pageNumber}&locale=${locale}`;
     if (status !== undefined) baseUrl += `&status=${status}`;
     if (author_id) baseUrl += `&author_id=${author_id}`;
     if (category_slug) baseUrl += `&category_slug=${category_slug}`;
-    
+
     if (titleSearch && textSearch) {
       baseUrl += `&title=${titleSearch}&content=${textSearch}`;
     } else if (titleSearch) {
@@ -29,6 +30,7 @@ class ArticlesAPI extends PortalsAPI {
     } else if (textSearch) {
       baseUrl += `&content=${textSearch}`;
     }
+    if (sort) baseUrl += `&sort=${sort}`;
     return axios.get(baseUrl);
   }
 
@@ -91,6 +93,19 @@ class ArticlesAPI extends PortalsAPI {
     return axios.post(`${this.url}/${portalSlug}/articles/${articleId}/questions`, {
       content: content
     });
+  }
+
+  loadConfigFile({ portalSlug, file}) {
+    let formData = new FormData();
+    formData.append('file', file);
+    return axios.post(`${this.url}/${portalSlug}/articles/import_from_file`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
   }
 }
 

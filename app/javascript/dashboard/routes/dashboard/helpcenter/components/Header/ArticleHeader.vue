@@ -81,13 +81,20 @@
         size="small"
         color-scheme="secondary"
       />
-      <button
-          class="button button--only-icon small primary"
+      <woot-button
+          type="button"
+          size="small"
+          icon="download-file"
+          @click="openVisibleLoadingConfigForm"
+      />
+      <woot-button
+          type="button"
+          size="small"
+          class="article-search-button"
           :class="{ 'article-search-button__active': showSearchForm }"
+          icon="search"
           @click="toggleVisibleSearchForm"
-      >
-        <fluent-icon icon="search" size="14px" class="search--icon" />
-      </button>
+      />
       <woot-button
         class-names="article--buttons"
         size="small"
@@ -158,6 +165,9 @@ export default {
     toggleVisibleSearchForm() {
       this.showSearchForm = !this.showSearchForm;
       this.$emit('visible-search-form', this.showSearchForm);
+    },
+    openVisibleLoadingConfigForm() {
+      this.$emit('open-load-config-form');
     }
   },
 };
