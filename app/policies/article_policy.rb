@@ -3,6 +3,10 @@ class ArticlePolicy < ApplicationPolicy
     @account_user.administrator? || @account.users.include?(@user)
   end
 
+  def import_from_file?
+    @account_user.administrator? || portal_member?
+  end
+
   def update?
     @account_user.administrator? || portal_member?
   end

@@ -16,15 +16,7 @@
         </button-sort-articles>
       </div>
       <div class="heading-item heading-category">
-        <button-sort-articles
-            :active="buttonsSort.categorySortActive"
-            :disabled="isFetching"
-            @click="sortArticles($event, 'category')"
-        >
-          <p>
-            {{ $t('HELP_CENTER.TABLE.HEADERS.CATEGORY') }}
-          </p>
-        </button-sort-articles>
+        {{ $t('HELP_CENTER.TABLE.HEADERS.CATEGORY') }}
       </div>
       <div class="heading-item heading-read-count">
         <p>

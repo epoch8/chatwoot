@@ -208,16 +208,15 @@ export const actions = {
   },
   loadConfigFile: async (
     { commit },
-    { formData, portalSlug, account_id }
+    { portalSlug, file }
   ) => {
     try {
       commit(types.SET_UI_FLAG, { isFetching: true });
       const {
         data: { payload, meta },
       } = await articlesAPI.loadConfigFile({
-        formData,
         portalSlug,
-        account_id,
+        file
       });
       // const articleIds = payload.map(article => article.id);
       // commit(types.CLEAR_ARTICLES);

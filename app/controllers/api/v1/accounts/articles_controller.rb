@@ -1,19 +1,40 @@
 class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
   before_action :portal
   before_action :check_authorization
-  before_action :fetch_article, except: [:index, :create, :attach_file, :reorder]
+  before_action :fetch_article, except: [:index, :create, :attach_file, :reorder, :import_from_file]
   before_action :set_current_page, only: [:index]
+
+  include Sift
+
+  sort_on :title, internal_name: :order_by_title, type: :scope, scope_params: [:direction]
+  sort_on :updated_at, internal_name: :order_by_updated_at, type: :scope, scope_params: [:direction]
+  sort_on :position, internal_name: :order_by_position, type: :scope, scope_params: [:direction]
+  sort_on :category, internal_name: :order_by_category, type: :scope, scope_params: [:direction]
 
   def index
     @portal_articles = @portal.articles
     @all_articles = @portal_articles.search(list_params)
     @articles_count = @all_articles.count
 
-    @articles = if list_params[:category_slug].present?
-                  @all_articles.order_by_position.page(@current_page).per(50)
-                else
-                  @all_articles.order_by_updated_at.page(@current_page)
-                end
+    @articles = filtrate(@all_articles)
+
+    # @articles = if list_params[:category_slug].present?
+    #               @all_articles.order_by_position.page(@current_page).per(50)
+    #             else
+    #               @all_articles.order_by_updated_at.page(@current_page)
+    #             end
+  end
+
+  def import_from_file
+    render json: { error: "File not found!" }, status: :unprocessable_entity and return if params[:file].blank?
+    file = params[:file]
+    if file.content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      begin
+        ::ArticlesImport::ArticlesXlsxImportService.call(file, @portal)
+      rescue StandardError => e
+        render json: {error: e}, status: :unprocessable_entity
+      end
+    end
   end
 
   def show; end
@@ -26,14 +47,6 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     render json: { error: @article.errors.messages }, status: :unprocessable_entity and return unless @article.valid?
   end
 
-  # def import
-  #   file = params[:file]
-  #   if file.content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  #     ArticlesXlsxService.call file
-  #   elsif file.content_type == 'text/csv'
-  #   elsif file.content_type == 'application/json'
-  #   end
-  # end
 
   def update
     @article.update!(article_params) if params[:article].present?

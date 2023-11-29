@@ -95,10 +95,17 @@ class ArticlesAPI extends PortalsAPI {
     });
   }
 
-  loadConfigFile({ account_id, portalSlug, formData}) {
-    return axios.post(`/api/v1/accounts/${account_id}/portals/${portalSlug}/articles/import `, {
-      data: formData
-    });
+  loadConfigFile({ portalSlug, file}) {
+    let formData = new FormData();
+    formData.append('file', file);
+    return axios.post(`${this.url}/${portalSlug}/articles/import_from_file`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
   }
 }
 

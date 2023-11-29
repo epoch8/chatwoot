@@ -163,12 +163,10 @@ export default {
   methods: {
     loadConfigArticlesFile(file) {
       const formData = new FormData();
-      formData.append('file', file);
       this.loadingConfigFile = true;
       this.$store.dispatch('articles/loadConfigFile', {
         portalSlug: this.$route.params.portalSlug,
-        account_id: this.currentUserId,
-        formData,
+        file: file
       });
       this.loadingConfigFile = false;
     },
