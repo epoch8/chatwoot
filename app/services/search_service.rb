@@ -24,12 +24,17 @@ class SearchService
     @search_query ||= params[:q].to_s.strip
   end
 
+  def get_offset
+    @offset = params[:offset] || 1
+  end
+
   def filter_conversations
     @conversations = current_account.conversations.where(inbox_id: accessable_inbox_ids)
                                     .joins('INNER JOIN contacts ON conversations.contact_id = contacts.id')
                                     .where("cast(conversations.display_id as text) ILIKE :search OR contacts.name ILIKE :search OR contacts.email
                             ILIKE :search OR contacts.phone_number ILIKE :search OR contacts.identifier ILIKE :search", search: "%#{search_query}%")
                                     .order('conversations.created_at DESC')
+                                    .offset(get_offset)
                                     .limit(10)
   end
 
@@ -38,6 +43,7 @@ class SearchService
                                .where('messages.content ILIKE :search', search: "%#{search_query}%")
                                .where('created_at >= ?', 3.months.ago)
                                .reorder('created_at DESC')
+                               .offset(get_offset)
                                .limit(10)
   end
 
@@ -45,6 +51,6 @@ class SearchService
     @contacts = current_account.contacts.where(
       "name ILIKE :search OR email ILIKE :search OR phone_number
       ILIKE :search OR identifier ILIKE :search", search: "%#{search_query}%"
-    ).resolved_contacts.order_on_last_activity_at('desc').limit(10)
+    ).resolved_contacts.order_on_last_activity_at('desc').offset(get_offset).limit(10)
   end
 end
