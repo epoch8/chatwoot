@@ -29,4 +29,10 @@ export const getters = {
   getMeta: state => {
     return state.meta;
   },
+  getOpenPopupLoadConfig: (state) => {
+    return state.openPopupLoadConfig;
+  },
+  getLoadConfigFile: (state) => {
+    return state.uiFlags.loadingConfigFile;
+  },
 };

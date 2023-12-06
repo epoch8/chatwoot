@@ -18,6 +18,15 @@
         />
       </li>
     </ul>
+    <woot-button
+        v-if="visibleLoadMoreButton"
+        type="button"
+        :is-disabled="loadingMoreContacts"
+        :is-loading="loadingMoreContacts"
+        @click="loadMoreContacts"
+    >
+      {{ $t('SEARCH.LOAD_MORE') }}
+    </woot-button>
   </search-result-section>
 </template>
 
@@ -26,11 +35,13 @@ import { mapGetters } from 'vuex';
 
 import SearchResultSection from './SearchResultSection.vue';
 import SearchResultContactItem from './SearchResultContactItem.vue';
+import WootButton from "../../../components/ui/WootButton";
 
 export default {
   components: {
     SearchResultSection,
     SearchResultContactItem,
+    WootButton,
   },
   props: {
     contacts: {
@@ -49,11 +60,27 @@ export default {
       type: Boolean,
       default: true,
     },
+    allCountContacts: {
+      type: Number,
+      default: 0,
+    },
+    loadingMoreContacts: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters({
       accountId: 'getCurrentAccountId',
     }),
+    visibleLoadMoreButton() {
+      return this.allCountContacts > this.contacts.length;
+    },
+  },
+  methods: {
+    loadMoreContacts() {
+      this.$emit('load-more', this.contacts.length);
+    },
   },
 };
 </script>

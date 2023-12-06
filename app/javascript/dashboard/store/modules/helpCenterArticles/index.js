@@ -22,7 +22,9 @@ const state = {
   uiFlags: {
     allFetched: false,
     isFetching: false,
+    loadingConfigFile: false,
   },
+  openPopupLoadConfig: false,
 };
 
 export default {

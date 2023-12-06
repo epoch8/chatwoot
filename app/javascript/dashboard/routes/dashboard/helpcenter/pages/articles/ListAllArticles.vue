@@ -9,7 +9,7 @@
       @open-load-config-form="openVisibleLoadingConfigForm"
     />
     <Modal
-        :show="showModalLoadingFile"
+        :show="openPopupLoadConfig"
         :on-close="closeVisibleLoadingConfigForm"
     >
       <form-load-config
@@ -45,7 +45,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import Spinner from 'shared/components/Spinner.vue';
 import ArticleHeader from 'dashboard/routes/dashboard/helpcenter/components/Header/ArticleHeader';
@@ -54,6 +54,7 @@ import ArticleTable from '../../components/ArticleTable';
 import FormSearch from "../../components/FormSearch";
 import Modal from "../../../../../components/Modal";
 import FormLoadConfig from "../../components/FormLoadConfig";
+import types from '../../../../../store/mutation-types';
 
 export default {
   components: {
@@ -77,8 +78,6 @@ export default {
         categorySortActive: false,
         lastEditedSortActive: false,
       },
-      loadingConfigFile: false,
-      showModalLoadingFile: false,
     };
   },
   computed: {
@@ -89,6 +88,8 @@ export default {
       meta: 'articles/getMeta',
       isFetching: 'articles/isFetching',
       currentUserId: 'getCurrentUserID',
+      loadingConfigFile: 'articles/getLoadConfigFile',
+      openPopupLoadConfig: 'articles/getOpenPopupLoadConfig',
     }),
     selectedCategory() {
       return this.categories.find(
@@ -162,19 +163,16 @@ export default {
 
   methods: {
     loadConfigArticlesFile(file) {
-      const formData = new FormData();
-      this.loadingConfigFile = true;
       this.$store.dispatch('articles/loadConfigFile', {
         portalSlug: this.$route.params.portalSlug,
         file: file
       });
-      this.loadingConfigFile = false;
     },
     openVisibleLoadingConfigForm() {
-      this.showModalLoadingFile = true;
+      this.$store.commit(`articles/${types.SET_OPEN_MODAL_LOAD_CONFIG}`, true);
     },
     closeVisibleLoadingConfigForm() {
-      this.showModalLoadingFile = false;
+      this.$store.commit(`articles/${types.SET_OPEN_MODAL_LOAD_CONFIG}`, false);
     },
     resetAllSortButtons() {
       this.buttonsSort.titleSortActive = false;
