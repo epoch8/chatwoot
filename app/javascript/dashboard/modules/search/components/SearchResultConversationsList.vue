@@ -17,6 +17,15 @@
         />
       </li>
     </ul>
+    <woot-button
+        v-if="visibleLoadMoreButton"
+        type="button"
+        :is-disabled="loadingMoreConversations"
+        :is-loading="loadingMoreConversations"
+        @click="loadMoreConversations"
+    >
+      {{ $t('SEARCH.LOAD_MORE') }}
+    </woot-button>
   </search-result-section>
 </template>
 
@@ -24,11 +33,13 @@
 import { mapGetters } from 'vuex';
 import SearchResultSection from './SearchResultSection.vue';
 import SearchResultConversationItem from './SearchResultConversationItem.vue';
+import WootButton from "../../../components/ui/WootButton";
 
 export default {
   components: {
     SearchResultSection,
     SearchResultConversationItem,
+    WootButton,
   },
   props: {
     conversations: {
@@ -47,11 +58,27 @@ export default {
       type: Boolean,
       default: true,
     },
+    allCountConversations: {
+      type: Number,
+      default: 0,
+    },
+    loadingMoreConversations: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters({
       accountId: 'getCurrentAccountId',
     }),
+    visibleLoadMoreButton() {
+      return this.allCountConversations > this.conversations.length;
+    },
+  },
+  methods: {
+    loadMoreConversations() {
+      this.$emit('load-more', this.conversations.length);
+    },
   },
 };
 </script>

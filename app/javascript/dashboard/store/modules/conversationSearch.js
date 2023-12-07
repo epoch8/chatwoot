@@ -5,6 +5,9 @@ export const initialState = {
   contactRecords: [],
   conversationRecords: [],
   messageRecords: [],
+  countMessageRecords: 0,
+  countConversationRecords: 0,
+  countContactRecords: 0,
   uiFlags: {
     isFetching: false,
     isSearchCompleted: false,
@@ -30,6 +33,15 @@ export const getters = {
   getUIFlags(state) {
     return state.uiFlags;
   },
+  getCountContactRecords(state) {
+    return state.countContactRecords;
+  },
+  getCountConversationRecords(state) {
+    return state.countConversationRecords;
+  },
+  getCountMessageRecords(state) {
+    return state.countMessageRecords;
+  },
 };
 
 export const actions = {
@@ -52,7 +64,7 @@ export const actions = {
       });
     }
   },
-  async fullSearch({ commit, dispatch }, { q }) {
+  async fullSearch({ commit, dispatch }, { q, offset }) {
     if (!q) {
       return;
     }
@@ -62,9 +74,9 @@ export const actions = {
     });
     try {
       await Promise.all([
-        dispatch('contactSearch', { q }),
-        dispatch('conversationSearch', { q }),
-        dispatch('messageSearch', { q }),
+        dispatch('contactSearch', { q, offset }),
+        dispatch('conversationSearch', { q, offset }),
+        dispatch('messageSearch', { q, offset }),
       ]);
     } catch (error) {
       // Ignore error
@@ -75,36 +87,54 @@ export const actions = {
       });
     }
   },
-  async contactSearch({ commit }, { q }) {
-    commit(types.CONTACT_SEARCH_SET, []);
+  async contactSearch({ commit, state }, { q, offset }) {
     commit(types.CONTACT_SEARCH_SET_UI_FLAG, { isFetching: true });
     try {
-      const { data } = await SearchAPI.contacts({ q });
-      commit(types.CONTACT_SEARCH_SET, data.payload.contacts);
+      const { data } = await SearchAPI.contacts({ q, offset });
+      let dataArray = null;
+      if (state.contactRecords.length > 0) {
+        dataArray = state.contactRecords.concat(data.payload.contacts);
+      } else {
+        dataArray = data.payload.contacts;
+      }
+      commit(types.CONTACT_SEARCH_COUNT_SET, data.payload.countAllRecords);
+      commit(types.CONTACT_SEARCH_SET, dataArray);
     } catch (error) {
       // Ignore error
     } finally {
       commit(types.CONTACT_SEARCH_SET_UI_FLAG, { isFetching: false });
     }
   },
-  async conversationSearch({ commit }, { q }) {
-    commit(types.CONVERSATION_SEARCH_SET, []);
+  async conversationSearch({ commit, state }, { q, offset }) {
     commit(types.CONVERSATION_SEARCH_SET_UI_FLAG, { isFetching: true });
     try {
-      const { data } = await SearchAPI.conversations({ q });
-      commit(types.CONVERSATION_SEARCH_SET, data.payload.conversations);
+      const { data } = await SearchAPI.conversations({ q, offset });
+      let dataArray = null;
+      if (state.conversationRecords.length > 0) {
+        dataArray = state.conversationRecords.concat(data.payload.conversations);
+      } else {
+        dataArray = data.payload.conversations;
+      }
+      commit(types.CONVERSATION_SEARCH_COUNT_SET, data.payload.countAllRecords);
+      commit(types.CONVERSATION_SEARCH_SET, dataArray);
     } catch (error) {
       // Ignore error
     } finally {
       commit(types.CONVERSATION_SEARCH_SET_UI_FLAG, { isFetching: false });
     }
   },
-  async messageSearch({ commit }, { q }) {
-    commit(types.MESSAGE_SEARCH_SET, []);
+  async messageSearch({ commit, state }, { q, offset }) {
     commit(types.MESSAGE_SEARCH_SET_UI_FLAG, { isFetching: true });
     try {
-      const { data } = await SearchAPI.messages({ q });
-      commit(types.MESSAGE_SEARCH_SET, data.payload.messages);
+      const { data } = await SearchAPI.messages({ q, offset });
+      let dataArray = null;
+      if (state.messageRecords.length > 0) {
+        dataArray = state.messageRecords.concat(data.payload.messages);
+      } else {
+        dataArray = data.payload.messages;
+      }
+      commit(types.MESSAGE_SEARCH_COUNT_SET, data.payload.countAllRecords);
+      commit(types.MESSAGE_SEARCH_SET, dataArray);
     } catch (error) {
       // Ignore error
     } finally {
@@ -115,6 +145,9 @@ export const actions = {
     commit(types.MESSAGE_SEARCH_SET, []);
     commit(types.CONVERSATION_SEARCH_SET, []);
     commit(types.CONTACT_SEARCH_SET, []);
+    commit(types.MESSAGE_SEARCH_COUNT_SET, 0);
+    commit(types.CONVERSATION_SEARCH_COUNT_SET, 0);
+    commit(types.CONTACT_SEARCH_COUNT_SET, 0);
   },
 };
 
@@ -145,6 +178,15 @@ export const mutations = {
   },
   [types.MESSAGE_SEARCH_SET_UI_FLAG](state, uiFlags) {
     state.uiFlags.message = { ...state.uiFlags.message, ...uiFlags };
+  },
+  [types.CONTACT_SEARCH_COUNT_SET](state, records) {
+    state.countContactRecords = records;
+  },
+  [types.CONVERSATION_SEARCH_COUNT_SET](state, records) {
+    state.countConversationRecords = records;
+  },
+  [types.MESSAGE_SEARCH_COUNT_SET](state, records) {
+    state.countMessageRecords = records;
   },
 };
 

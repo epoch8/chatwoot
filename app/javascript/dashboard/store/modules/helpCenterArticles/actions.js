@@ -211,23 +211,18 @@ export const actions = {
     { portalSlug, file }
   ) => {
     try {
-      commit(types.SET_UI_FLAG, { isFetching: true });
-      const {
-        data: { payload, meta },
-      } = await articlesAPI.loadConfigFile({
+      commit(types.SET_UI_FLAG, { loadingConfigFile: true });
+      const response = await articlesAPI.loadConfigFile({
         portalSlug,
         file
       });
-      // const articleIds = payload.map(article => article.id);
-      // commit(types.CLEAR_ARTICLES);
-      // commit(types.ADD_MANY_ARTICLES, payload);
-      // commit(types.SET_ARTICLES_META, meta);
-      // commit(types.ADD_MANY_ARTICLES_ID, articleIds);
-      // return articleIds;
+      response.then(() => {
+        commit(types.SET_OPEN_MODAL_LOAD_CONFIG, false);
+      });
     } catch (error) {
       return throwErrorMessage(error);
     } finally {
-      commit(types.SET_UI_FLAG, { isFetching: false });
+      commit(types.SET_UI_FLAG, { loadingConfigFile: false });
     }
   },
 };
