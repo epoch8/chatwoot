@@ -216,11 +216,12 @@ export const actions = {
         portalSlug,
         file
       });
-      response.then(() => {
+      if(response.status==204){
         commit(types.SET_OPEN_MODAL_LOAD_CONFIG, false);
-      });
+      }
     } catch (error) {
-      return throwErrorMessage(error);
+      console.error(error);
+      commit(types.SET_OPEN_MODAL_LOAD_CONFIG, false);
     } finally {
       commit(types.SET_UI_FLAG, { loadingConfigFile: false });
     }

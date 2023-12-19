@@ -84,5 +84,5 @@ export const convertToPortalSlug = text => {
 };
 
 export const offsetHelper = (numberOffset) => {
-  return numberOffset + 1;
+  return numberOffset + 10;
 }

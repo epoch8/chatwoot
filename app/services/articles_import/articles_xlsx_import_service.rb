@@ -35,7 +35,8 @@ class ArticlesImport::ArticlesXlsxImportService < ArticlesImport::BaseArticlesIm
         title: cells[0].value,
         content: cells[1].value,
         author_id: cells[3].value,
-        category_id: cells[4].value
+        category_id: cells[4].value,
+        status: 1,
       )
       unless questions.nil?
         questions.split(';').map do |question|

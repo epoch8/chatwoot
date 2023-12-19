@@ -10,9 +10,9 @@
             :disabled="isFetching"
             @click="sortArticles($event, 'title')"
         >
-          <p>
-            {{ $t('HELP_CENTER.TABLE.HEADERS.TITLE') }}
-          </p>
+        <div class="heading-item heading-title">
+          {{ $t('HELP_CENTER.TABLE.HEADERS.TITLE') }}
+        </div>
         </button-sort-articles>
       </div>
       <div class="heading-item heading-category">
@@ -34,9 +34,9 @@
             :disabled="isFetching"
             @click="sortArticles($event, 'updated_at')"
         >
-          <p>
+          <div class="heading-item heading-last-edited">
             {{ $t('HELP_CENTER.TABLE.HEADERS.LAST_EDITED') }}
-          </p>
+          </div>
         </button-sort-articles>
       </div>
     </div>
@@ -213,10 +213,7 @@ export default {
       font-size: var(--font-size-small);
       text-align: right;
       padding: var(--space-small) 0;
-
-      & p {
-        margin-bottom: 0;
-      }
+      padding-top: 0px;
 
       &.heading-title {
         text-align: left;
