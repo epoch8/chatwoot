@@ -29,6 +29,9 @@
             :contacts="contacts"
             :query="query"
             :show-title="isSelectedTabAll"
+            :all-count-contacts="countContactRecords"
+            :loading-more-contacts="uiFlags.contact.isFetching"
+            @load-more="onLoadMoreContacts"
           />
 
           <search-result-messages-list
@@ -37,6 +40,9 @@
             :messages="messages"
             :query="query"
             :show-title="isSelectedTabAll"
+            :all-count-messages="countMessageRecords"
+            :loading-more-messages="uiFlags.message.isFetching"
+            @load-more="onLoadMoreMessages"
           />
 
           <search-result-conversations-list
@@ -45,6 +51,9 @@
             :conversations="conversations"
             :query="query"
             :show-title="isSelectedTabAll"
+            :all-count-conversations="countConversationRecords"
+            :loading-more-conversations="uiFlags.conversation.isFetching"
+            @load-more="onLoadMoreConversations"
           />
         </div>
         <div v-else-if="showEmptySearchResults" class="empty">
@@ -76,6 +85,7 @@ import SearchResultContactsList from './SearchResultContactsList.vue';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import { CONVERSATION_EVENTS } from '../../../helper/AnalyticsHelper/events';
+import { offsetHelper } from "../../../helper/commons";
 export default {
   components: {
     SearchHeader,
@@ -98,6 +108,9 @@ export default {
       conversationRecords: 'conversationSearch/getConversationRecords',
       messageRecords: 'conversationSearch/getMessageRecords',
       uiFlags: 'conversationSearch/getUIFlags',
+      countContactRecords: 'conversationSearch/getCountContactRecords',
+      countConversationRecords: 'conversationSearch/getCountConversationRecords',
+      countMessageRecords: 'conversationSearch/getCountMessageRecords',
     }),
     contacts() {
       return this.contactRecords.map(contact => ({
@@ -197,7 +210,16 @@ export default {
         return;
       }
       this.$track(CONVERSATION_EVENTS.SEARCH_CONVERSATION);
-      this.$store.dispatch('conversationSearch/fullSearch', { q });
+      this.$store.dispatch('conversationSearch/fullSearch', { q, offset: offsetHelper(0) });
+    },
+    onLoadMoreContacts(offset) {
+      this.$store.dispatch('conversationSearch/contactSearch', { q: this.query, offset: offsetHelper(offset) });
+    },
+    onLoadMoreMessages(offset) {
+      this.$store.dispatch('conversationSearch/messageSearch', { q: this.query, offset: offsetHelper(offset) });
+    },
+    onLoadMoreConversations(offset) {
+      this.$store.dispatch('conversationSearch/conversationSearch', { q: this.query, offset: offsetHelper(offset) });
     },
     onBack() {
       if (window.history.length > 2) {

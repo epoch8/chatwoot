@@ -2,6 +2,7 @@
 VERSION=$(shell cat version)
 
 IMAGE=ghcr.io/epoch8/chatwoot/chatwoot:${VERSION}
+BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 APP_NAME := chatwoot
 RAILS_ENV ?= development
@@ -41,9 +42,17 @@ docker:
 
 # e8
 build:
-	docker build -t ${IMAGE} -f docker/Dockerfile .
+	if [ "$(BRANCH)" != "e8" ]; then \
+		docker build -t ${IMAGE}-${BRANCH} -f docker/Dockerfile . ; \
+	else \
+		docker build -t ${IMAGE} -f docker/Dockerfile . ; \
+	fi
 
 upload:
-	docker push ${IMAGE}
+	if [ "$(BRANCH)" != "e8" ]; then \
+		docker push ${IMAGE}-${BRANCH} ; \
+	else \
+		docker push ${IMAGE} ; \
+	fi
 
 .PHONY: setup db_create db_migrate db_seed db console server burn docker run build upload

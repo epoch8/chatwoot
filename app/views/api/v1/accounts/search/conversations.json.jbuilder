@@ -1,4 +1,5 @@
 json.payload do
+  json.countAllRecords @result[:conversations_count]
   json.conversations do
     json.array! @result[:conversations] do |conversation|
       json.id conversation.display_id

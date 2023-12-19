@@ -82,3 +82,7 @@ export const convertToPortalSlug = text => {
     .replace(/[^\w ]+/g, '')
     .replace(/ +/g, '-');
 };
+
+export const offsetHelper = (numberOffset) => {
+  return numberOffset + 10;
+}

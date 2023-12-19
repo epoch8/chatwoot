@@ -90,4 +90,7 @@ export const mutations = {
       id => id !== articleId
     );
   },
+  [types.SET_OPEN_MODAL_LOAD_CONFIG]($state, stateOpen) {
+    $state.openPopupLoadConfig = stateOpen;
+  },
 };
