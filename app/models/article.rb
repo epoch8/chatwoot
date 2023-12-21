@@ -224,7 +224,6 @@ class Article < ApplicationRecord
       else
         self.slug ||= "#{Time.now.utc.to_i}-#{value}"
       end
-    Rails.logger.info self.slug
     end
   end
 end
