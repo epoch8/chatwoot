@@ -218,6 +218,13 @@ class Article < ApplicationRecord
 
   def ensure_article_slug
     value = title.clone
-    self.slug ||= "#{Time.now.utc.to_i}-#{value.underscore.gsub!(/\s/,'-')}" if value.present?
+    if value.present?
+      if value.match(/\s/)
+        self.slug ||= "#{Time.now.utc.to_i}-#{value.underscore.gsub!(/\s/,'-')}"
+      else
+        self.slug ||= "#{Time.now.utc.to_i}-#{value}"
+      end
+    Rails.logger.info self.slug
+    end
   end
 end

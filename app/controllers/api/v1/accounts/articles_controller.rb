@@ -16,7 +16,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     @all_articles = @portal_articles.search(list_params)
     @articles_count = @all_articles.count
 
-    @articles = filtrate(@all_articles)
+    @articles = filtrate(@all_articles).page(@current_page)
 
     # @articles = if list_params[:category_slug].present?
     #               @all_articles.order_by_position.page(@current_page).per(50)
