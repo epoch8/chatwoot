@@ -8,7 +8,6 @@ class ArticlesImport::ArticlesXlsxImportService < ArticlesImport::BaseArticlesIm
 
   def call
     result = articles_from(@xlsx, @portal)
-    Rails.logger.info result
     if result.nil?
       raise "Invalid table schema"
     end
@@ -36,7 +35,7 @@ class ArticlesImport::ArticlesXlsxImportService < ArticlesImport::BaseArticlesIm
         content: cells[1].value,
         author_id: cells[3].value,
         category_id: cells[4].value,
-        status: 1,
+        status: 0,
       )
       unless questions.nil?
         questions.split(';').map do |question|
